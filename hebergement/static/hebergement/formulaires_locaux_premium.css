@@ -1,0 +1,665 @@
+/* =========================================================
+   FORMULAIRES LOCAUX — PREMIUM
+========================================================= */
+
+.page-formulaire-local .sur-titre-formulaire {
+    display: block;
+    margin-bottom: 3px;
+    color: #2563eb;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: .11em;
+    text-transform: uppercase;
+}
+
+.conteneur-formulaire-local {
+    max-width: 1380px;
+}
+
+.hero-formulaire-local {
+    margin-bottom: 22px;
+    padding: 27px 31px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+    overflow: hidden;
+    position: relative;
+    border-radius: 20px;
+    background:
+        radial-gradient(
+            circle at 87% 15%,
+            rgba(255, 255, 255, .18),
+            transparent 25%
+        ),
+        linear-gradient(
+            135deg,
+            #1e3a8a,
+            #2563eb 58%,
+            #3b82f6
+        );
+    color: #fff;
+    box-shadow:
+        0 16px 34px rgba(37, 99, 235, .19);
+}
+
+.hero-formulaire-local h2 {
+    margin: 0 0 8px;
+    font-size: clamp(27px, 3vw, 37px);
+    letter-spacing: -.03em;
+}
+
+.hero-formulaire-local p {
+    max-width: 760px;
+    margin: 0;
+    color: #dbeafe;
+    font-size: 12px;
+    line-height: 1.65;
+}
+
+.icone-hero-formulaire {
+    width: 82px;
+    height: 82px;
+    flex: 0 0 82px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255,255,255,.22);
+    border-radius: 20px;
+    background: rgba(255,255,255,.12);
+    font-size: 36px;
+    backdrop-filter: blur(8px);
+}
+
+.grille-formulaire-local {
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1.7fr)
+        minmax(300px, .62fr);
+    gap: 20px;
+    align-items: start;
+}
+
+.carte-formulaire-local {
+    margin: 0;
+}
+
+.colonne-aide-formulaire {
+    min-width: 0;
+    display: grid;
+    gap: 16px;
+    position: sticky;
+    top: 18px;
+}
+
+.carte-aide-formulaire,
+.resume-modification-local,
+.carte-occupation-formulaire {
+    margin: 0;
+}
+
+.mini-label-formulaire {
+    display: block;
+    margin-bottom: 4px;
+    color: #2563eb;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+}
+
+.badge-mode-formulaire {
+    padding: 7px 10px;
+    border-radius: 999px;
+    background: #dcfce7;
+    color: #166534;
+    font-size: 9px;
+    font-weight: 900;
+}
+
+.badge-mode-modification {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.bloc-erreurs-formulaire {
+    margin-bottom: 16px;
+    padding: 13px 15px;
+    border: 1px solid #fecaca;
+    border-radius: 10px;
+    background: #fef2f2;
+    color: #991b1b;
+    font-size: 11px;
+}
+
+.bloc-erreurs-formulaire strong {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.bloc-erreurs-formulaire ul {
+    margin: 4px 0 0;
+    padding-left: 18px;
+}
+
+.formulaire-local-premium {
+    display: grid;
+}
+
+.grille-champs-formulaire {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.groupe-champ-formulaire {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.groupe-champ-formulaire > label,
+.label-checkbox-formulaire {
+    color: #334155;
+    font-size: 10px;
+    font-weight: 900;
+}
+
+.champ-formulaire-large {
+    grid-column: 1 / -1;
+}
+
+.groupe-champ-formulaire .champ,
+.groupe-champ-formulaire input:not([type="checkbox"]),
+.groupe-champ-formulaire select,
+.groupe-champ-formulaire textarea {
+    width: 100%;
+    min-height: 45px;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    outline: none;
+    background: #fff;
+    color: #0f172a;
+    font: inherit;
+    font-size: 11px;
+    transition:
+        border-color .15s ease,
+        box-shadow .15s ease;
+}
+
+.groupe-champ-formulaire textarea {
+    min-height: 105px;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+.groupe-champ-formulaire .champ:focus,
+.groupe-champ-formulaire input:not([type="checkbox"]):focus,
+.groupe-champ-formulaire select:focus,
+.groupe-champ-formulaire textarea:focus {
+    border-color: #2563eb;
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, .10);
+}
+
+.aide-champ {
+    color: #64748b;
+    font-size: 9px;
+    line-height: 1.45;
+}
+
+.erreur-champ {
+    padding: 6px 8px;
+    border-radius: 7px;
+    background: #fef2f2;
+    color: #b91c1c;
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.separateur-formulaire {
+    height: 1px;
+    margin: 22px 0 16px;
+    background: #eef2f7;
+}
+
+.actions-formulaire-local {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 9px;
+}
+
+.bouton-validation-formulaire {
+    min-width: 180px;
+}
+
+/* =========================================================
+   CHECKBOX / SWITCH
+========================================================= */
+
+.groupe-checkbox-premium {
+    justify-content: flex-end;
+}
+
+.carte-checkbox-formulaire {
+    min-height: 73px;
+    padding: 12px;
+    display: grid;
+    grid-template-columns:
+        auto auto minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+    border: 1px solid #dbe4f0;
+    border-radius: 10px;
+    background: #f8fafc;
+    cursor: pointer;
+}
+
+.carte-checkbox-formulaire input[type="checkbox"] {
+    width: 1px;
+    height: 1px;
+    position: absolute;
+    opacity: 0;
+}
+
+.interrupteur-visuel {
+    width: 38px;
+    height: 22px;
+    position: relative;
+    border-radius: 999px;
+    background: #cbd5e1;
+    transition: .2s ease;
+}
+
+.interrupteur-visuel::after {
+    content: "";
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    left: 3px;
+    top: 3px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(15,23,42,.18);
+    transition: .2s ease;
+}
+
+.carte-checkbox-formulaire
+input[type="checkbox"]:checked
++ .interrupteur-visuel {
+    background: #2563eb;
+}
+
+.carte-checkbox-formulaire
+input[type="checkbox"]:checked
++ .interrupteur-visuel::after {
+    transform: translateX(16px);
+}
+
+.carte-checkbox-formulaire > span:last-child {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.carte-checkbox-formulaire strong {
+    color: #0f172a;
+    font-size: 10px;
+}
+
+.carte-checkbox-formulaire small {
+    color: #64748b;
+    font-size: 8px;
+    line-height: 1.4;
+}
+
+/* =========================================================
+   AIDE
+========================================================= */
+
+.carte-aide-formulaire h2 {
+    margin: 3px 0 16px;
+    font-size: 18px;
+}
+
+.liste-conseils-formulaire {
+    display: grid;
+    gap: 10px;
+}
+
+.conseil-formulaire {
+    display: grid;
+    grid-template-columns:
+        auto minmax(0, 1fr);
+    align-items: flex-start;
+    gap: 9px;
+}
+
+.conseil-formulaire > span {
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    background: #eff6ff;
+    color: #2563eb;
+    font-size: 9px;
+    font-weight: 900;
+}
+
+.conseil-formulaire strong {
+    display: block;
+    margin-bottom: 2px;
+    color: #334155;
+    font-size: 10px;
+}
+
+.conseil-formulaire p {
+    margin: 0;
+    color: #64748b;
+    font-size: 9px;
+    line-height: 1.5;
+}
+
+.resume-modification-local,
+.carte-occupation-formulaire {
+    display: grid;
+    gap: 8px;
+}
+
+.ligne-resume-local {
+    padding: 9px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border-bottom: 1px solid #eef2f7;
+}
+
+.ligne-resume-local:last-child {
+    border-bottom: 0;
+}
+
+.ligne-resume-local span {
+    color: #64748b;
+    font-size: 9px;
+}
+
+.ligne-resume-local strong {
+    max-width: 65%;
+    overflow: hidden;
+    color: #0f172a;
+    font-size: 10px;
+    text-align: right;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* =========================================================
+   OCCUPATION CHAMBRE
+========================================================= */
+
+.occupation-chambre-formulaire {
+    margin: 8px 0 4px;
+    padding: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 17px;
+    border-radius: 12px;
+    background: #0f172a;
+    color: #fff;
+}
+
+.occupation-chambre-formulaire > div {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.occupation-chambre-formulaire strong {
+    font-size: 25px;
+}
+
+.occupation-chambre-formulaire span {
+    color: #cbd5e1;
+    font-size: 8px;
+}
+
+.separateur-occupation {
+    color: #64748b !important;
+    font-size: 22px !important;
+    font-weight: 300;
+}
+
+.alerte-formulaire-local {
+    margin-top: 5px;
+    padding: 11px;
+    border: 1px solid #fde68a;
+    border-radius: 9px;
+    background: #fffbeb;
+    color: #92400e;
+}
+
+.alerte-formulaire-local strong {
+    font-size: 10px;
+}
+
+.alerte-formulaire-local p {
+    margin: 3px 0 0;
+    font-size: 8px;
+    line-height: 1.45;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 940px) {
+    .grille-formulaire-local {
+        grid-template-columns: 1fr;
+    }
+
+    .colonne-aide-formulaire {
+        position: static;
+    }
+}
+
+@media (max-width: 650px) {
+    .hero-formulaire-local {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 22px;
+    }
+
+    .icone-hero-formulaire {
+        width: 60px;
+        height: 60px;
+        flex-basis: 60px;
+        border-radius: 15px;
+        font-size: 27px;
+    }
+
+    .grille-champs-formulaire {
+        grid-template-columns: 1fr;
+    }
+
+    .champ-formulaire-large {
+        grid-column: auto;
+    }
+
+    .actions-formulaire-local {
+        flex-direction: column-reverse;
+    }
+
+    .actions-formulaire-local .bouton {
+        width: 100%;
+    }
+}
+
+
+/* =========================================================
+   FORMULAIRE CHAMBRE — LAYOUT GESTIONINTERNAT
+========================================================= */
+
+body.page-formulaire-local {
+    margin: 0;
+    overflow-x: hidden;
+    background: #f3f6fb;
+}
+
+.page-formulaire-local .app-shell {
+    min-height: 100vh;
+}
+
+.page-formulaire-local .main-area {
+    min-width: 0;
+    min-height: 100vh;
+}
+
+.topbar-formulaire-local {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+
+    min-height: 92px;
+    padding: 15px clamp(20px, 3vw, 40px);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+
+    border-bottom: 1px solid #e2e8f0;
+    background: rgba(255,255,255,.96);
+    box-shadow: 0 6px 22px rgba(15,23,42,.045);
+
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.sur-titre-topbar-formulaire {
+    display: block;
+    margin-bottom: 3px;
+    color: #2563eb;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+}
+
+.topbar-formulaire-local h1 {
+    margin: 0;
+    color: #0f172a;
+    font-size: clamp(23px, 2.3vw, 31px);
+    font-weight: 850;
+    letter-spacing: -.025em;
+}
+
+.topbar-formulaire-local p {
+    margin: 5px 0 0;
+    color: #64748b;
+    font-size: 12px;
+}
+
+.actions-topbar-formulaire {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 9px;
+}
+
+.profil-topbar-formulaire {
+    min-width: 180px;
+    padding: 6px 10px 6px 7px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    background: #fff;
+}
+
+.avatar-topbar-formulaire {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2563eb, #60a5fa);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.profil-topbar-formulaire strong,
+.profil-topbar-formulaire span {
+    display: block;
+}
+
+.profil-topbar-formulaire strong {
+    max-width: 150px;
+    overflow: hidden;
+    color: #0f172a;
+    font-size: 11px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.profil-topbar-formulaire span {
+    margin-top: 2px;
+    color: #64748b;
+    font-size: 9px;
+}
+
+.page-formulaire-local .conteneur-formulaire-local {
+    width: min(1380px, calc(100% - 36px));
+    max-width: none;
+    margin: 0 auto;
+    padding: 24px 0 44px;
+}
+
+.page-formulaire-local .colonne-aide-formulaire {
+    top: 112px;
+}
+
+@media (max-width: 1100px) {
+    .topbar-formulaire-local {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .actions-topbar-formulaire {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 760px) {
+    .topbar-formulaire-local {
+        position: static;
+        padding: 14px;
+    }
+
+    .actions-topbar-formulaire {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .actions-topbar-formulaire .bouton,
+    .profil-topbar-formulaire {
+        width: 100%;
+    }
+
+    .page-formulaire-local .conteneur-formulaire-local {
+        width: calc(100% - 22px);
+        padding-top: 16px;
+    }
+}
+

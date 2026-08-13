@@ -1,0 +1,1095 @@
+:root {
+    --bleu: #2563eb;
+    --bleu-fonce: #1d4ed8;
+    --bleu-clair: #eff6ff;
+    --fond: #f4f7fb;
+    --blanc: #ffffff;
+    --texte: #172033;
+    --texte-secondaire: #64748b;
+    --bordure: #e2e8f0;
+    --vert: #15803d;
+    --vert-clair: #f0fdf4;
+    --orange: #c2410c;
+    --orange-clair: #fff7ed;
+    --rouge: #b91c1c;
+    --rouge-clair: #fef2f2;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    margin: 0;
+    background: var(--fond);
+    color: var(--texte);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.entete-principale {
+    padding: 22px 35px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    background: var(--blanc);
+    border-bottom: 1px solid var(--bordure);
+}
+
+.entete-principale h1 {
+    margin: 0;
+    color: var(--bleu);
+    font-size: 28px;
+}
+
+.entete-principale p {
+    margin: 6px 0 0;
+    color: var(--texte-secondaire);
+}
+
+.navigation {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.conteneur {
+    width: min(1200px, calc(100% - 40px));
+    margin: auto;
+    padding: 32px 0;
+}
+
+.carte {
+    margin-bottom: 24px;
+    padding: 26px;
+    background: var(--blanc);
+    border: 1px solid var(--bordure);
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.06);
+}
+
+.entete-carte {
+    margin-bottom: 24px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.entete-carte h2 {
+    margin: 0 0 7px;
+    font-size: 24px;
+}
+
+.entete-carte p {
+    margin: 0;
+    color: var(--texte-secondaire);
+}
+
+.bouton {
+    min-height: 44px;
+    padding: 10px 17px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 9px;
+    background: var(--bleu);
+    color: var(--blanc);
+    font: inherit;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.bouton:hover {
+    background: var(--bleu-fonce);
+}
+
+.bouton-secondaire {
+    background: #334155;
+}
+
+.bouton-secondaire:hover {
+    background: #1e293b;
+}
+
+.bouton-petit {
+    min-height: 34px;
+    padding: 7px 11px;
+    font-size: 13px;
+}
+
+.tableau-responsive {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    min-width: 850px;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 15px;
+    border-bottom: 1px solid var(--bordure);
+    text-align: left;
+    vertical-align: middle;
+}
+
+th {
+    background: #f8fafc;
+    color: var(--texte-secondaire);
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+tbody tr:hover {
+    background: #f8fafc;
+}
+
+.badge {
+    padding: 6px 11px;
+    display: inline-block;
+    border-radius: 999px;
+    background: var(--bleu-clair);
+    color: var(--bleu);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.badge-brouillon {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.badge-soumise,
+.badge-etude {
+    background: var(--orange-clair);
+    color: var(--orange);
+}
+
+.badge-acceptee {
+    background: var(--vert-clair);
+    color: var(--vert);
+}
+
+.badge-refusee,
+.badge-annulee {
+    background: var(--rouge-clair);
+    color: var(--rouge);
+}
+
+.actions-tableau {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.etat-vide {
+    padding: 45px 20px;
+    text-align: center;
+}
+
+.etat-vide .icone {
+    margin-bottom: 14px;
+    font-size: 48px;
+}
+
+.etat-vide h3 {
+    margin: 0 0 8px;
+}
+
+.etat-vide p {
+    margin: 0 0 20px;
+    color: var(--texte-secondaire);
+}
+
+.grille-formulaire {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.groupe-champ {
+    margin-bottom: 4px;
+}
+
+.groupe-champ-large {
+    grid-column: 1 / -1;
+}
+
+.groupe-champ label {
+    margin-bottom: 8px;
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.champ,
+.groupe-champ input,
+.groupe-champ select,
+.groupe-champ textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--bordure);
+    border-radius: 9px;
+    background: var(--blanc);
+    color: var(--texte);
+    font: inherit;
+}
+
+.groupe-champ textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.champ:focus,
+.groupe-champ input:focus,
+.groupe-champ select:focus,
+.groupe-champ textarea:focus {
+    border-color: var(--bleu);
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+.aide {
+    margin-top: 6px;
+    display: block;
+    color: var(--texte-secondaire);
+    font-size: 13px;
+}
+
+.errorlist {
+    margin: 7px 0 0;
+    padding: 0;
+    list-style: none;
+    color: var(--rouge);
+    font-size: 13px;
+}
+
+.actions-formulaire {
+    margin-top: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.messages {
+    margin-bottom: 20px;
+}
+
+.message {
+    padding: 13px 15px;
+    border-radius: 9px;
+    background: var(--bleu-clair);
+    color: var(--bleu);
+}
+
+.message.success {
+    background: var(--vert-clair);
+    color: var(--vert);
+}
+
+.message.error {
+    background: var(--rouge-clair);
+    color: var(--rouge);
+}
+
+@media (max-width: 750px) {
+    .entete-principale,
+    .entete-carte {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .grille-formulaire {
+        grid-template-columns: 1fr;
+    }
+
+    .groupe-champ-large {
+        grid-column: auto;
+    }
+
+    .bouton {
+        width: 100%;
+    }
+
+    .navigation,
+    .actions-formulaire {
+        width: 100%;
+        flex-direction: column;
+    }
+    .section-formulaire {
+    margin-top: 22px;
+    padding-top: 22px;
+    border-top: 1px solid var(--bordure);
+}
+
+.section-formulaire:first-of-type {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+}
+
+.section-formulaire h3 {
+    margin: 0 0 7px;
+    font-size: 19px;
+}
+
+.description-section {
+    margin: 0 0 20px;
+    color: var(--texte-secondaire);
+    line-height: 1.6;
+}
+
+.obligatoire {
+    color: var(--rouge);
+}
+
+.erreurs-champ {
+    margin-top: 7px;
+    display: grid;
+    gap: 4px;
+    color: var(--rouge);
+    font-size: 13px;
+}
+
+.liste-justificatifs {
+    display: grid;
+    gap: 15px;
+}
+
+.carte-justificatif {
+    padding: 18px;
+    border: 1px solid var(--bordure);
+    border-radius: 12px;
+    background: #f8fafc;
+}
+
+.numero-document {
+    margin-bottom: 15px;
+    color: var(--bleu);
+    font-weight: 700;
+}
+
+.case-suppression {
+    display: flex !important;
+    align-items: center;
+    gap: 9px;
+    color: var(--rouge);
+    cursor: pointer;
+}
+
+.case-suppression input {
+    width: auto;
+}
+
+.information-fichier {
+    margin-top: 15px;
+    padding: 13px 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    border-radius: 9px;
+    background: var(--bleu-clair);
+    color: var(--bleu);
+    font-size: 13px;
+}
+
+.bouton-annuler {
+    background: #e2e8f0;
+    color: #334155;
+}
+
+.bouton-annuler:hover {
+    background: #cbd5e1;
+}
+
+.carte-information h3 {
+    margin-top: 0;
+}
+
+.liste-conseils {
+    display: grid;
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.conseil {
+    padding: 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    border: 1px solid var(--bordure);
+    border-radius: 11px;
+    background: #f8fafc;
+}
+
+.icone-conseil {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--bleu);
+    color: white;
+    font-weight: 700;
+}
+
+.conseil strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.conseil p {
+    margin: 0;
+    color: var(--texte-secondaire);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* =========================================================
+   MES DEMANDES — ESPACE ÉTUDIANT
+========================================================= */
+
+.banniere-mes-demandes {
+    margin-bottom: 24px;
+    padding: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+    border-radius: 16px;
+    background: linear-gradient(
+        135deg,
+        #1d4ed8,
+        #3b82f6
+    );
+    color: #ffffff;
+    box-shadow: 0 12px 26px rgba(37, 99, 235, 0.2);
+}
+
+.banniere-mes-demandes h2 {
+    margin: 7px 0 9px;
+    font-size: 27px;
+}
+
+.banniere-mes-demandes p {
+    max-width: 760px;
+    margin: 0;
+    color: #dbeafe;
+    line-height: 1.6;
+}
+
+.petit-titre {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.compteur-demandes-etudiant {
+    min-width: 145px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 13px;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.compteur-demandes-etudiant strong {
+    font-size: 34px;
+}
+
+.compteur-demandes-etudiant span {
+    color: #dbeafe;
+    font-size: 12px;
+}
+
+/* Statistiques globales */
+
+.statistiques-mes-demandes {
+    margin-bottom: 24px;
+    display: grid;
+    grid-template-columns:
+        repeat(5, minmax(0, 1fr));
+    gap: 13px;
+}
+
+.statistiques-mes-demandes article {
+    padding: 17px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border: 1px solid #dbe4f0;
+    border-radius: 12px;
+    background: #ffffff;
+}
+
+.statistiques-mes-demandes span {
+    color: #64748b;
+    font-size: 12px;
+}
+
+.statistiques-mes-demandes strong {
+    color: #1e293b;
+    font-size: 25px;
+}
+
+/* Cartes des demandes */
+
+.grille-mes-demandes {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.carte-demande-etudiant {
+    min-width: 0;
+    padding: 21px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    border: 1px solid #dbe4f0;
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 5px 16px rgba(15, 23, 42, 0.06);
+}
+
+.entete-demande-etudiant {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.entete-demande-etudiant > div {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.annee-demande {
+    color: #1e293b;
+    font-size: 21px;
+    font-weight: 800;
+}
+
+.entete-demande-etudiant small {
+    color: #64748b;
+}
+
+/* Informations */
+
+.informations-demande-etudiant {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    gap: 9px;
+}
+
+.informations-demande-etudiant > div {
+    padding: 11px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border-radius: 8px;
+    background: #f8fafc;
+}
+
+.informations-demande-etudiant span,
+.affectation-demande-etudiant span {
+    color: #64748b;
+    font-size: 10px;
+}
+
+.informations-demande-etudiant strong,
+.affectation-demande-etudiant strong {
+    color: #1e293b;
+    font-size: 12px;
+}
+
+/* Justificatifs */
+
+.bloc-resume-demande h3 {
+    margin: 0 0 9px;
+    color: #334155;
+    font-size: 13px;
+}
+
+.statistiques-documents-demande {
+    display: grid;
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+    gap: 7px;
+}
+
+.statistiques-documents-demande > div {
+    padding: 9px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    border: 1px solid #e2e8f0;
+    border-radius: 7px;
+    background: #f8fafc;
+}
+
+.statistiques-documents-demande span {
+    color: #64748b;
+    font-size: 9px;
+}
+
+.statistiques-documents-demande strong {
+    color: #1e293b;
+    font-size: 16px;
+}
+
+.valeur-succes {
+    color: #15803d !important;
+}
+
+.valeur-attente {
+    color: #b45309 !important;
+}
+
+.valeur-danger {
+    color: #b91c1c !important;
+}
+
+.etat-documents-demande {
+    padding: 9px 11px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.etat-documents-valides {
+    background: #f0fdf4;
+    color: #15803d;
+}
+
+.etat-documents-attente {
+    background: #fffbeb;
+    color: #92400e;
+}
+
+.etat-documents-rejetes {
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+/* Observation */
+
+.observation-demande-etudiant {
+    padding: 12px;
+    border: 1px solid #fde68a;
+    border-radius: 9px;
+    background: #fffbeb;
+}
+
+.observation-demande-etudiant strong {
+    color: #92400e;
+    font-size: 11px;
+}
+
+.observation-demande-etudiant p {
+    margin: 5px 0 0;
+    color: #78350f;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+/* Affectation */
+
+.affectation-demande-etudiant {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding: 12px;
+    border: 1px solid #bfdbfe;
+    border-radius: 9px;
+    background: #eff6ff;
+}
+
+.affectation-demande-etudiant > div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.affectation-en-attente {
+    padding: 11px;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+/* Actions */
+
+.actions-demande-etudiant {
+    margin-top: auto;
+    padding-top: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    border-top: 1px solid #e2e8f0;
+}
+
+/* Badges supplémentaires */
+
+.badge-incomplete {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.badge-attente {
+    background: #ede9fe;
+    color: #6d28d9;
+}
+
+/* Responsive */
+
+@media (max-width: 1050px) {
+    .statistiques-mes-demandes {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+
+    .grille-mes-demandes {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 650px) {
+    .banniere-mes-demandes {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .compteur-demandes-etudiant {
+        width: 100%;
+    }
+
+    .statistiques-mes-demandes,
+    .informations-demande-etudiant {
+        grid-template-columns: 1fr;
+    }
+
+    .statistiques-documents-demande,
+    .affectation-demande-etudiant {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .actions-demande-etudiant {
+        flex-direction: column;
+    }
+
+    .actions-demande-etudiant .bouton {
+        width: 100%;
+    }
+
+    /* =========================================================
+   FORMULAIRE DE DEMANDE D'HÉBERGEMENT
+========================================================= */
+
+.banniere-formulaire-demande {
+    margin-bottom: 24px;
+    padding: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+    border-radius: 16px;
+    background: linear-gradient(
+        135deg,
+        #1d4ed8,
+        #3b82f6
+    );
+    color: #ffffff;
+    box-shadow: 0 12px 26px rgba(37, 99, 235, 0.2);
+}
+
+.banniere-formulaire-demande h2 {
+    margin: 7px 0 9px;
+    font-size: 28px;
+}
+
+.banniere-formulaire-demande p {
+    max-width: 760px;
+    margin: 0;
+    color: #dbeafe;
+    line-height: 1.6;
+}
+
+.icone-formulaire-demande {
+    width: 80px;
+    height: 80px;
+    flex: 0 0 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.15);
+    font-size: 36px;
+}
+
+.resume-demande-modification {
+    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.resume-demande-modification > div {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border: 1px solid #dbe4f0;
+    border-radius: 11px;
+    background: #ffffff;
+}
+
+.resume-demande-modification span {
+    color: #64748b;
+    font-size: 11px;
+}
+
+.resume-demande-modification strong {
+    color: #1e293b;
+    font-size: 14px;
+}
+
+.alerte-demande-incomplete {
+    margin-bottom: 20px;
+    padding: 17px;
+    border: 1px solid #fde68a;
+    border-radius: 11px;
+    background: #fffbeb;
+    color: #92400e;
+}
+
+.alerte-demande-incomplete p {
+    margin: 6px 0 12px;
+}
+
+.alerte-demande-incomplete > div {
+    padding: 11px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border-radius: 8px;
+    background: #ffffff;
+}
+
+/* Sections du formulaire */
+
+.section-formulaire {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.entete-section-formulaire {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+}
+
+.numero-etape {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #2563eb;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.entete-section-formulaire h3 {
+    margin: 0 0 5px;
+}
+
+.description-section {
+    margin: 0;
+    color: #64748b;
+}
+
+/* Champs invalides */
+
+.groupe-champ-invalide input,
+.groupe-champ-invalide select,
+.groupe-champ-invalide textarea {
+    border-color: #dc2626;
+    background: #fef2f2;
+}
+
+/* Cartes justificatifs */
+
+.entete-carte-justificatif {
+    margin-bottom: 16px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.entete-carte-justificatif > div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.numero-document {
+    color: #1d4ed8;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.entete-carte-justificatif small {
+    color: #64748b;
+}
+
+.actions-justificatifs {
+    margin-top: 15px;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.groupe-suppression {
+    grid-column: 1 / -1;
+}
+
+.case-suppression {
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    background: #fef2f2;
+    color: #b91c1c;
+    cursor: pointer;
+}
+
+.case-suppression input {
+    width: auto;
+    min-height: auto;
+}
+
+/* Informations fichiers */
+
+.information-fichier {
+    margin-top: 18px;
+    display: grid;
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.information-fichier > div {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    border: 1px solid #dbeafe;
+    border-radius: 9px;
+    background: #eff6ff;
+}
+
+.information-fichier strong {
+    color: #1d4ed8;
+    font-size: 11px;
+}
+
+.information-fichier span {
+    color: #475569;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+/* Choix d'enregistrement */
+
+.choix-enregistrement {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    gap: 13px;
+}
+
+.choix-enregistrement article {
+    padding: 16px;
+    border: 1px solid #dbe4f0;
+    border-radius: 10px;
+    background: #f8fafc;
+}
+
+.choix-enregistrement strong {
+    color: #1e293b;
+    font-size: 13px;
+}
+
+.choix-enregistrement p {
+    margin: 7px 0 0;
+    color: #64748b;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.formulaire-en-envoi {
+    opacity: 0.75;
+    pointer-events: none;
+}
+
+/* Responsive */
+
+@media (max-width: 800px) {
+    .banniere-formulaire-demande {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .icone-formulaire-demande {
+        width: 100%;
+    }
+
+    .resume-demande-modification,
+    .information-fichier {
+        grid-template-columns: 1fr;
+    }
+
+    .choix-enregistrement {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .entete-carte-justificatif {
+        flex-direction: column;
+    }
+
+    .actions-justificatifs .bouton {
+        width: 100%;
+    }
+}
+}
+

@@ -1,0 +1,265 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Confirmation de déconnexion — GestionInternat
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'accounts/deconnexion_confirmation.css' %}?v=1"
+    >
+</head>
+
+
+<body class="page-deconnexion">
+
+
+<main class="deconnexion-layout">
+
+
+    <!-- =====================================================
+         BACKGROUND
+    ====================================================== -->
+
+    <div class="deconnexion-background"></div>
+
+    <div class="deconnexion-overlay"></div>
+
+
+    <!-- =====================================================
+         HEADER / LOGO
+    ====================================================== -->
+
+    <header class="deconnexion-header">
+
+        <a
+            href="
+                {% if request.user.is_superuser or request.user.role == 'ADMIN' or request.user.role == 'RESP' %}
+                    {% url 'dashboard:accueil' %}
+                {% else %}
+                    {% url 'accounts:espace_etudiant' %}
+                {% endif %}
+            "
+            class="logo-deconnexion"
+        >
+
+            <img
+                src="{% static 'accounts/images/logo-gestioninternat.png' %}"
+                alt="GestionInternat"
+            >
+
+        </a>
+
+    </header>
+
+
+    <!-- =====================================================
+         CONFIRMATION
+    ====================================================== -->
+
+    <section class="carte-deconnexion">
+
+
+        <div class="icone-deconnexion">
+            ↪
+        </div>
+
+
+        <span class="sur-titre-deconnexion">
+            Session utilisateur
+        </span>
+
+
+        <h1>
+            Voulez-vous vraiment
+            vous déconnecter ?
+        </h1>
+
+
+        <p class="description-deconnexion">
+            Votre session GestionInternat sera fermée.
+            Vous devrez vous authentifier à nouveau
+            pour accéder à votre espace.
+        </p>
+
+
+        <!-- =================================================
+             PROFIL CONNECTÉ
+        ================================================== -->
+
+        <div class="profil-deconnexion">
+
+
+            <div class="avatar-deconnexion">
+
+                {% if request.user.first_name %}
+
+                    {{ request.user.first_name|first|upper }}
+                    {{ request.user.last_name|first|upper }}
+
+                {% else %}
+
+                    {{ request.user.username|first|upper }}
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="identite-deconnexion">
+
+                <strong>
+                    {{ request.user.get_full_name|default:request.user.username }}
+                </strong>
+
+
+                <span>
+
+                    {% if request.user.is_superuser %}
+
+                        Super administrateur
+
+                    {% elif request.user.role == "ADMIN" %}
+
+                        Administrateur
+
+                    {% elif request.user.role == "RESP" %}
+
+                        Responsable de l'internat
+
+                    {% elif request.user.role == "ETUDIANT" %}
+
+                        Étudiant
+
+                    {% else %}
+
+                        {{ request.user.get_role_display }}
+
+                    {% endif %}
+
+                </span>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =================================================
+             INFO SÉCURITÉ
+        ================================================== -->
+
+        <div class="note-securite-deconnexion">
+
+            <div class="icone-securite">
+                🔒
+            </div>
+
+            <div>
+
+                <strong>
+                    Déconnexion sécurisée
+                </strong>
+
+                <p>
+                    La déconnexion nécessite une confirmation
+                    explicite afin d'éviter toute fermeture
+                    accidentelle de votre session.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             ACTIONS
+        ================================================== -->
+
+        <div class="actions-deconnexion">
+
+
+            <a
+                href="
+                    {% if request.user.is_superuser or request.user.role == 'ADMIN' or request.user.role == 'RESP' %}
+                        {% url 'dashboard:accueil' %}
+                    {% else %}
+                        {% url 'accounts:espace_etudiant' %}
+                    {% endif %}
+                "
+                class="bouton-deconnexion bouton-annuler"
+            >
+                ← Retour à mon espace
+            </a>
+
+
+            <form
+                method="post"
+                action="{% url 'accounts:deconnexion' %}"
+                class="formulaire-deconnexion"
+            >
+
+                {% csrf_token %}
+
+
+                <button
+                    type="submit"
+                    class="bouton-deconnexion bouton-confirmer"
+                >
+                    Se déconnecter
+                    <span>↪</span>
+                </button>
+
+
+            </form>
+
+
+        </div>
+
+
+        <div class="pied-carte-deconnexion">
+
+            <span>
+                GestionInternat
+            </span>
+
+            <span>
+                Session sécurisée
+            </span>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="deconnexion-footer">
+
+        Gestion de l’internat universitaire
+        —
+        {% now "Y" %}
+
+    </footer>
+
+
+</main>
+
+
+</body>
+
+</html>

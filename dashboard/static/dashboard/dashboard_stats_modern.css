@@ -1,0 +1,495 @@
+/* =========================================================
+   DASHBOARD RESPONSABLE — LAYOUT FULL WIDTH
+========================================================= */
+
+.app-shell {
+    width: 100%;
+    min-height: 100vh;
+}
+
+.main-area {
+    min-width: 0;
+    width: 100%;
+    min-height: 100vh;
+}
+
+.main-area > main.dashboard-content,
+.main-area > main.conteneur,
+.main-area > .conteneur {
+    width: 100% !important;
+    max-width: none !important;
+}
+
+.executive-section,
+.analytics-section,
+.kpi-grid,
+.primary-grid,
+.bottom-grid,
+.dashboard-hero {
+    width: 100%;
+    max-width: none;
+}
+
+
+/* =========================================================
+   DASHBOARD RESPONSABLE — STATISTIQUES EXÉCUTIVES MODERNES
+========================================================= */
+
+.executive-section {
+    width: 100%;
+    margin-bottom: 22px;
+    padding: 25px;
+
+    border: 1px solid #dbe4f0;
+    border-radius: 22px;
+
+    background:
+        radial-gradient(
+            circle at 96% 0,
+            rgba(59, 130, 246, .09),
+            transparent 25%
+        ),
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, .99),
+            rgba(248, 251, 255, .99)
+        );
+
+    box-shadow:
+        0 14px 34px
+        rgba(15, 23, 42, .055);
+}
+
+.executive-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 24px;
+
+    margin-bottom: 20px;
+}
+
+.executive-heading h2 {
+    margin: 6px 0 0;
+
+    color: #0f172a;
+
+    font-size:
+        clamp(
+            24px,
+            2.5vw,
+            32px
+        );
+
+    line-height: 1.08;
+}
+
+.executive-heading p {
+    max-width: 720px;
+
+    margin: 8px 0 0;
+
+    color: #64748b;
+
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.executive-health {
+    flex: 0 0 auto;
+
+    min-width: 180px;
+
+    padding: 15px 17px;
+
+    border: 1px solid #dbeafe;
+    border-radius: 16px;
+
+    background: #eff6ff;
+
+    text-align: right;
+}
+
+.executive-health span,
+.executive-health strong,
+.executive-health small {
+    display: block;
+}
+
+.executive-health span {
+    color: #64748b;
+
+    font-size: 9px;
+    font-weight: 900;
+
+    text-transform: uppercase;
+}
+
+.executive-health strong {
+    margin-top: 3px;
+
+    color: #1d4ed8;
+
+    font-size: 27px;
+}
+
+.executive-health small {
+    margin-top: 2px;
+
+    color: #64748b;
+
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   GRID
+========================================================= */
+
+.executive-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            3,
+            minmax(0, 1fr)
+        );
+
+    gap: 15px;
+}
+
+.executive-card {
+    --metric-accent: #2563eb;
+    --metric-soft: #eff6ff;
+
+    position: relative;
+    overflow: hidden;
+
+    min-width: 0;
+    min-height: 178px;
+
+    padding: 18px;
+
+    border: 1px solid #dbe4f0;
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #ffffff,
+            #fbfdff
+        );
+
+    box-shadow:
+        0 9px 22px
+        rgba(15, 23, 42, .045);
+
+    transition:
+        transform .18s ease,
+        border-color .18s ease,
+        box-shadow .18s ease;
+}
+
+.executive-card::before {
+    content: "";
+
+    position: absolute;
+
+    top: 14px;
+    bottom: 14px;
+    left: 0;
+
+    width: 4px;
+
+    border-radius:
+        0 999px 999px 0;
+
+    background:
+        linear-gradient(
+            180deg,
+            var(--metric-accent),
+            color-mix(
+                in srgb,
+                var(--metric-accent) 48%,
+                white
+            )
+        );
+}
+
+.executive-card:hover {
+    transform: translateY(-2px);
+
+    border-color:
+        color-mix(
+            in srgb,
+            var(--metric-accent) 30%,
+            #dbe4f0
+        );
+
+    box-shadow:
+        0 14px 28px
+        rgba(15, 23, 42, .07);
+}
+
+.executive-card-blue {
+    --metric-accent: #2563eb;
+    --metric-soft: #eff6ff;
+}
+
+.executive-card-green {
+    --metric-accent: #16a34a;
+    --metric-soft: #ecfdf3;
+}
+
+.executive-card-purple {
+    --metric-accent: #7c3aed;
+    --metric-soft: #f5f3ff;
+}
+
+.executive-card-cyan {
+    --metric-accent: #0891b2;
+    --metric-soft: #ecfeff;
+}
+
+.executive-card-orange {
+    --metric-accent: #d97706;
+    --metric-soft: #fff7ed;
+}
+
+.executive-card-red {
+    --metric-accent: #dc2626;
+    --metric-soft: #fef2f2;
+}
+
+
+/* =========================================================
+   CARD CONTENT
+========================================================= */
+
+.executive-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 14px;
+}
+
+.executive-label {
+    display: block;
+
+    color: #64748b;
+
+    font-size: 9px;
+    font-weight: 900;
+
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.executive-value {
+    display: block;
+
+    margin-top: 5px;
+
+    color: #0f172a;
+
+    font-size: 30px;
+    line-height: 1;
+}
+
+.executive-ring {
+    position: relative;
+
+    flex: 0 0 58px;
+
+    width: 58px;
+    height: 58px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 50%;
+
+    background:
+        conic-gradient(
+            var(--metric-accent)
+            calc(
+                var(--metric-value, 0)
+                * 1%
+            ),
+            #e9eef5 0
+        );
+}
+
+.executive-ring::after {
+    content: "";
+
+    position: absolute;
+
+    width: 44px;
+    height: 44px;
+
+    border-radius: 50%;
+
+    background: #fff;
+}
+
+.executive-ring span {
+    position: relative;
+    z-index: 1;
+
+    display: grid;
+    place-items: center;
+
+    width: 34px;
+    height: 34px;
+
+    border-radius: 50%;
+
+    background: var(--metric-soft);
+
+    font-size: 16px;
+}
+
+.executive-ring-static {
+    background:
+        linear-gradient(
+            145deg,
+            #fee2e2,
+            #fff
+        );
+}
+
+
+/* =========================================================
+   PROGRESS
+========================================================= */
+
+.executive-progress {
+    width: 100%;
+    height: 7px;
+
+    margin-top: 18px;
+
+    overflow: hidden;
+
+    border-radius: 999px;
+
+    background: #edf1f6;
+}
+
+.executive-progress-fill {
+    width: 0;
+    height: 100%;
+
+    border-radius: inherit;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--metric-accent),
+            color-mix(
+                in srgb,
+                var(--metric-accent) 55%,
+                white
+            )
+        );
+
+    transition:
+        width .7s ease;
+}
+
+.executive-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    margin-top: 10px;
+
+    color: #64748b;
+
+    font-size: 9px;
+}
+
+.executive-meta strong {
+    color: var(--metric-accent);
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   PRIORITY CARD
+========================================================= */
+
+.executive-priority-list {
+    display: grid;
+    gap: 7px;
+
+    margin-top: 14px;
+}
+
+.executive-priority-list > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    padding: 7px 10px;
+
+    border-radius: 10px;
+
+    background: #f8fafc;
+}
+
+.executive-priority-list span {
+    color: #64748b;
+
+    font-size: 9px;
+}
+
+.executive-priority-list strong {
+    color: #0f172a;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1250px) {
+    .executive-grid {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+    }
+}
+
+@media (max-width: 800px) {
+    .executive-section {
+        padding: 18px;
+    }
+
+    .executive-heading {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .executive-health {
+        width: 100%;
+
+        text-align: left;
+    }
+
+    .executive-grid {
+        grid-template-columns: 1fr;
+    }
+}

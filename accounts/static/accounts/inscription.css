@@ -1,0 +1,768 @@
+* {
+    box-sizing: border-box;
+}
+
+
+:root {
+    --bleu: #2563eb;
+    --bleu-fonce: #1d4ed8;
+
+    --texte: #0f172a;
+    --muted: #64748b;
+
+    --bordure: #dbe4f0;
+
+    --danger: #b91c1c;
+}
+
+
+html,
+body {
+    margin: 0;
+
+    min-height: 100%;
+}
+
+
+body {
+    font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    color: var(--texte);
+
+    background: #ffffff;
+}
+
+
+.page-inscription {
+    min-height: 100vh;
+}
+
+
+.inscription-layout {
+    min-height: 100vh;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(420px, 1.05fr)
+        minmax(520px, .95fr);
+}
+
+
+/* ======================================================
+   PHOTO / PARTIE GAUCHE
+====================================================== */
+
+
+.inscription-visual {
+    position: relative;
+
+    min-height: 100vh;
+
+    overflow: hidden;
+
+    background:
+        url("../accounts/images/signup-bg.jpg")
+        center
+        center
+        /
+        cover
+        no-repeat;
+}
+
+
+.inscription-visual::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        radial-gradient(
+            circle at 30% 15%,
+            rgba(59, 130, 246, .16),
+            transparent 34%
+        );
+}
+
+
+.overlay-inscription {
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(3, 17, 42, .94),
+            rgba(8, 39, 84, .84) 50%,
+            rgba(29, 78, 216, .66)
+        );
+}
+
+
+.contenu-visual-inscription {
+    position: relative;
+
+    z-index: 2;
+
+    min-height: 100vh;
+
+    padding:
+        clamp(32px, 5vw, 68px);
+
+    display: flex;
+
+    flex-direction: column;
+}
+
+
+.logo-inscription {
+    display: inline-flex;
+
+    width: fit-content;
+}
+
+
+.logo-inscription img {
+    width: 205px;
+
+    max-height: 85px;
+
+    object-fit: contain;
+
+    filter:
+        brightness(1.18)
+        contrast(1.06)
+        drop-shadow(
+            0 8px 18px
+            rgba(37, 99, 235, .30)
+        );
+}
+
+
+.texte-visual-inscription {
+    max-width: 680px;
+
+    margin-top: auto;
+
+    margin-bottom: auto;
+}
+
+
+.mini-titre-inscription {
+    color: #93c5fd;
+
+    font-size: 12px;
+
+    font-weight: 900;
+
+    letter-spacing: .13em;
+
+    text-transform: uppercase;
+}
+
+
+.texte-visual-inscription h1 {
+    margin:
+        15px 0 0;
+
+    max-width: 650px;
+
+    color: #ffffff;
+
+    font-size:
+        clamp(
+            43px,
+            5vw,
+            70px
+        );
+
+    line-height: 1.02;
+
+    letter-spacing: -.045em;
+}
+
+
+.texte-visual-inscription > p {
+    max-width: 590px;
+
+    margin:
+        22px 0 0;
+
+    color: #dbeafe;
+
+    font-size: 16px;
+
+    line-height: 1.7;
+}
+
+
+.avantages-inscription {
+    margin-top: 30px;
+
+    display: grid;
+
+    gap: 14px;
+}
+
+
+.avantages-inscription > div {
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+}
+
+
+.avantages-inscription span {
+    width: 29px;
+
+    height: 29px;
+
+    flex: 0 0 29px;
+
+    display: grid;
+
+    place-items: center;
+
+    border:
+        1px solid
+        rgba(255,255,255,.25);
+
+    border-radius: 9px;
+
+    background:
+        rgba(255,255,255,.10);
+
+    color: #bfdbfe;
+
+    font-weight: 900;
+}
+
+
+.avantages-inscription p {
+    margin: 0;
+
+    color: #e2e8f0;
+
+    font-size: 13px;
+}
+
+
+.copyright-inscription {
+    color:
+        rgba(255,255,255,.55);
+
+    font-size: 11px;
+}
+
+
+/* ======================================================
+   FORMULAIRE
+====================================================== */
+
+
+.zone-formulaire-inscription {
+    min-height: 100vh;
+
+    padding:
+        35px
+        clamp(35px, 5vw, 75px);
+
+    display: grid;
+
+    place-items: center;
+
+    background:
+        radial-gradient(
+            circle at 100% 0,
+            rgba(59,130,246,.08),
+            transparent 30%
+        ),
+        #ffffff;
+}
+
+
+.carte-inscription {
+    width:
+        min(
+            620px,
+            100%
+        );
+}
+
+
+.sur-titre-formulaire {
+    color: var(--bleu);
+
+    font-size: 11px;
+
+    font-weight: 900;
+
+    letter-spacing: .12em;
+
+    text-transform: uppercase;
+}
+
+
+.entete-formulaire-inscription h2 {
+    margin:
+        8px 0 0;
+
+    color: var(--texte);
+
+    font-size:
+        clamp(
+            30px,
+            3vw,
+            42px
+        );
+
+    letter-spacing: -.035em;
+}
+
+
+.entete-formulaire-inscription p {
+    margin:
+        10px 0 0;
+
+    color: var(--muted);
+
+    font-size: 13px;
+
+    line-height: 1.55;
+}
+
+
+.formulaire-inscription {
+    margin-top: 27px;
+
+    display: grid;
+
+    gap: 17px;
+}
+
+
+.grille-inscription {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            2,
+            minmax(0, 1fr)
+        );
+
+    gap: 14px;
+}
+
+
+.groupe-inscription {
+    min-width: 0;
+}
+
+
+.groupe-inscription label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #334155;
+
+    font-size: 11px;
+
+    font-weight: 850;
+}
+
+
+.champ-inscription {
+    width: 100%;
+
+    min-height: 50px;
+
+    padding:
+        12px
+        14px;
+
+    border:
+        1px solid
+        var(--bordure);
+
+    border-radius: 12px;
+
+    outline: none;
+
+    background: #ffffff;
+
+    color: var(--texte);
+
+    font: inherit;
+
+    font-size: 13px;
+
+    transition:
+        border-color .18s ease,
+        box-shadow .18s ease;
+}
+
+
+.champ-inscription:focus {
+    border-color: #60a5fa;
+
+    box-shadow:
+        0 0 0 4px
+        rgba(37, 99, 235, .10);
+}
+
+
+.password-wrapper {
+    position: relative;
+}
+
+
+.password-wrapper
+.champ-inscription {
+    padding-right: 48px;
+}
+
+
+.toggle-password {
+    position: absolute;
+
+    right: 8px;
+
+    top: 50%;
+
+    width: 36px;
+
+    height: 36px;
+
+    transform:
+        translateY(-50%);
+
+    border: 0;
+
+    border-radius: 9px;
+
+    background: #eff6ff;
+
+    color: var(--bleu);
+
+    cursor: pointer;
+}
+
+
+.erreur-champ-inscription {
+    display: block;
+
+    margin-top: 5px;
+
+    color: var(--danger);
+
+    font-size: 10px;
+
+    line-height: 1.4;
+}
+
+
+.erreur-generale-inscription,
+.message-inscription.error {
+    margin-top: 18px;
+
+    padding:
+        12px
+        14px;
+
+    border:
+        1px solid
+        #fecaca;
+
+    border-radius: 11px;
+
+    background: #fef2f2;
+
+    color: var(--danger);
+
+    font-size: 11px;
+}
+
+
+.message-inscription.success {
+    margin-top: 18px;
+
+    padding:
+        12px
+        14px;
+
+    border:
+        1px solid
+        #bbf7d0;
+
+    border-radius: 11px;
+
+    background: #f0fdf4;
+
+    color: #166534;
+
+    font-size: 11px;
+}
+
+
+.regles-mot-de-passe {
+    padding:
+        12px
+        14px;
+
+    border:
+        1px solid
+        #dbeafe;
+
+    border-radius: 11px;
+
+    background: #f8fbff;
+}
+
+
+.regles-mot-de-passe strong {
+    color: #1e3a8a;
+
+    font-size: 10px;
+}
+
+
+.regles-mot-de-passe p {
+    margin:
+        4px 0 0;
+
+    color: var(--muted);
+
+    font-size: 10px;
+}
+
+
+.conditions-inscription {
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 9px;
+}
+
+
+.case-inscription {
+    margin-top: 3px;
+
+    accent-color: var(--bleu);
+}
+
+
+.conditions-inscription label {
+    color: #475569;
+
+    font-size: 10px;
+
+    line-height: 1.5;
+}
+
+
+.bouton-creer-compte {
+    min-height: 52px;
+
+    padding:
+        12px
+        18px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    border:
+        1px solid
+        #2563eb;
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1d4ed8,
+            #3b82f6
+        );
+
+    color: #ffffff;
+
+    font-size: 12px;
+
+    font-weight: 900;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 10px 24px
+        rgba(37,99,235,.20);
+}
+
+
+.bouton-creer-compte span {
+    font-size: 18px;
+}
+
+
+.separateur-inscription {
+    position: relative;
+
+    margin:
+        25px 0 15px;
+
+    text-align: center;
+}
+
+
+.separateur-inscription::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+
+    right: 0;
+
+    top: 50%;
+
+    height: 1px;
+
+    background: #e2e8f0;
+}
+
+
+.separateur-inscription span {
+    position: relative;
+
+    padding:
+        0 12px;
+
+    background: #ffffff;
+
+    color: #94a3b8;
+
+    font-size: 10px;
+}
+
+
+.bouton-connexion-inscription {
+    min-height: 48px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border:
+        1px solid
+        var(--bordure);
+
+    border-radius: 12px;
+
+    background: #ffffff;
+
+    color: #1e293b;
+
+    font-size: 11px;
+
+    font-weight: 850;
+
+    text-decoration: none;
+}
+
+
+.note-securite-inscription {
+    margin-top: 17px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    color: #64748b;
+
+    font-size: 9px;
+}
+
+
+.note-securite-inscription p {
+    margin: 0;
+}
+
+
+/* ======================================================
+   RESPONSIVE
+====================================================== */
+
+
+@media (max-width: 1000px) {
+
+    .inscription-layout {
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .inscription-visual {
+        min-height: 470px;
+    }
+
+
+    .contenu-visual-inscription {
+        min-height: 470px;
+    }
+
+
+    .zone-formulaire-inscription {
+        min-height: auto;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .zone-formulaire-inscription {
+        padding:
+            28px
+            17px;
+    }
+
+
+    .grille-inscription {
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .contenu-visual-inscription {
+        padding:
+            28px
+            22px;
+    }
+
+
+    .texte-visual-inscription h1 {
+        font-size: 39px;
+    }
+
+}

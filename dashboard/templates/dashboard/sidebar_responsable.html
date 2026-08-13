@@ -1,0 +1,252 @@
+{% load static %}
+
+<aside class="sidebar-admin">
+
+    <!-- ============================= -->
+    <!-- LOGO -->
+    <!-- ============================= -->
+
+    <div class="sidebar-brand">
+        <a href="{% url 'dashboard:accueil' %}">
+            <img
+                src="{% static 'accounts/images/logo-gestioninternat.png' %}"
+                alt="GestionInternat"
+                class="sidebar-logo"
+            >
+        </a>
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- NAVIGATION -->
+    <!-- ============================= -->
+
+    <nav class="sidebar-nav" aria-label="Navigation principale">
+
+
+        <!-- TABLEAU DE BORD -->
+
+        <a
+            href="{% url 'dashboard:accueil' %}"
+            class="sidebar-link
+            {% if request.resolver_match.namespace == 'dashboard' %}
+                active
+            {% endif %}"
+        >
+            <span class="sidebar-icon">▦</span>
+            <span class="sidebar-text">
+                Tableau de bord
+            </span>
+        </a>
+
+
+        <!-- ÉTUDIANTS -->
+
+        <a
+            href="{% url 'etudiants:liste_etudiants' %}"
+            class="sidebar-link
+            {% if request.resolver_match.namespace == 'etudiants' %}
+                active
+            {% endif %}"
+        >
+            <span class="sidebar-icon">👥</span>
+            <span class="sidebar-text">
+                Étudiants
+            </span>
+        </a>
+
+
+        <!-- DEMANDES -->
+
+        <a
+            href="{% url 'hebergement:liste_demandes_responsable' %}"
+            class="sidebar-link
+            {% if request.resolver_match.url_name == 'liste_demandes_responsable' or request.resolver_match.url_name == 'detail_demande_responsable' or request.resolver_match.url_name == 'traiter_demande' or request.resolver_match.url_name == 'liste_demandes_a_affecter' %}
+                active
+            {% endif %}"
+        >
+            <span class="sidebar-icon">📄</span>
+            <span class="sidebar-text">
+                Demandes
+            </span>
+        </a>
+
+
+        <!-- AFFECTATIONS -->
+
+        <a
+            href="{% url 'hebergement:liste_affectations_responsable' %}"
+            class="sidebar-link
+            {% if request.resolver_match.url_name == 'liste_affectations_responsable' or request.resolver_match.url_name == 'creer_affectation' or request.resolver_match.url_name == 'confirmer_entree_affectation' or request.resolver_match.url_name == 'cloturer_affectation' %}
+                active
+            {% endif %}"
+        >
+            <span class="sidebar-icon">🛏️</span>
+            <span class="sidebar-text">
+                Affectations
+            </span>
+        </a>
+
+
+        <!-- TRANSFERTS -->
+
+        <a
+            href="{% url 'hebergement:liste_transferts_responsable' %}"
+            class="sidebar-link
+            {% if request.resolver_match.url_name == 'liste_transferts_responsable' or request.resolver_match.url_name == 'transferer_affectation' %}
+                active
+            {% endif %}"
+        >
+            <span class="sidebar-icon">↔</span>
+            <span class="sidebar-text">
+                Transferts
+            </span>
+        </a>
+
+
+        <!-- CHAMBRES -->
+
+        <a
+            href="{% url 'hebergement:liste_chambres' %}"
+            class="sidebar-link
+            {% if request.resolver_match.url_name == 'liste_chambres' or request.resolver_match.url_name == 'creer_chambre' or request.resolver_match.url_name == 'modifier_chambre' or request.resolver_match.url_name == 'changer_etat_chambre' %}
+                active
+            {% endif %}"
+        >
+            <span class="sidebar-icon">🚪</span>
+            <span class="sidebar-text">
+                Chambres
+            </span>
+        </a>
+
+
+        <!-- BÂTIMENTS -->
+
+        <a
+            href="{% url 'hebergement:liste_batiments' %}"
+            class="sidebar-link
+            {% if request.resolver_match.url_name == 'liste_batiments' or request.resolver_match.url_name == 'creer_batiment' or request.resolver_match.url_name == 'detail_batiment' or request.resolver_match.url_name == 'modifier_batiment' %}
+                active
+            {% endif %}"
+        >
+            <span class="sidebar-icon">🏢</span>
+            <span class="sidebar-text">
+                Bâtiments
+            </span>
+        </a>
+
+
+        <!-- ANNÉES UNIVERSITAIRES -->
+
+        <a
+            href="{% url 'hebergement:liste_annees_universitaires' %}"
+            class="sidebar-link
+            {% if request.resolver_match.url_name == 'liste_annees_universitaires' or request.resolver_match.url_name == 'creer_annee_universitaire' or request.resolver_match.url_name == 'modifier_annee_universitaire' or request.resolver_match.url_name == 'activer_annee_universitaire' or request.resolver_match.url_name == 'cloturer_annee_universitaire' %}
+                active
+            {% endif %}"
+        >
+            <span class="sidebar-icon">📅</span>
+            <span class="sidebar-text">
+                Années universitaires
+            </span>
+        </a>
+
+
+        <!-- FINANCES -->
+
+        <a
+            href="{% url 'finances:liste_frais' %}"
+            class="sidebar-link
+            {% if request.resolver_match.namespace == 'finances' %}
+                active
+            {% endif %}"
+        >
+            <span class="sidebar-icon">💰</span>
+            <span class="sidebar-text">
+                Finances
+            </span>
+        </a>
+
+
+        <!-- RÉCLAMATIONS -->
+
+        <a
+            href="{% url 'reclamations:liste_reclamations_responsable' %}"
+            class="sidebar-link
+            {% if request.resolver_match.namespace == 'reclamations' %}
+                active
+            {% endif %}"
+        >
+            <span class="sidebar-icon">🛠️</span>
+            <span class="sidebar-text">
+                Réclamations
+            </span>
+        </a>
+
+
+        <!-- NOTIFICATIONS -->
+
+        <a
+            href="{% url 'notifications:mes_notifications' %}"
+            class="sidebar-link
+            {% if request.resolver_match.namespace == 'notifications' %}
+                active
+            {% endif %}"
+        >
+            <span class="sidebar-icon">🔔</span>
+
+            <span class="sidebar-text">
+                Notifications
+            </span>
+
+            {% if nombre_notifications_non_lues %}
+                <strong class="sidebar-badge">
+                    {{ nombre_notifications_non_lues }}
+                </strong>
+            {% endif %}
+        </a>
+
+
+        <!-- AUDIT -->
+
+        {% if request.user.is_superuser or request.user.role == "ADMIN" or request.user.role == "RESP" %}
+
+            <a
+                href="{% url 'audit:historique_actions' %}"
+                class="sidebar-link
+                {% if request.resolver_match.namespace == 'audit' %}
+                    active
+                {% endif %}"
+            >
+                <span class="sidebar-icon">🕒</span>
+                <span class="sidebar-text">
+                    Audit
+                </span>
+            </a>
+
+        {% endif %}
+
+
+    </nav>
+
+
+    <!-- ============================= -->
+    <!-- DÉCONNEXION -->
+    <!-- ============================= -->
+
+    <div class="sidebar-footer">
+
+        <a
+            href="{% url 'accounts:deconnexion' %}"
+            class="sidebar-link sidebar-logout"
+        >
+            <span class="sidebar-icon">↪</span>
+
+            <span class="sidebar-text">
+                Déconnexion
+            </span>
+        </a>
+
+    </div>
+
+</aside>

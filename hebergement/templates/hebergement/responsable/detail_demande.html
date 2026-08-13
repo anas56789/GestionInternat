@@ -1,0 +1,1011 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Détail de la demande — Internat universitaire
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'hebergement/gestion_locaux.css' %}"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'dashboard/style.css' %}?v=11"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'hebergement/detail_demande_premium.css' %}?v=2"
+    >
+</head>
+
+<body class="page-detail-demande-premium">
+
+
+<div class="app-shell">
+
+   {% include "dashboard/sidebar_responsable.html" %}
+
+    <div class="main-area">
+
+
+        <header class="topbar-hebergement">
+            <div>
+                <span class="sur-titre-topbar-hebergement">Espace responsable</span>
+                <h1>Traitement de la demande</h1>
+                <p>Vérification du dossier, contrôle des pièces et décision administrative.</p>
+            </div>
+
+            <div class="actions-topbar-hebergement">
+                <a href="{% url 'hebergement:liste_demandes_responsable' %}"
+                   class="bouton-detail bouton-detail-clair">
+                    ← Retour aux demandes
+                </a>
+
+                <div class="profil-topbar-hebergement">
+                    <div class="avatar-topbar-hebergement">
+                        {% if request.user.first_name %}
+                            {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
+                        {% else %}
+                            {{ request.user.username|first|upper }}
+                        {% endif %}
+                    </div>
+                    <div>
+                        <strong>{{ request.user.get_full_name|default:request.user.username }}</strong>
+                        <span>
+                            {% if request.user.is_superuser %}
+                                Super administrateur
+                            {% else %}
+                                {{ request.user.get_role_display }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+        </header>
+
+<main class="conteneur-detail-demande">
+
+        <!-- =================================================
+             MESSAGES
+        ================================================== -->
+
+        {% if messages %}
+            <section class="messages-detail-demande">
+                {% for message in messages %}
+                    <div class="message-detail-demande {{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </section>
+        {% endif %}
+
+        <!-- =================================================
+             HERO DOSSIER
+        ================================================== -->
+
+        <section class="hero-detail-demande">
+
+            <div class="profil-hero-demande">
+
+                <div class="avatar-hero-demande">
+                    {% if demande.etudiant.utilisateur.first_name %}
+                        {{ demande.etudiant.utilisateur.first_name|first|upper }}
+                        {{ demande.etudiant.utilisateur.last_name|first|upper }}
+                    {% else %}
+                        {{ demande.etudiant.utilisateur.username|first|upper }}
+                    {% endif %}
+                </div>
+
+                <div>
+                    <span class="sur-titre-hero-detail">
+                        Dossier étudiant
+                    </span>
+
+                    <h2>
+                        {{ demande.etudiant.utilisateur.get_full_name|default:demande.etudiant.utilisateur.username }}
+                    </h2>
+
+                    <p>
+                        Matricule {{ demande.etudiant.matricule }}
+                        ·
+                        {{ demande.annee_universitaire.libelle }}
+                    </p>
+                </div>
+
+            </div>
+
+            <span class="
+                statut-hero-demande
+                statut-hero-{{ demande.statut|lower }}
+            ">
+                {{ demande.get_statut_display }}
+            </span>
+
+        </section>
+
+        <!-- =================================================
+             RÉSUMÉ D'ANALYSE
+        ================================================== -->
+
+        <section class="grille-analyse-demande">
+
+            <article class="indicateur-analyse-demande">
+                <span class="icone-analyse">📄</span>
+
+                <div>
+                    <span>Documents</span>
+
+                    <strong>
+                        {{ nombre_justificatifs|default:0 }}
+                    </strong>
+
+                    <small>
+                        pièce(s) fournie(s)
+                    </small>
+                </div>
+            </article>
+
+            <article class="indicateur-analyse-demande indicateur-valide">
+                <span class="icone-analyse">✓</span>
+
+                <div>
+                    <span>Validés</span>
+
+                    <strong>
+                        {{ nombre_justificatifs_valides|default:0 }}
+                    </strong>
+
+                    <small>
+                        document(s)
+                    </small>
+                </div>
+            </article>
+
+            <article class="indicateur-analyse-demande indicateur-attente">
+                <span class="icone-analyse">◷</span>
+
+                <div>
+                    <span>En attente</span>
+
+                    <strong>
+                        {{ nombre_justificatifs_en_attente|default:0 }}
+                    </strong>
+
+                    <small>
+                        à contrôler
+                    </small>
+                </div>
+            </article>
+
+            <article class="indicateur-analyse-demande indicateur-rejete">
+                <span class="icone-analyse">×</span>
+
+                <div>
+                    <span>Rejetés</span>
+
+                    <strong>
+                        {{ nombre_justificatifs_rejetes|default:0 }}
+                    </strong>
+
+                    <small>
+                        document(s)
+                    </small>
+                </div>
+            </article>
+
+            <article class="
+                indicateur-analyse-demande
+                {% if demande_peut_etre_acceptee %}
+                    indicateur-dossier-ok
+                {% else %}
+                    indicateur-dossier-verification
+                {% endif %}
+            ">
+                <span class="icone-analyse">
+                    {% if demande_peut_etre_acceptee %}
+                        ✓
+                    {% else %}
+                        !
+                    {% endif %}
+                </span>
+
+                <div>
+                    <span>État du dossier</span>
+
+                    <strong class="texte-etat-dossier">
+                        {% if demande_peut_etre_acceptee %}
+                            Acceptable
+                        {% elif documents_manquants %}
+                            Incomplet
+                        {% elif nombre_justificatifs_rejetes %}
+                            À corriger
+                        {% elif nombre_justificatifs_en_attente %}
+                            À vérifier
+                        {% else %}
+                            Vérification
+                        {% endif %}
+                    </strong>
+
+                    <small>
+                        selon les pièces obligatoires
+                    </small>
+                </div>
+            </article>
+
+        </section>
+
+        <!-- =================================================
+             GRILLE PRINCIPALE
+        ================================================== -->
+
+        <section class="grille-detail-principale">
+
+            <!-- =============================================
+                 COLONNE PRINCIPALE
+            ============================================== -->
+
+            <div class="colonne-detail-principale">
+
+                <!-- INFORMATIONS ÉTUDIANT -->
+
+                <section class="carte-detail-premium">
+
+                    <div class="entete-carte-detail">
+                        <div>
+                            <span class="mini-label-detail">
+                                Informations
+                            </span>
+
+                            <h2>
+                                Dossier étudiant
+                            </h2>
+
+                            <p>
+                                Informations académiques et
+                                administratives associées à la demande.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="grille-informations-detail">
+
+                        <div class="info-detail-demande">
+                            <span>CNE</span>
+                            <strong>
+                                {{ demande.etudiant.cne }}
+                            </strong>
+                        </div>
+
+                        <div class="info-detail-demande">
+                            <span>Filière</span>
+                            <strong>
+                                {{ demande.etudiant.filiere }}
+                            </strong>
+                        </div>
+
+                        <div class="info-detail-demande">
+                            <span>Niveau</span>
+                            <strong>
+                                {{ demande.etudiant.niveau_etude }}
+                            </strong>
+                        </div>
+
+                        <div class="info-detail-demande">
+                            <span>Année universitaire</span>
+                            <strong>
+                                {{ demande.annee_universitaire.libelle }}
+                            </strong>
+                        </div>
+
+                        <div class="info-detail-demande">
+                            <span>Distance du domicile</span>
+                            <strong>
+                                {{ demande.distance_domicile }} km
+                            </strong>
+                        </div>
+
+                        <div class="info-detail-demande">
+                            <span>Date de soumission</span>
+
+                            <strong>
+                                {% if demande.date_soumission %}
+                                    {{ demande.date_soumission|date:"d/m/Y" }}
+                                {% else %}
+                                    Non soumise
+                                {% endif %}
+                            </strong>
+
+                            {% if demande.date_soumission %}
+                                <small>
+                                    à {{ demande.date_soumission|date:"H:i" }}
+                                </small>
+                            {% endif %}
+                        </div>
+
+                        <div class="info-detail-demande">
+                            <span>Traitée par</span>
+
+                            <strong>
+                                {% if demande.traitee_par %}
+                                    {{ demande.traitee_par.get_full_name|default:demande.traitee_par.username }}
+                                {% else %}
+                                    Non traitée
+                                {% endif %}
+                            </strong>
+                        </div>
+
+                        <div class="info-detail-demande">
+                            <span>Date de décision</span>
+
+                            <strong>
+                                {% if demande.date_decision %}
+                                    {{ demande.date_decision|date:"d/m/Y" }}
+                                {% else %}
+                                    Non renseignée
+                                {% endif %}
+                            </strong>
+
+                            {% if demande.date_decision %}
+                                <small>
+                                    à {{ demande.date_decision|date:"H:i" }}
+                                </small>
+                            {% endif %}
+                        </div>
+
+                    </div>
+
+                    <div class="grille-textes-detail">
+
+                        <article class="bloc-texte-detail">
+                            <span>Motif de la demande</span>
+
+                            <p>
+                                {{ demande.motif|default:"Non renseigné" }}
+                            </p>
+                        </article>
+
+                        <article class="bloc-texte-detail">
+                            <span>Situation sociale</span>
+
+                            <p>
+                                {{ demande.situation_sociale|default:"Non renseignée" }}
+                            </p>
+                        </article>
+
+                        <article class="bloc-texte-detail bloc-texte-large">
+                            <span>Commentaire de l'étudiant</span>
+
+                            <p>
+                                {{ demande.commentaire|default:"Aucun commentaire" }}
+                            </p>
+                        </article>
+
+                    </div>
+
+                    {% if demande.motif_decision %}
+
+                        <div class="observation-administrative-detail">
+                            <span>
+                                Observation administrative actuelle
+                            </span>
+
+                            <p>
+                                {{ demande.motif_decision }}
+                            </p>
+                        </div>
+
+                    {% endif %}
+
+                </section>
+
+                <!-- JUSTIFICATIFS -->
+
+                <section class="carte-detail-premium">
+
+                    <div class="entete-carte-detail">
+
+                        <div>
+                            <span class="mini-label-detail">
+                                Pièces justificatives
+                            </span>
+
+                            <h2>
+                                Documents fournis
+                            </h2>
+
+                            <p>
+                                Ouvrez puis validez ou rejetez
+                                chaque pièce du dossier.
+                            </p>
+                        </div>
+
+                        {% if tous_les_justificatifs_valides %}
+                            <span class="badge-etat-section badge-section-ok">
+                                Tous validés
+                            </span>
+                        {% else %}
+                            <span class="badge-etat-section badge-section-attente">
+                                Vérification requise
+                            </span>
+                        {% endif %}
+
+                    </div>
+
+                    <div class="liste-justificatifs-premium">
+
+                        {% for justificatif in justificatifs %}
+
+                            <article class="
+                                carte-justificatif-premium
+                                justificatif-{{ justificatif.statut_validation|lower }}
+                            ">
+
+                                <div class="entete-justificatif-premium">
+
+                                    <div class="icone-document-premium">
+                                        📄
+                                    </div>
+
+                                    <div class="titre-document-premium">
+                                        <span>
+                                            Type de document
+                                        </span>
+
+                                        <h3>
+                                            {{ justificatif.get_type_document_display }}
+                                        </h3>
+
+                                        <p>
+                                            {{ justificatif.nom_original|default:"Nom non renseigné" }}
+                                        </p>
+                                    </div>
+
+                                    <span class="
+                                        badge-document-premium
+                                        badge-document-{{ justificatif.statut_validation|lower }}
+                                    ">
+                                        {{ justificatif.get_statut_validation_display }}
+                                    </span>
+
+                                </div>
+
+                                <div class="meta-justificatif-premium">
+
+                                    <div>
+                                        <span>Ajouté le</span>
+                                        <strong>
+                                            {{ justificatif.date_ajout|date:"d/m/Y à H:i" }}
+                                        </strong>
+                                    </div>
+
+                                    <div>
+                                        <span>Validation</span>
+
+                                        <strong>
+                                            {% if justificatif.date_validation %}
+                                                {{ justificatif.date_validation|date:"d/m/Y à H:i" }}
+                                            {% else %}
+                                                Non traité
+                                            {% endif %}
+                                        </strong>
+                                    </div>
+
+                                </div>
+
+                                {% if justificatif.commentaire_validation %}
+
+                                    <div class="commentaire-document-premium">
+                                        <span>
+                                            Commentaire de validation
+                                        </span>
+
+                                        <p>
+                                            {{ justificatif.commentaire_validation }}
+                                        </p>
+                                    </div>
+
+                                {% endif %}
+
+                                <div class="actions-document-premium">
+
+                                    <a
+                                        href="{{ justificatif.fichier.url }}"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="bouton-detail bouton-detail-clair"
+                                    >
+                                        Ouvrir le fichier
+                                    </a>
+
+                                    {% if justificatif.statut_validation == "ATTENTE" %}
+
+                                        <details class="details-validation-document">
+
+                                            <summary class="bouton-detail bouton-detail-succes">
+                                                Valider
+                                            </summary>
+
+                                            <form
+                                                method="post"
+                                                action="{% url 'hebergement:valider_justificatif' justificatif.pk %}"
+                                                class="formulaire-document-premium"
+                                            >
+                                                {% csrf_token %}
+
+                                                <input
+                                                    type="hidden"
+                                                    name="action"
+                                                    value="valider"
+                                                >
+
+                                                <label
+                                                    for="commentaire-validation-{{ justificatif.pk }}"
+                                                >
+                                                    Commentaire facultatif
+                                                </label>
+
+                                                <textarea
+                                                    id="commentaire-validation-{{ justificatif.pk }}"
+                                                    name="commentaire_validation"
+                                                    rows="3"
+                                                    maxlength="1000"
+                                                    placeholder="Observation éventuelle..."
+                                                ></textarea>
+
+                                                <button
+                                                    type="submit"
+                                                    class="bouton-detail bouton-detail-succes"
+                                                    onclick="return confirm('Valider ce justificatif ?');"
+                                                >
+                                                    Confirmer la validation
+                                                </button>
+
+                                            </form>
+
+                                        </details>
+
+                                        <details class="details-validation-document">
+
+                                            <summary class="bouton-detail bouton-detail-danger">
+                                                Rejeter
+                                            </summary>
+
+                                            <form
+                                                method="post"
+                                                action="{% url 'hebergement:valider_justificatif' justificatif.pk %}"
+                                                class="formulaire-document-premium"
+                                            >
+                                                {% csrf_token %}
+
+                                                <input
+                                                    type="hidden"
+                                                    name="action"
+                                                    value="refuser"
+                                                >
+
+                                                <label
+                                                    for="commentaire-rejet-{{ justificatif.pk }}"
+                                                >
+                                                    Motif du rejet *
+                                                </label>
+
+                                                <textarea
+                                                    id="commentaire-rejet-{{ justificatif.pk }}"
+                                                    name="commentaire_validation"
+                                                    rows="3"
+                                                    maxlength="1000"
+                                                    placeholder="Expliquez précisément pourquoi la pièce est rejetée."
+                                                    required
+                                                ></textarea>
+
+                                                <button
+                                                    type="submit"
+                                                    class="bouton-detail bouton-detail-danger"
+                                                    onclick="return confirm('Confirmer le rejet de ce justificatif ?');"
+                                                >
+                                                    Confirmer le rejet
+                                                </button>
+
+                                            </form>
+
+                                        </details>
+
+                                    {% else %}
+
+                                        <form
+                                            method="post"
+                                            action="{% url 'hebergement:remettre_justificatif_en_attente' justificatif.pk %}"
+                                        >
+                                            {% csrf_token %}
+
+                                            <button
+                                                type="submit"
+                                                class="bouton-detail bouton-detail-clair"
+                                                onclick="return confirm('Remettre ce justificatif en attente ?');"
+                                            >
+                                                Remettre en attente
+                                            </button>
+                                        </form>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </article>
+
+                        {% empty %}
+
+                            <div class="etat-vide-detail">
+                                <span>📄</span>
+
+                                <h3>
+                                    Aucun justificatif joint
+                                </h3>
+
+                                <p>
+                                    Cette demande ne contient
+                                    encore aucun document.
+                                </p>
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                </section>
+
+            </div>
+
+            <!-- =============================================
+                 COLONNE LATÉRALE
+            ============================================== -->
+
+            <aside class="colonne-detail-laterale">
+
+                <!-- CHECKLIST OBLIGATOIRE -->
+
+                <section class="carte-detail-premium carte-sticky-detail">
+
+                    <div class="entete-carte-detail">
+                        <div>
+                            <span class="mini-label-detail">
+                                Contrôle
+                            </span>
+
+                            <h2>
+                                Pièces obligatoires
+                            </h2>
+
+                            <p>
+                                Les quatre types obligatoires
+                                doivent être présents et validés.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="checklist-documents-obligatoires">
+
+                        {% for document in etat_documents_obligatoires %}
+
+                            <div class="
+                                ligne-document-obligatoire
+                                {% if document.valide %}
+                                    document-obligatoire-ok
+                                {% elif document.rejete %}
+                                    document-obligatoire-rejete
+                                {% elif document.present %}
+                                    document-obligatoire-attente
+                                {% else %}
+                                    document-obligatoire-manquant
+                                {% endif %}
+                            ">
+
+                                <span class="icone-document-obligatoire">
+                                    {% if document.valide %}
+                                        ✓
+                                    {% elif document.rejete %}
+                                        ×
+                                    {% elif document.present %}
+                                        ◷
+                                    {% else %}
+                                        !
+                                    {% endif %}
+                                </span>
+
+                                <div>
+                                    <strong>
+                                        {{ document.libelle }}
+                                    </strong>
+
+                                    <small>
+                                        {% if document.valide %}
+                                            Validé
+                                        {% elif document.rejete %}
+                                            Rejeté
+                                        {% elif document.present %}
+                                            En attente de validation
+                                        {% else %}
+                                            Document manquant
+                                        {% endif %}
+                                    </small>
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                    {% if documents_manquants %}
+
+                        <div class="alerte-documents-manquants">
+                            <strong>
+                                Documents manquants
+                            </strong>
+
+                            <p>
+                                {{ documents_manquants|join:", " }}
+                            </p>
+                        </div>
+
+                    {% endif %}
+
+                </section>
+
+                <!-- DÉCISION -->
+
+                <section class="carte-detail-premium carte-decision-premium">
+
+                    <div class="entete-carte-detail">
+
+                        <div>
+                            <span class="mini-label-detail">
+                                Décision
+                            </span>
+
+                            <h2>
+                                Décision administrative
+                            </h2>
+                        </div>
+
+                        {% if demande_peut_etre_acceptee %}
+                            <span class="badge-etat-section badge-section-ok">
+                                Dossier acceptable
+                            </span>
+                        {% else %}
+                            <span class="badge-etat-section badge-section-attente">
+                                Vérification nécessaire
+                            </span>
+                        {% endif %}
+
+                    </div>
+
+                    {% if demande_traitable %}
+
+                        <form
+                            method="post"
+                            action="{% url 'hebergement:traiter_demande' demande.pk %}"
+                            id="formulaire-traitement-demande"
+                            class="formulaire-decision-premium"
+                        >
+                            {% csrf_token %}
+
+                            <div class="champ-decision-premium">
+
+                                <label for="motif_decision">
+                                    Motif ou observation
+                                </label>
+
+                                <textarea
+                                    id="motif_decision"
+                                    name="motif_decision"
+                                    rows="5"
+                                    maxlength="1000"
+                                    placeholder="Obligatoire pour : incomplète, refus et liste d'attente."
+                                ></textarea>
+
+                                <small>
+                                    Pour une acceptation ou une mise en étude,
+                                    cette observation est facultative.
+                                </small>
+
+                            </div>
+
+                            <div class="actions-decision-premium">
+
+                                {% if demande.statut == "SOUMISE" %}
+
+                                    <button
+                                        type="submit"
+                                        name="action"
+                                        value="mettre_en_etude"
+                                        class="bouton-detail bouton-detail-clair"
+                                    >
+                                        Mettre en étude
+                                    </button>
+
+                                {% endif %}
+
+                                <button
+                                    type="submit"
+                                    name="action"
+                                    value="incomplete"
+                                    class="bouton-detail bouton-detail-avertissement"
+                                >
+                                    Déclarer incomplète
+                                </button>
+
+                                <button
+                                    type="submit"
+                                    name="action"
+                                    value="liste_attente"
+                                    class="bouton-detail bouton-detail-attente"
+                                >
+                                    Liste d'attente
+                                </button>
+
+                                <button
+                                    type="submit"
+                                    name="action"
+                                    value="refuser"
+                                    class="bouton-detail bouton-detail-danger"
+                                >
+                                    Refuser
+                                </button>
+
+                                <button
+                                    type="submit"
+                                    name="action"
+                                    value="accepter"
+                                    class="bouton-detail bouton-detail-succes bouton-accepter-demande"
+                                    {% if not demande_peut_etre_acceptee %}
+                                        disabled
+                                        title="Toutes les pièces obligatoires doivent être présentes et validées."
+                                    {% endif %}
+                                >
+                                    ✓ Accepter la demande
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    {% else %}
+
+                        <div class="etat-decision-finale">
+
+                            <span class="icone-decision-finale">
+                                ✓
+                            </span>
+
+                            <div>
+                                <strong>
+                                    Demande déjà traitée
+                                </strong>
+
+                                <p>
+                                    Le statut actuel est
+                                    « {{ demande.get_statut_display }} ».
+                                    Cette demande ne peut plus être
+                                    modifiée depuis cette zone.
+                                </p>
+                            </div>
+
+                        </div>
+
+                    {% endif %}
+
+                </section>
+
+            </aside>
+
+        </section>
+
+    </main>
+
+    <!-- =====================================================
+         VALIDATION JAVASCRIPT
+    ====================================================== -->
+
+    <script>
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                const formulaire =
+                    document.getElementById(
+                        "formulaire-traitement-demande"
+                    );
+
+                if (!formulaire) {
+                    return;
+                }
+
+                formulaire.addEventListener(
+                    "submit",
+                    function (event) {
+
+                        const bouton =
+                            event.submitter;
+
+                        if (!bouton) {
+                            return;
+                        }
+
+                        const action =
+                            bouton.value;
+
+                        const motif =
+                            document.getElementById(
+                                "motif_decision"
+                            );
+
+                        const actionsAvecMotif = [
+                            "incomplete",
+                            "refuser",
+                            "liste_attente"
+                        ];
+
+                        if (
+                            actionsAvecMotif.includes(action)
+                            && !motif.value.trim()
+                        ) {
+                            event.preventDefault();
+
+                            window.alert(
+                                "Le motif est obligatoire pour cette décision."
+                            );
+
+                            motif.focus();
+                            return;
+                        }
+
+                        const messagesConfirmation = {
+                            mettre_en_etude:
+                                "Mettre cette demande en étude ?",
+
+                            incomplete:
+                                "Déclarer cette demande incomplète ?",
+
+                            liste_attente:
+                                "Placer cette demande sur liste d'attente ?",
+
+                            refuser:
+                                "Refuser définitivement cette demande ?",
+
+                            accepter:
+                                "Accepter cette demande d'hébergement ?"
+                        };
+
+                        if (
+                            !window.confirm(
+                                messagesConfirmation[action]
+                                || "Confirmer cette décision ?"
+                            )
+                        ) {
+                            event.preventDefault();
+                        }
+                    }
+                );
+            }
+        );
+    </script>
+
+    </div>
+</div>
+
+</body>
+</html>

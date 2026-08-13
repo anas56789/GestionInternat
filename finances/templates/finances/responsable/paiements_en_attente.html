@@ -1,0 +1,391 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Paiements en attente — GestionInternat</title>
+
+    <link rel="stylesheet" href="{% static 'dashboard/style.css' %}?v=12">
+    <link rel="stylesheet" href="{% static 'finances/paiements_attente_premium.css' %}?v=1">
+    <link rel="stylesheet" href="{% static 'finances/finances_responsable_layout.css' %}?v=2">
+    <link rel="stylesheet" href="{% static 'finances/finances_paiements_layout.css' %}?v=1">
+</head>
+
+<body class="finance-page">
+<div class="app-shell finance-shell">
+
+    {% include "dashboard/sidebar_responsable.html" %}
+
+    <div class="main-area finance-main">
+
+        <header class="finance-topbar">
+
+            <div class="finance-topbar-copy">
+                <span class="finance-eyebrow">Espace responsable</span>
+                <h1>Paiements en attente</h1>
+                <p>Vérifiez les preuves et les informations avant validation.</p>
+            </div>
+
+            <div class="finance-topbar-actions">
+
+                <a href="{% url 'finances:liste_frais' %}"
+                   class="finance-button finance-button-light">
+                    Finances
+                </a>
+
+                <div class="finance-user-card">
+                    <div class="finance-user-avatar">
+                        {% if request.user.first_name %}
+                            {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
+                        {% else %}
+                            {{ request.user.username|first|upper }}
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <strong>
+                            {{ request.user.get_full_name|default:request.user.username }}
+                        </strong>
+                        <span>
+                            {% if request.user.is_superuser %}
+                                Super administrateur
+                            {% else %}
+                                {{ request.user.get_role_display }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <main class="finance-content">
+
+            {% if messages %}
+                <section class="finance-messages">
+                    {% for message in messages %}
+                        <div class="finance-message {{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </section>
+            {% endif %}
+
+
+            <section class="finance-hero">
+                <div class="finance-hero-copy">
+                    <span class="finance-eyebrow finance-eyebrow-light">
+                        Contrôle administratif
+                    </span>
+
+                    <h2>File de validation</h2>
+
+                    <p>
+                        Référence, mode de paiement, origine et justificatif
+                        sont regroupés dans une vue de contrôle unique.
+                    </p>
+                </div>
+
+                <div class="finance-hero-count">
+                    <strong>{{ nombre_paiements|default:0 }}</strong>
+                    <span>à vérifier</span>
+                </div>
+            </section>
+
+
+            <section class="finance-payment-kpis">
+
+                <article class="finance-kpi-card">
+                    <div class="finance-kpi-icon">📄</div>
+                    <div>
+                        <span>Déclarations</span>
+                        <strong>{{ nombre_paiements|default:0 }}</strong>
+                        <small>Paiements à contrôler</small>
+                    </div>
+                </article>
+
+                <article class="finance-kpi-card">
+                    <div class="finance-kpi-icon finance-kpi-orange">DH</div>
+                    <div>
+                        <span>Montant en attente</span>
+                        <strong class="finance-value-orange">
+                            {{ montant_total_en_attente|default:"0.00"|floatformat:2 }} DH
+                        </strong>
+                        <small>Avant validation</small>
+                    </div>
+                </article>
+
+            </section>
+
+
+            <section class="finance-panel">
+
+                <div class="finance-panel-heading">
+                    <div>
+                        <span class="finance-eyebrow">Recherche</span>
+                        <h2>Filtrer les déclarations</h2>
+                        <p>
+                            Recherchez un étudiant ou une référence
+                            et filtrez selon l’origine du paiement.
+                        </p>
+                    </div>
+                </div>
+
+                <form method="get" class="finance-payment-filters">
+
+                    <div class="finance-field">
+                        <label for="recherche">Étudiant ou référence</label>
+                        <input
+                            id="recherche"
+                            name="recherche"
+                            type="search"
+                            value="{{ recherche }}"
+                            placeholder="Nom, matricule, CNE ou référence"
+                        >
+                    </div>
+
+                    <div class="finance-field">
+                        <label for="origine">Origine</label>
+                        <select id="origine" name="origine">
+                            <option value="">Toutes</option>
+
+                            {% for valeur, libelle in choix_origines %}
+                                <option
+                                    value="{{ valeur }}"
+                                    {% if origine_selectionnee == valeur %}selected{% endif %}
+                                >
+                                    {{ libelle }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="finance-filter-actions">
+                        <button
+                            type="submit"
+                            class="finance-button finance-button-primary"
+                        >
+                            Rechercher
+                        </button>
+
+                        <a
+                            href="{% url 'finances:liste_paiements_en_attente' %}"
+                            class="finance-button finance-button-light"
+                        >
+                            Réinitialiser
+                        </a>
+                    </div>
+
+                </form>
+
+            </section>
+
+
+            <div class="finance-section-heading">
+                <span class="finance-eyebrow">Validation</span>
+                <h2>Déclarations à traiter</h2>
+                <p>
+                    Ouvrez la preuve et contrôlez les informations
+                    avant de valider le règlement.
+                </p>
+            </div>
+
+
+            {% if paiements %}
+
+                <section class="finance-payment-list">
+
+                    {% for paiement in paiements %}
+
+                        <article class="finance-payment-card">
+
+                            <div class="finance-dossier-header">
+
+                                <div class="finance-student">
+                                    <div class="finance-student-avatar">
+                                        {{ paiement.frais_hebergement.etudiant.utilisateur.first_name|first|default:"E" }}
+                                    </div>
+
+                                    <div>
+                                        <h3>
+                                            {{ paiement.frais_hebergement.etudiant.utilisateur.get_full_name|default:paiement.frais_hebergement.etudiant.utilisateur.username }}
+                                        </h3>
+
+                                        <p>
+                                            {{ paiement.frais_hebergement.etudiant.matricule }}
+                                            ·
+                                            {{ paiement.frais_hebergement.annee_universitaire.libelle }}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <span class="finance-status finance-status-partial">
+                                    En attente
+                                </span>
+
+                            </div>
+
+
+                            <div class="finance-balance-box">
+                                <span>Montant déclaré</span>
+                                <strong>{{ paiement.montant|floatformat:2 }} DH</strong>
+                            </div>
+
+
+                            <div class="finance-payment-meta">
+
+                                <div>
+                                    <span>Date</span>
+                                    <strong>{{ paiement.date_paiement|date:"d/m/Y" }}</strong>
+                                </div>
+
+                                <div>
+                                    <span>Mode</span>
+                                    <strong>{{ paiement.get_mode_paiement_display }}</strong>
+                                </div>
+
+                                <div>
+                                    <span>Référence</span>
+                                    <strong>{{ paiement.reference|default:"—" }}</strong>
+                                </div>
+
+                                <div>
+                                    <span>Origine</span>
+                                    <strong>{{ paiement.get_origine_display }}</strong>
+                                </div>
+
+                                <div>
+                                    <span>Déclaré le</span>
+                                    <strong>{{ paiement.date_creation|date:"d/m/Y à H:i" }}</strong>
+                                </div>
+
+                            </div>
+
+
+                            {% if paiement.commentaire %}
+                                <div class="finance-payment-comment">
+                                    <strong>Commentaire</strong>
+                                    <p>{{ paiement.commentaire }}</p>
+                                </div>
+                            {% endif %}
+
+
+                            <div class="finance-payment-actions">
+
+                                <div class="finance-payment-actions-left">
+
+                                    <a
+                                        href="{% url 'finances:detail_frais' paiement.frais_hebergement.pk %}"
+                                        class="finance-button finance-button-light"
+                                    >
+                                        Dossier
+                                    </a>
+
+                                    {% if paiement.preuve_paiement %}
+                                        <a
+                                            href="{{ paiement.preuve_paiement.url }}"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            class="finance-button finance-button-light"
+                                        >
+                                            Ouvrir la preuve
+                                        </a>
+                                    {% endif %}
+
+                                </div>
+
+
+                                <div class="finance-payment-actions-right">
+
+                                    {% if paiement.preuve_paiement or paiement.origine == "ADMIN" %}
+                                        <form
+                                            method="post"
+                                            action="{% url 'finances:valider_paiement' paiement.pk %}"
+                                        >
+                                            {% csrf_token %}
+
+                                            <button
+                                                type="submit"
+                                                class="finance-button finance-button-success"
+                                                onclick="return confirm('Confirmer la validation ?');"
+                                            >
+                                                ✓ Valider
+                                            </button>
+                                        </form>
+                                    {% endif %}
+
+
+                                    <details class="finance-cancel-details">
+                                        <summary class="finance-button finance-button-danger">
+                                            Annuler
+                                        </summary>
+
+                                        <form
+                                            method="post"
+                                            action="{% url 'finances:annuler_paiement' paiement.pk %}"
+                                            class="finance-cancel-form"
+                                        >
+                                            {% csrf_token %}
+
+                                            <label for="motif_annulation_{{ paiement.pk }}">
+                                                Motif de l’annulation
+                                            </label>
+
+                                            <textarea
+                                                id="motif_annulation_{{ paiement.pk }}"
+                                                name="motif_annulation"
+                                                rows="3"
+                                                minlength="5"
+                                                required
+                                                placeholder="Expliquez le motif d’annulation"
+                                            ></textarea>
+
+                                            <button
+                                                type="submit"
+                                                class="finance-button finance-button-danger finance-full-button"
+                                            >
+                                                Confirmer l’annulation
+                                            </button>
+                                        </form>
+                                    </details>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+                    {% endfor %}
+
+                </section>
+
+            {% else %}
+
+                <section class="finance-empty">
+                    <div class="finance-empty-icon">✓</div>
+
+                    <h3>Aucun paiement à vérifier</h3>
+
+                    <p>
+                        Toutes les déclarations de paiement ont été traitées.
+                    </p>
+                </section>
+
+            {% endif %}
+
+        </main>
+
+
+        <footer class="finance-footer">
+            Gestion de l’internat universitaire — {% now "Y" %}
+        </footer>
+
+    </div>
+
+</div>
+</body>
+</html>

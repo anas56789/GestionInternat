@@ -1,0 +1,646 @@
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+
+    margin: 0;
+    padding: 0;
+}
+
+
+body {
+    font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    color: #0f172a;
+}
+
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.page-deconnexion {
+    min-height: 100vh;
+
+    overflow-x: hidden;
+}
+
+
+.deconnexion-layout {
+    position: relative;
+
+    min-height: 100vh;
+
+    padding:
+        28px
+        clamp(20px, 4vw, 65px);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   BACKGROUND
+========================================================= */
+
+.deconnexion-background {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: -3;
+
+    background:
+        url("../accounts/images/signup-bg.jpg")
+        center
+        center
+        /
+        cover
+        no-repeat;
+
+    transform: scale(1.02);
+}
+
+
+.deconnexion-overlay {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: -2;
+
+    background:
+        radial-gradient(
+            circle at 75% 20%,
+            rgba(37, 99, 235, .28),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            rgba(2, 12, 31, .93),
+            rgba(10, 35, 76, .88) 48%,
+            rgba(29, 78, 216, .74)
+        );
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.deconnexion-header {
+    position: absolute;
+
+    top: 28px;
+    left: clamp(24px, 4vw, 65px);
+
+    z-index: 10;
+}
+
+
+.logo-deconnexion {
+    display: inline-flex;
+
+    text-decoration: none;
+}
+
+
+.logo-deconnexion img {
+    width: 210px;
+
+    max-height: 82px;
+
+    object-fit: contain;
+
+    filter:
+        brightness(1.20)
+        contrast(1.05)
+        drop-shadow(
+            0 8px 18px
+            rgba(37, 99, 235, .32)
+        );
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.carte-deconnexion {
+    width:
+        min(
+            570px,
+            100%
+        );
+
+    padding:
+        clamp(30px, 4vw, 46px);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, .26);
+
+    border-radius: 26px;
+
+    background:
+        rgba(255, 255, 255, .94);
+
+    box-shadow:
+        0 35px 90px
+        rgba(2, 12, 27, .38);
+
+    backdrop-filter:
+        blur(22px);
+
+    -webkit-backdrop-filter:
+        blur(22px);
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   ICON
+========================================================= */
+
+.icone-deconnexion {
+    width: 76px;
+    height: 76px;
+
+    margin:
+        0
+        auto
+        18px;
+
+    display: grid;
+    place-items: center;
+
+    border:
+        1px solid
+        #dbeafe;
+
+    border-radius: 22px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #eff6ff,
+            #dbeafe
+        );
+
+    color: #2563eb;
+
+    font-size: 34px;
+
+    font-weight: 900;
+
+    box-shadow:
+        0 15px 30px
+        rgba(37, 99, 235, .16);
+}
+
+
+/* =========================================================
+   TEXT
+========================================================= */
+
+.sur-titre-deconnexion {
+    display: inline-block;
+
+    color: #2563eb;
+
+    font-size: 10px;
+
+    font-weight: 900;
+
+    letter-spacing: .13em;
+
+    text-transform: uppercase;
+}
+
+
+.carte-deconnexion h1 {
+    max-width: 470px;
+
+    margin:
+        10px
+        auto
+        0;
+
+    color: #0f172a;
+
+    font-size:
+        clamp(
+            31px,
+            4vw,
+            42px
+        );
+
+    line-height: 1.08;
+
+    letter-spacing: -.04em;
+}
+
+
+.description-deconnexion {
+    max-width: 460px;
+
+    margin:
+        15px
+        auto
+        0;
+
+    color: #64748b;
+
+    font-size: 13px;
+
+    line-height: 1.65;
+}
+
+
+/* =========================================================
+   PROFILE
+========================================================= */
+
+.profil-deconnexion {
+    margin-top: 26px;
+
+    padding: 14px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    border:
+        1px solid
+        #dbe4f0;
+
+    border-radius: 15px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #ffffff,
+            #f8fbff
+        );
+
+    text-align: left;
+}
+
+
+.avatar-deconnexion {
+    width: 52px;
+    height: 52px;
+
+    flex:
+        0 0 52px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 15px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1d4ed8,
+            #60a5fa
+        );
+
+    color: #ffffff;
+
+    font-size: 14px;
+
+    font-weight: 900;
+
+    box-shadow:
+        0 8px 20px
+        rgba(37, 99, 235, .18);
+}
+
+
+.identite-deconnexion strong,
+.identite-deconnexion span {
+    display: block;
+}
+
+
+.identite-deconnexion strong {
+    color: #0f172a;
+
+    font-size: 13px;
+}
+
+
+.identite-deconnexion span {
+    margin-top: 3px;
+
+    color: #64748b;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   SECURITY NOTE
+========================================================= */
+
+.note-securite-deconnexion {
+    margin-top: 14px;
+
+    padding: 13px;
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 10px;
+
+    border:
+        1px solid
+        #bfdbfe;
+
+    border-radius: 13px;
+
+    background: #eff6ff;
+
+    text-align: left;
+}
+
+
+.icone-securite {
+    width: 36px;
+    height: 36px;
+
+    flex:
+        0 0 36px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 10px;
+
+    background: #dbeafe;
+
+    font-size: 16px;
+}
+
+
+.note-securite-deconnexion strong {
+    color: #1e3a8a;
+
+    font-size: 10px;
+}
+
+
+.note-securite-deconnexion p {
+    margin:
+        4px
+        0
+        0;
+
+    color: #64748b;
+
+    font-size: 9px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.actions-deconnexion {
+    margin-top: 25px;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            2,
+            minmax(0, 1fr)
+        );
+
+    gap: 11px;
+}
+
+
+.formulaire-deconnexion {
+    width: 100%;
+}
+
+
+.bouton-deconnexion {
+    width: 100%;
+
+    min-height: 50px;
+
+    padding:
+        11px
+        15px;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 9px;
+
+    border-radius: 12px;
+
+    font-size: 11px;
+
+    font-weight: 900;
+
+    text-decoration: none;
+
+    cursor: pointer;
+}
+
+
+.bouton-annuler {
+    border:
+        1px solid
+        #dbe4f0;
+
+    background: #ffffff;
+
+    color: #334155;
+}
+
+
+.bouton-confirmer {
+    border:
+        1px solid
+        #dc2626;
+
+    background:
+        linear-gradient(
+            135deg,
+            #dc2626,
+            #ef4444
+        );
+
+    color: #ffffff;
+
+    box-shadow:
+        0 10px 22px
+        rgba(220, 38, 38, .18);
+}
+
+
+.bouton-confirmer span {
+    font-size: 17px;
+}
+
+
+.bouton-deconnexion {
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        border-color .18s ease;
+}
+
+
+.bouton-deconnexion:hover {
+    transform:
+        translateY(-1px);
+}
+
+
+.bouton-annuler:hover {
+    border-color: #93c5fd;
+
+    box-shadow:
+        0 8px 18px
+        rgba(15, 23, 42, .06);
+}
+
+
+.bouton-confirmer:hover {
+    box-shadow:
+        0 14px 30px
+        rgba(220, 38, 38, .25);
+}
+
+
+/* =========================================================
+   CARD FOOTER
+========================================================= */
+
+.pied-carte-deconnexion {
+    margin-top: 22px;
+
+    padding-top: 14px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    border-top:
+        1px solid
+        #edf1f6;
+
+    color: #94a3b8;
+
+    font-size: 8px;
+}
+
+
+/* =========================================================
+   PAGE FOOTER
+========================================================= */
+
+.deconnexion-footer {
+    position: absolute;
+
+    left: 50%;
+    bottom: 22px;
+
+    transform:
+        translateX(-50%);
+
+    width: 100%;
+
+    padding:
+        0 18px;
+
+    color:
+        rgba(255, 255, 255, .62);
+
+    font-size: 9px;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 650px) {
+
+    .deconnexion-layout {
+        padding:
+            105px
+            15px
+            70px;
+    }
+
+
+    .deconnexion-header {
+        top: 20px;
+        left: 20px;
+    }
+
+
+    .logo-deconnexion img {
+        width: 165px;
+    }
+
+
+    .carte-deconnexion {
+        padding:
+            28px
+            19px;
+    }
+
+
+    .actions-deconnexion {
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .pied-carte-deconnexion {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+}

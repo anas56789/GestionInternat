@@ -1,0 +1,294 @@
+{% extends "dashboard/base_etudiant.html" %}
+{% load static %}
+
+{% block title %}
+Nouvelle réclamation — GestionInternat
+{% endblock %}
+
+{% block titre_page %}
+Nouvelle réclamation
+{% endblock %}
+
+{% block sous_titre_page %}
+Décrivez clairement le problème rencontré afin de faciliter son traitement.
+{% endblock %}
+
+{% block css_page %}
+<link
+    rel="stylesheet"
+    href="{% static 'reclamations/reclamations_etudiant.css' %}?v=2"
+>
+{% endblock %}
+
+{% block contenu_etudiant %}
+
+<div class="actions-page-etudiant">
+    <a
+        href="{% url 'reclamations:mes_reclamations' %}"
+        class="bouton bouton-secondaire"
+    >
+        ← Retour aux réclamations
+    </a>
+
+    <a
+        href="{% url 'accounts:espace_etudiant' %}"
+        class="bouton bouton-clair"
+    >
+        Tableau de bord
+    </a>
+</div>
+
+<div class="conteneur conteneur-reclamations-layout">
+<section class="banniere-formulaire">
+            <div>
+                <span class="sur-titre">
+                    Signalement
+                </span>
+
+                <h2>Déposer une réclamation</h2>
+
+                <p>
+                    Renseignez la catégorie, la priorité et une
+                    description suffisamment précise.
+                </p>
+            </div>
+
+            <div class="icone-banniere" aria-hidden="true">
+                📣
+            </div>
+        </section>
+
+        <section class="carte-principale">
+            <div class="entete-section">
+                <div>
+                    <span class="petit-titre">
+                        Formulaire
+                    </span>
+
+                    <h2>Informations de la réclamation</h2>
+
+                    <p>
+                        Les champs obligatoires doivent être complétés
+                        avant l’envoi.
+                    </p>
+                </div>
+            </div>
+
+            <form
+                method="post"
+                enctype="multipart/form-data"
+                novalidate
+                id="formulaire-reclamation"
+            >
+                {% csrf_token %}
+
+                {% if formulaire.non_field_errors %}
+                    <div class="message error">
+                        <strong>
+                            La réclamation ne peut pas être envoyée.
+                        </strong>
+
+                        {{ formulaire.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                {% if formulaire.errors %}
+                    <div class="message error">
+                        Vérifiez les champs signalés ci-dessous.
+                    </div>
+                {% endif %}
+
+                <section class="section-formulaire">
+                    <div class="entete-etape">
+                        <div class="numero-etape">1</div>
+
+                        <div>
+                            <h3>Contexte du problème</h3>
+
+                            <p>
+                                Indiquez la chambre concernée,
+                                la catégorie et le niveau de priorité.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="grille-formulaire">
+                        <div
+                            class="
+                                groupe-champ
+                                {% if formulaire.chambre.errors %}
+                                    groupe-champ-invalide
+                                {% endif %}
+                            "
+                        >
+                            <label for="{{ formulaire.chambre.id_for_label }}">
+                                Chambre concernée
+                            </label>
+
+                            {{ formulaire.chambre }}
+
+                            {% if formulaire.chambre.help_text %}
+                                <small class="aide">
+                                    {{ formulaire.chambre.help_text }}
+                                </small>
+                            {% endif %}
+
+                            {{ formulaire.chambre.errors }}
+                        </div>
+
+                        <div
+                            class="
+                                groupe-champ
+                                {% if formulaire.categorie.errors %}
+                                    groupe-champ-invalide
+                                {% endif %}
+                            "
+                        >
+                            <label for="{{ formulaire.categorie.id_for_label }}">
+                                Catégorie
+                                {% if formulaire.categorie.field.required %}
+                                    <span class="obligatoire">*</span>
+                                {% endif %}
+                            </label>
+
+                            {{ formulaire.categorie }}
+                            {{ formulaire.categorie.errors }}
+                        </div>
+
+                        <div
+                            class="
+                                groupe-champ
+                                {% if formulaire.priorite.errors %}
+                                    groupe-champ-invalide
+                                {% endif %}
+                            "
+                        >
+                            <label for="{{ formulaire.priorite.id_for_label }}">
+                                Priorité
+                                {% if formulaire.priorite.field.required %}
+                                    <span class="obligatoire">*</span>
+                                {% endif %}
+                            </label>
+
+                            {{ formulaire.priorite }}
+                            {{ formulaire.priorite.errors }}
+                        </div>
+
+                        <div
+                            class="
+                                groupe-champ
+                                {% if formulaire.piece_jointe.errors %}
+                                    groupe-champ-invalide
+                                {% endif %}
+                            "
+                        >
+                            <label for="{{ formulaire.piece_jointe.id_for_label }}">
+                                Pièce jointe
+                            </label>
+
+                            {{ formulaire.piece_jointe }}
+
+                            <small class="aide">
+                                Ajoutez une photo ou un document utile
+                                lorsque cela facilite la compréhension.
+                            </small>
+
+                            {{ formulaire.piece_jointe.errors }}
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section-formulaire">
+                    <div class="entete-etape">
+                        <div class="numero-etape">2</div>
+
+                        <div>
+                            <h3>Description de la réclamation</h3>
+
+                            <p>
+                                Utilisez un titre précis et expliquez
+                                les faits de manière claire.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div
+                        class="
+                            groupe-champ
+                            {% if formulaire.titre.errors %}
+                                groupe-champ-invalide
+                            {% endif %}
+                        "
+                    >
+                        <label for="{{ formulaire.titre.id_for_label }}">
+                            Titre
+                            {% if formulaire.titre.field.required %}
+                                <span class="obligatoire">*</span>
+                            {% endif %}
+                        </label>
+
+                        {{ formulaire.titre }}
+                        {{ formulaire.titre.errors }}
+                    </div>
+
+                    <div
+                        class="
+                            groupe-champ
+                            {% if formulaire.description.errors %}
+                                groupe-champ-invalide
+                            {% endif %}
+                        "
+                    >
+                        <label for="{{ formulaire.description.id_for_label }}">
+                            Description
+                            {% if formulaire.description.field.required %}
+                                <span class="obligatoire">*</span>
+                            {% endif %}
+                        </label>
+
+                        {{ formulaire.description }}
+
+                        <small class="aide">
+                            Précisez le problème, sa date d’apparition
+                            et ses conséquences.
+                        </small>
+
+                        {{ formulaire.description.errors }}
+                    </div>
+                </section>
+
+                <div class="information-envoi">
+                    <div class="icone-information" aria-hidden="true">
+                        ℹ️
+                    </div>
+
+                    <div>
+                        <strong>Après l’envoi</strong>
+
+                        <p>
+                            La réclamation apparaîtra dans votre historique.
+                            Vous serez informé de son changement de statut.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="actions-formulaire">
+                    <a
+                        href="{% url 'reclamations:mes_reclamations' %}"
+                        class="bouton bouton-annuler"
+                    >
+                        Annuler
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="bouton bouton-principal"
+                    >
+                        Envoyer la réclamation
+                    </button>
+                </div>
+            </form>
+        </section>
+</div>
+
+{% endblock %}

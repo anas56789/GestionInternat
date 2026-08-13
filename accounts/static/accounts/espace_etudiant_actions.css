@@ -1,0 +1,129 @@
+.actions-carte-secondaire {
+    padding-top: 18px;
+    border-top: 1px solid #edf1f6;
+}
+
+.actions-carte-secondaire .bouton {
+    flex: 1 1 180px;
+}
+
+.graphique-financier {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+    padding: 18px;
+    border: 1px solid #dbe4f0;
+    border-radius: 17px;
+    background: #f8fafc;
+}
+
+.graphique-circulaire {
+    --progression: 0;
+
+    position: relative;
+    display: grid;
+    width: 132px;
+    height: 132px;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 50%;
+    background:
+        conic-gradient(
+            #2563eb calc(var(--progression) * 1%),
+            #dbe4f0 0
+        );
+}
+
+.graphique-circulaire::before {
+    content: "";
+    position: absolute;
+    inset: 13px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: inset 0 0 0 1px #e2e8f0;
+}
+
+.contenu-graphique {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    text-align: center;
+}
+
+.contenu-graphique strong {
+    color: #1d4ed8;
+    font-size: 24px;
+}
+
+.contenu-graphique span {
+    margin-top: 1px;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.legende-financiere {
+    display: grid;
+    gap: 13px;
+}
+
+.legende-financiere > div {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+}
+
+.legende-financiere small,
+.legende-financiere strong {
+    display: block;
+}
+
+.legende-financiere small {
+    color: #64748b;
+    font-size: 11px;
+}
+
+.legende-financiere strong {
+    margin-top: 3px;
+    color: #0f172a;
+    font-size: 14px;
+}
+
+.pastille-legende {
+    width: 13px;
+    height: 13px;
+    border-radius: 4px;
+}
+
+.pastille-payee {
+    background: #2563eb;
+}
+
+.pastille-restante {
+    background: #dbe4f0;
+}
+
+@media (max-width: 480px) {
+    .graphique-financier {
+        grid-template-columns: 1fr;
+        justify-items: center;
+    }
+
+    .legende-financiere {
+        width: 100%;
+    }
+
+    .actions-carte-secondaire {
+        flex-direction: column;
+    }
+
+    .actions-carte-secondaire .bouton {
+        width: 100%;
+        flex-basis: auto;
+    }
+}

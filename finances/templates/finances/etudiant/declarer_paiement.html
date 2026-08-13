@@ -1,0 +1,237 @@
+{% extends "dashboard/base_etudiant.html" %}
+{% load static %}
+
+{% block title %}
+Déclarer un paiement — GestionInternat
+{% endblock %}
+
+{% block titre_page %}
+Déclarer un paiement
+{% endblock %}
+
+{% block sous_titre_page %}
+Transmettez les informations et la preuve du règlement à l’administration.
+{% endblock %}
+
+{% block css_page %}
+<link
+    rel="stylesheet"
+    href="{% static 'finances/finances_etudiant.css' %}?v=5"
+>
+
+{% endblock %}
+
+{% block contenu_etudiant %}
+<div class="actions-page-etudiant">
+    <a
+        href="{% url 'finances:detail_frais_etudiant' frais.pk %}"
+        class="bouton bouton-secondaire"
+    >
+        ← Retour au détail
+    </a>
+
+    <a
+        href="{% url 'finances:ma_situation_financiere' %}"
+        class="bouton bouton-clair"
+    >
+        Ma situation financière
+    </a>
+</div>
+
+<div class="conteneur conteneur-finances-layout conteneur-declaration">
+<section class="banniere-detail">
+    <div>
+        <span class="sur-titre">
+            {{ frais.annee_universitaire.libelle }}
+        </span>
+
+        <h2>Continuer mon paiement</h2>
+
+        <p>
+            Votre déclaration sera contrôlée avant
+            d’être intégrée au montant payé.
+        </p>
+    </div>
+
+    <span
+        class="
+            badge-statut
+            statut-{{ frais.statut_financier|slugify }}
+        "
+    >
+        {{ frais.statut_financier }}
+    </span>
+</section>
+
+<section class="grille-statistiques">
+    <article class="statistique">
+        <div class="icone-statistique">🧾</div>
+        <div>
+            <span>Total dû</span>
+            <strong>{{ frais.montant_total|floatformat:2 }} DH</strong>
+        </div>
+    </article>
+
+    <article class="statistique">
+        <div class="icone-statistique">✅</div>
+        <div>
+            <span>Déjà validé</span>
+            <strong class="valeur-succes">
+                {{ frais.montant_paye|floatformat:2 }} DH
+            </strong>
+        </div>
+    </article>
+
+    <article class="statistique">
+        <div class="icone-statistique">⏳</div>
+        <div>
+            <span>Déjà en attente</span>
+            <strong class="valeur-attente">
+                {{ montant_en_attente|floatformat:2 }} DH
+            </strong>
+        </div>
+    </article>
+
+    <article class="statistique">
+        <div class="icone-statistique">💳</div>
+        <div>
+            <span>Encore déclarable</span>
+            <strong class="valeur-information">
+                {{ montant_declarable|floatformat:2 }} DH
+            </strong>
+        </div>
+    </article>
+</section>
+
+<section class="grille-declaration">
+    <article class="carte-principale">
+        <div class="entete-section">
+            <div>
+                <span class="petit-titre">
+                    Déclaration
+                </span>
+
+                <h2>Informations du paiement</h2>
+
+                <p>
+                    La référence et la preuve sont obligatoires.
+                </p>
+            </div>
+
+            <div class="icone-section">💳</div>
+        </div>
+
+        <form
+            method="post"
+            enctype="multipart/form-data"
+            novalidate
+        >
+            {% csrf_token %}
+
+            {% if formulaire.non_field_errors %}
+                <div class="message error">
+                    {% for erreur in formulaire.non_field_errors %}
+                        <p>{{ erreur }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="grille-formulaire-paiement">
+                {% for champ in formulaire %}
+                    <div
+                        class="
+                            groupe-champ
+                            {% if champ.name == 'commentaire' or champ.name == 'preuve_paiement' %}
+                                groupe-champ-large
+                            {% endif %}
+                            {% if champ.errors %}
+                                groupe-champ-invalide
+                            {% endif %}
+                        "
+                    >
+                        <label for="{{ champ.id_for_label }}">
+                            {{ champ.label }}
+
+                            {% if champ.field.required %}
+                                <span class="obligatoire">*</span>
+                            {% endif %}
+                        </label>
+
+                        {{ champ }}
+
+                        {% if champ.help_text %}
+                            <small class="aide">
+                                {{ champ.help_text }}
+                            </small>
+                        {% endif %}
+
+                        {% if champ.errors %}
+                            <div class="erreurs-champ">
+                                {% for erreur in champ.errors %}
+                                    <span>{{ erreur }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="information-validation">
+                <div class="icone-information">ℹ️</div>
+
+                <div>
+                    <strong>
+                        Validation administrative obligatoire
+                    </strong>
+
+                    <p>
+                        Le montant ne sera pas déduit du solde
+                        tant que la preuve n’aura pas été vérifiée.
+                    </p>
+                </div>
+            </div>
+
+            <div class="actions-formulaire-paiement">
+                <a
+                    href="{% url 'finances:detail_frais_etudiant' frais.pk %}"
+                    class="bouton bouton-clair"
+                >
+                    Annuler
+                </a>
+
+                <button
+                    type="submit"
+                    class="bouton bouton-principal"
+                >
+                    Transmettre le paiement
+                </button>
+            </div>
+        </form>
+    </article>
+
+    <aside class="carte-principale carte-aide-paiement">
+        <span class="petit-titre">
+            Avant l’envoi
+        </span>
+
+        <h2>Preuve acceptable</h2>
+
+        <ul class="liste-conseils">
+            <li>Reçu ou capture du virement bancaire.</li>
+            <li>Reçu de paiement par carte.</li>
+            <li>Copie ou reçu du chèque.</li>
+            <li>Document PDF, JPG ou PNG lisible.</li>
+        </ul>
+
+        <div class="alerte-especes">
+            <strong>Paiement en espèces</strong>
+
+            <p>
+                Il doit être enregistré directement
+                par le responsable de l’internat.
+            </p>
+        </div>
+    </aside>
+</section>
+</div>
+{% endblock %}

@@ -1,0 +1,356 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% if mode_modification %}
+            Modifier les frais
+        {% else %}
+            Créer des frais
+        {% endif %}
+        — GestionInternat
+    </title>
+
+    <link rel="stylesheet" href="{% static 'dashboard/style.css' %}?v=12">
+    <link rel="stylesheet" href="{% static 'finances/finances_responsable_layout.css' %}?v=2">
+    <link rel="stylesheet" href="{% static 'finances/finances_responsable_forms.css' %}?v=1">
+</head>
+
+<body class="finance-page">
+
+<div class="app-shell finance-shell">
+
+    {% include "dashboard/sidebar_responsable.html" %}
+
+    <div class="main-area finance-main">
+
+        <header class="finance-topbar">
+
+            <div class="finance-topbar-copy">
+                <span class="finance-eyebrow">
+                    Espace responsable
+                </span>
+
+                <h1>
+                    {% if mode_modification %}
+                        Modifier les frais
+                    {% else %}
+                        Créer des frais
+                    {% endif %}
+                </h1>
+
+                <p>
+                    {% if mode_modification %}
+                        Mettez à jour les paramètres des frais d’hébergement.
+                    {% else %}
+                        Créez une nouvelle situation financière étudiante.
+                    {% endif %}
+                </p>
+            </div>
+
+            <div class="finance-topbar-actions">
+
+                <a
+                    href="{% url 'finances:liste_frais' %}"
+                    class="finance-button finance-button-light"
+                >
+                    ← Retour aux frais
+                </a>
+
+                <div class="finance-user-card">
+                    <div class="finance-user-avatar">
+                        {% if request.user.first_name %}
+                            {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
+                        {% else %}
+                            {{ request.user.username|first|upper }}
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <strong>
+                            {{ request.user.get_full_name|default:request.user.username }}
+                        </strong>
+
+                        <span>
+                            {% if request.user.is_superuser %}
+                                Super administrateur
+                            {% else %}
+                                {{ request.user.get_role_display }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <main class="finance-content">
+
+            {% if messages %}
+                <section class="finance-messages">
+                    {% for message in messages %}
+                        <div class="finance-message {{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </section>
+            {% endif %}
+
+
+            <section class="finance-form-hero">
+
+                <div>
+                    <span class="finance-eyebrow finance-eyebrow-light">
+                        Paramétrage financier
+                    </span>
+
+                    <h2>
+                        {% if mode_modification %}
+                            Modification des frais
+                        {% else %}
+                            Nouveaux frais d’hébergement
+                        {% endif %}
+                    </h2>
+
+                    <p>
+                        Associez un étudiant à une année universitaire,
+                        définissez le montant et l’échéance du règlement.
+                    </p>
+                </div>
+
+                <div class="finance-form-hero-icon">
+                    💰
+                </div>
+
+            </section>
+
+
+            <section class="finance-form-layout">
+
+                <section class="finance-panel finance-form-card">
+
+                    <div class="finance-panel-heading">
+
+                        <div>
+                            <span class="finance-eyebrow">
+                                Formulaire
+                            </span>
+
+                            <h2>
+                                Informations des frais
+                            </h2>
+
+                            <p>
+                                Vérifiez soigneusement les données
+                                avant l’enregistrement.
+                            </p>
+                        </div>
+
+                        <span class="finance-result-pill">
+                            {% if mode_modification %}
+                                Modification
+                            {% else %}
+                                Création
+                            {% endif %}
+                        </span>
+
+                    </div>
+
+
+                    {% if formulaire.non_field_errors %}
+                        <div class="finance-form-errors">
+                            {% for erreur in formulaire.non_field_errors %}
+                                <p>{{ erreur }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+
+                    <form method="post" novalidate class="finance-form">
+                        {% csrf_token %}
+
+                        <div class="finance-form-grid">
+
+                            <div class="finance-form-field {% if formulaire.etudiant.errors %}has-error{% endif %}">
+                                <label for="{{ formulaire.etudiant.id_for_label }}">
+                                    Étudiant *
+                                </label>
+
+                                {{ formulaire.etudiant }}
+
+                                {% for erreur in formulaire.etudiant.errors %}
+                                    <span class="finance-field-error">
+                                        {{ erreur }}
+                                    </span>
+                                {% endfor %}
+                            </div>
+
+
+                            <div class="finance-form-field {% if formulaire.annee_universitaire.errors %}has-error{% endif %}">
+                                <label for="{{ formulaire.annee_universitaire.id_for_label }}">
+                                    Année universitaire *
+                                </label>
+
+                                {{ formulaire.annee_universitaire }}
+
+                                {% for erreur in formulaire.annee_universitaire.errors %}
+                                    <span class="finance-field-error">
+                                        {{ erreur }}
+                                    </span>
+                                {% endfor %}
+                            </div>
+
+
+                            <div class="finance-form-field {% if formulaire.montant_total.errors %}has-error{% endif %}">
+                                <label for="{{ formulaire.montant_total.id_for_label }}">
+                                    Montant total *
+                                </label>
+
+                                {{ formulaire.montant_total }}
+
+                                {% for erreur in formulaire.montant_total.errors %}
+                                    <span class="finance-field-error">
+                                        {{ erreur }}
+                                    </span>
+                                {% endfor %}
+                            </div>
+
+
+                            <div class="finance-form-field {% if formulaire.date_echeance.errors %}has-error{% endif %}">
+                                <label for="{{ formulaire.date_echeance.id_for_label }}">
+                                    Date d’échéance *
+                                </label>
+
+                                {{ formulaire.date_echeance }}
+
+                                {% for erreur in formulaire.date_echeance.errors %}
+                                    <span class="finance-field-error">
+                                        {{ erreur }}
+                                    </span>
+                                {% endfor %}
+                            </div>
+
+
+                            <div class="finance-form-field finance-form-field-full {% if formulaire.commentaire.errors %}has-error{% endif %}">
+                                <label for="{{ formulaire.commentaire.id_for_label }}">
+                                    Commentaire
+                                </label>
+
+                                {{ formulaire.commentaire }}
+
+                                {% for erreur in formulaire.commentaire.errors %}
+                                    <span class="finance-field-error">
+                                        {{ erreur }}
+                                    </span>
+                                {% endfor %}
+                            </div>
+
+
+                            <div class="finance-form-field finance-form-field-full finance-switch-zone">
+                                <label class="finance-checkbox-line" for="{{ formulaire.est_actif.id_for_label }}">
+                                    {{ formulaire.est_actif }}
+
+                                    <span>
+                                        <strong>Frais actifs</strong>
+                                        <small>
+                                            Les frais sont disponibles dans la situation financière de l’étudiant.
+                                        </small>
+                                    </span>
+                                </label>
+
+                                {% for erreur in formulaire.est_actif.errors %}
+                                    <span class="finance-field-error">
+                                        {{ erreur }}
+                                    </span>
+                                {% endfor %}
+                            </div>
+
+                        </div>
+
+
+                        <div class="finance-form-actions">
+
+                            <a
+                                href="{% url 'finances:liste_frais' %}"
+                                class="finance-button finance-button-light"
+                            >
+                                Annuler
+                            </a>
+
+                            <button
+                                type="submit"
+                                class="finance-button finance-button-primary"
+                            >
+                                {% if mode_modification %}
+                                    ✓ Enregistrer les modifications
+                                {% else %}
+                                    + Créer les frais
+                                {% endif %}
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </section>
+
+
+                <aside class="finance-form-aside">
+
+                    <section class="finance-panel finance-help-card">
+                        <span class="finance-eyebrow">
+                            Règles
+                        </span>
+
+                        <h3>
+                            Avant d’enregistrer
+                        </h3>
+
+                        <div class="finance-help-list">
+
+                            <div>
+                                <span>01</span>
+                                <p>
+                                    Sélectionnez le bon étudiant et la bonne année universitaire.
+                                </p>
+                            </div>
+
+                            <div>
+                                <span>02</span>
+                                <p>
+                                    Le montant doit correspondre aux frais d’hébergement prévus.
+                                </p>
+                            </div>
+
+                            <div>
+                                <span>03</span>
+                                <p>
+                                    L’échéance permettra d’identifier les dossiers en retard.
+                                </p>
+                            </div>
+
+                        </div>
+                    </section>
+
+                </aside>
+
+            </section>
+
+        </main>
+
+
+        <footer class="finance-footer">
+            Gestion de l’internat universitaire — {% now "Y" %}
+        </footer>
+
+    </div>
+
+</div>
+
+</body>
+</html>

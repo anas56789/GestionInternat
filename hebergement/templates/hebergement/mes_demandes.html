@@ -1,0 +1,241 @@
+{% extends "dashboard/base_etudiant.html" %}
+{% load static %}
+
+{% block title %}
+Mes demandes d'hébergement — GestionInternat
+{% endblock %}
+
+{% block titre_page %}
+Mes demandes d’hébergement
+{% endblock %}
+
+{% block sous_titre_page %}
+Consultez l’avancement de vos dossiers, les justificatifs et les affectations associées.
+{% endblock %}
+
+{% block css_page %}
+<link
+    rel="stylesheet"
+    href="{% static 'hebergement/mes_demandes.css' %}?v=2"
+>
+{% endblock %}
+
+{% block contenu_etudiant %}
+
+<div class="actions-page-etudiant">
+    <a
+        href="{% url 'hebergement:deposer_demande' %}"
+        class="bouton bouton-principal"
+    >
+        + Nouvelle demande
+    </a>
+</div>
+
+<div class="conteneur conteneur-page-etudiant">
+<section class="banniere-demandes">
+            <div>
+                <span class="sur-titre">Suivi des dossiers</span>
+                <h2>Historique de mes demandes</h2>
+                <p>
+                    Retrouvez les décisions administratives, la validation des pièces
+                    et la chambre attribuée pour chaque année universitaire.
+                </p>
+            </div>
+
+            <div class="compteur-banniere">
+                <strong>{{ nombre_total|default:0 }}</strong>
+                <span>demande(s)</span>
+            </div>
+        </section>
+
+        <section class="statistiques-demandes">
+            <article class="statistique">
+                <div class="icone-statistique">📚</div>
+                <div><span>Total</span><strong>{{ nombre_total|default:0 }}</strong></div>
+            </article>
+
+            <article class="statistique">
+                <div class="icone-statistique">📝</div>
+                <div><span>Brouillons</span><strong>{{ nombre_brouillons|default:0 }}</strong></div>
+            </article>
+
+            <article class="statistique">
+                <div class="icone-statistique">🔎</div>
+                <div><span>En cours</span><strong>{{ nombre_en_cours|default:0 }}</strong></div>
+            </article>
+
+            <article class="statistique">
+                <div class="icone-statistique">✅</div>
+                <div><span>Acceptées</span><strong class="valeur-succes">{{ nombre_acceptees|default:0 }}</strong></div>
+            </article>
+
+            <article class="statistique">
+                <div class="icone-statistique">❌</div>
+                <div><span>Refusées</span><strong class="valeur-danger">{{ nombre_refusees|default:0 }}</strong></div>
+            </article>
+        </section>
+
+        <section class="carte-principale">
+            <div class="entete-section">
+                <div>
+                    <span class="petit-titre">Dossiers enregistrés</span>
+                    <h2>Mes demandes</h2>
+                    <p>Cliquez sur « Consulter » pour voir le dossier complet et ses justificatifs.</p>
+                </div>
+
+                <a href="{% url 'hebergement:deposer_demande' %}" class="bouton bouton-principal">
+                    Déposer une demande
+                </a>
+            </div>
+
+            {% if demandes %}
+                <div class="grille-demandes">
+                    {% for demande in demandes %}
+                        <article class="carte-demande">
+                            <div class="barre-statut statut-{{ demande.statut|lower }}"></div>
+
+                            <div class="entete-demande">
+                                <div>
+                                    <span class="annee-demande">{{ demande.annee_universitaire.libelle }}</span>
+                                    <small>Créée le {{ demande.date_creation|date:"d/m/Y à H:i" }}</small>
+                                </div>
+
+                                <span class="badge-statut statut-{{ demande.statut|lower }}">
+                                    {{ demande.get_statut_display }}
+                                </span>
+                            </div>
+
+                            <div class="grille-informations">
+                                <div class="information">
+                                    <span>Date de soumission</span>
+                                    <strong>
+                                        {% if demande.date_soumission %}
+                                            {{ demande.date_soumission|date:"d/m/Y à H:i" }}
+                                        {% else %}
+                                            Non soumise
+                                        {% endif %}
+                                    </strong>
+                                </div>
+
+                                <div class="information">
+                                    <span>Date de décision</span>
+                                    <strong>
+                                        {% if demande.date_decision %}
+                                            {{ demande.date_decision|date:"d/m/Y à H:i" }}
+                                        {% else %}
+                                            Aucune décision
+                                        {% endif %}
+                                    </strong>
+                                </div>
+
+                                <div class="information">
+                                    <span>Distance du domicile</span>
+                                    <strong>{{ demande.distance_domicile }} km</strong>
+                                </div>
+
+                                <div class="information">
+                                    <span>Traitée par</span>
+                                    <strong>
+                                        {% if demande.traitee_par %}
+                                            {{ demande.traitee_par.get_full_name|default:demande.traitee_par.username }}
+                                        {% else %}
+                                            Non traitée
+                                        {% endif %}
+                                    </strong>
+                                </div>
+                            </div>
+
+                            <section class="bloc-documents">
+                                <div class="entete-bloc">
+                                    <div>
+                                        <span class="petit-titre">Pièces justificatives</span>
+                                        <h3>État des documents</h3>
+                                    </div>
+                                    <strong class="total-documents">{{ demande.nombre_justificatifs|default:0 }}</strong>
+                                </div>
+
+                                <div class="statistiques-documents">
+                                    <div><span>Total</span><strong>{{ demande.nombre_justificatifs|default:0 }}</strong></div>
+                                    <div><span>Validés</span><strong class="valeur-succes">{{ demande.nombre_justificatifs_valides|default:0 }}</strong></div>
+                                    <div><span>En attente</span><strong class="valeur-attente">{{ demande.nombre_justificatifs_en_attente|default:0 }}</strong></div>
+                                    <div><span>Rejetés</span><strong class="valeur-danger">{{ demande.nombre_justificatifs_rejetes|default:0 }}</strong></div>
+                                </div>
+
+                                {% if demande.tous_justificatifs_valides %}
+                                    <div class="alerte alerte-succes">Tous les documents sont validés.</div>
+                                {% elif demande.nombre_justificatifs_rejetes > 0 %}
+                                    <div class="alerte alerte-danger">Certains documents ont été rejetés.</div>
+                                {% elif demande.nombre_justificatifs_en_attente > 0 %}
+                                    <div class="alerte alerte-attente">Des documents sont encore en vérification.</div>
+                                {% else %}
+                                    <div class="alerte alerte-neutre">Aucun document n’a encore été ajouté.</div>
+                                {% endif %}
+                            </section>
+
+                            {% if demande.motif_decision %}
+                                <div class="observation {% if demande.statut == 'INCOMPLETE' or demande.statut == 'REFUSEE' %}observation-alerte{% endif %}">
+                                    <strong>Observation de l’administration</strong>
+                                    <p>{{ demande.motif_decision|truncatechars:220 }}</p>
+                                </div>
+                            {% endif %}
+
+                            {% if demande.affectation_en_cours %}
+                                <div class="bloc-affectation">
+                                    <div class="icone-affectation">🛏️</div>
+
+                                    <div class="details-affectation">
+                                        <span>Chambre attribuée</span>
+                                        <strong>
+                                            {{ demande.affectation_en_cours.chambre.batiment.code }}
+                                            /
+                                            {{ demande.affectation_en_cours.chambre.numero }}
+                                        </strong>
+                                        <small>
+                                            {% if demande.affectation_en_cours.chambre.etage == 0 %}
+                                                Rez-de-chaussée
+                                            {% else %}
+                                                Étage {{ demande.affectation_en_cours.chambre.etage }}
+                                            {% endif %}
+                                            · Entrée prévue le
+                                            {{ demande.affectation_en_cours.date_entree_prevue|date:"d/m/Y" }}
+                                        </small>
+                                    </div>
+
+                                    <span class="badge-statut statut-{{ demande.affectation_en_cours.statut|lower }}">
+                                        {{ demande.affectation_en_cours.get_statut_display }}
+                                    </span>
+                                </div>
+                            {% elif demande.statut == "ACCEPTEE" %}
+                                <div class="alerte alerte-information">
+                                    Votre demande est acceptée. L’attribution de la chambre est en attente.
+                                </div>
+                            {% endif %}
+
+                            <div class="actions-demande">
+                                <a href="{% url 'hebergement:detail_demande' demande.pk %}" class="bouton bouton-principal bouton-petit">
+                                    Consulter
+                                </a>
+
+                                {% if demande.statut == "BROUILLON" or demande.statut == "INCOMPLETE" %}
+                                    <a href="{% url 'hebergement:modifier_demande' demande.pk %}" class="bouton bouton-clair bouton-petit">
+                                        Compléter ou modifier
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="etat-vide">
+                    <div class="icone-vide">🏠</div>
+                    <h3>Aucune demande enregistrée</h3>
+                    <p>Vous n’avez pas encore déposé de demande d’hébergement.</p>
+                    <a href="{% url 'hebergement:deposer_demande' %}" class="bouton bouton-principal">
+                        Déposer ma première demande
+                    </a>
+                </div>
+            {% endif %}
+        </section>
+</div>
+
+{% endblock %}

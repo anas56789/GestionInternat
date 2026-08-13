@@ -1,0 +1,1716 @@
+/* =========================================================
+   GESTION DES ÉTUDIANTS — RESPONSABLE PREMIUM
+========================================================= */
+
+:root {
+    --bleu: #2563eb;
+    --bleu-fonce: #1e3a8a;
+    --bleu-clair: #eff6ff;
+    --texte: #0f172a;
+    --secondaire: #64748b;
+    --bordure: #e2e8f0;
+    --vert: #15803d;
+    --vert-clair: #dcfce7;
+    --orange: #b45309;
+    --orange-clair: #fef3c7;
+    --rouge: #b91c1c;
+    --rouge-clair: #fee2e2;
+    --violet: #6d28d9;
+    --violet-clair: #ede9fe;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body.page-etudiants-premium {
+    min-height: 100vh;
+    margin: 0;
+    background:
+        linear-gradient(
+            180deg,
+            #f8fafc 0,
+            #f3f6fb 300px,
+            #eef2f7 100%
+        );
+    color: var(--texte);
+    font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.entete-etudiants-premium {
+    min-height: 104px;
+    padding: 18px clamp(22px, 4vw, 60px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 26px;
+    border-bottom: 1px solid var(--bordure);
+    background: rgba(255, 255, 255, .97);
+    box-shadow: 0 7px 25px rgba(15, 23, 42, .055);
+}
+
+.identite-etudiants-premium {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.logo-etudiants-premium {
+    width: 60px;
+    height: 60px;
+    flex: 0 0 60px;
+    display: grid;
+    place-items: center;
+    border-radius: 17px;
+    background:
+        linear-gradient(
+            135deg,
+            var(--bleu),
+            #60a5fa
+        );
+    color: #fff;
+    box-shadow:
+        0 10px 22px rgba(37, 99, 235, .22);
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.sur-titre-etudiants {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--bleu);
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+.identite-etudiants-premium h1 {
+    margin: 0;
+    font-size: clamp(22px, 2.1vw, 30px);
+    letter-spacing: -.025em;
+}
+
+.identite-etudiants-premium p {
+    margin: 5px 0 0;
+    color: var(--secondaire);
+    font-size: 13px;
+}
+
+.actions-entete-etudiants {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+}
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.bouton-etudiant {
+    min-height: 42px;
+    padding: 9px 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 800;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+        transform .16s ease,
+        background .16s ease,
+        border-color .16s ease;
+}
+
+.bouton-etudiant:hover {
+    transform: translateY(-1px);
+}
+
+.bouton-etudiant-principal {
+    background: var(--bleu);
+    color: #fff;
+    box-shadow:
+        0 7px 16px rgba(37, 99, 235, .15);
+}
+
+.bouton-etudiant-principal:hover {
+    background: #1d4ed8;
+}
+
+.bouton-etudiant-clair {
+    border-color: #dbe4f0;
+    background: #fff;
+    color: #334155;
+}
+
+.bouton-etudiant-clair:hover {
+    border-color: #bfdbfe;
+    background: var(--bleu-clair);
+    color: #1d4ed8;
+}
+
+.bouton-etudiant-sombre {
+    background: #334155;
+    color: #fff;
+}
+
+/* =========================================================
+   CONTAINER / MESSAGES
+========================================================= */
+
+.conteneur-etudiants-premium {
+    width: min(1480px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 30px 0 46px;
+}
+
+.messages-etudiants-premium {
+    margin-bottom: 18px;
+    display: grid;
+    gap: 9px;
+}
+
+.message-etudiant-premium {
+    padding: 13px 15px;
+    border: 1px solid #bfdbfe;
+    border-radius: 11px;
+    background: var(--bleu-clair);
+    color: #1e40af;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.message-etudiant-premium.success {
+    border-color: #bbf7d0;
+    background: #f0fdf4;
+    color: #166534;
+}
+
+.message-etudiant-premium.error {
+    border-color: #fecaca;
+    background: #fef2f2;
+    color: var(--rouge);
+}
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero-etudiants-premium,
+.hero-dossier-etudiant,
+.hero-formulaire-etudiant {
+    margin-bottom: 22px;
+    padding: clamp(25px, 3vw, 36px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+    border-radius: 22px;
+    background:
+        radial-gradient(
+            circle at 88% 15%,
+            rgba(255, 255, 255, .18),
+            transparent 24%
+        ),
+        linear-gradient(
+            135deg,
+            var(--bleu-fonce),
+            var(--bleu) 57%,
+            #3b82f6
+        );
+    color: #fff;
+    box-shadow:
+        0 18px 35px rgba(37, 99, 235, .19);
+}
+
+.sur-titre-hero-etudiants {
+    display: block;
+    margin-bottom: 7px;
+    color: #bfdbfe;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: .11em;
+    text-transform: uppercase;
+}
+
+.hero-etudiants-premium h2,
+.hero-dossier-etudiant h2,
+.hero-formulaire-etudiant h2 {
+    margin: 0 0 8px;
+    font-size: clamp(28px, 3vw, 38px);
+    letter-spacing: -.03em;
+}
+
+.hero-etudiants-premium p,
+.hero-dossier-etudiant p,
+.hero-formulaire-etudiant p {
+    max-width: 800px;
+    margin: 0;
+    color: #dbeafe;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.compteur-hero-etudiants {
+    min-width: 145px;
+    padding: 19px 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 17px;
+    background: rgba(255,255,255,.12);
+}
+
+.compteur-hero-etudiants strong {
+    font-size: 33px;
+}
+
+.compteur-hero-etudiants span {
+    color: #dbeafe;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+/* =========================================================
+   CARDS
+========================================================= */
+
+.carte-etudiants-premium {
+    margin-bottom: 22px;
+    padding: 23px;
+    border: 1px solid var(--bordure);
+    border-radius: 18px;
+    background: #fff;
+    box-shadow:
+        0 7px 22px rgba(15, 23, 42, .05);
+}
+
+.carte-sans-marge {
+    margin-bottom: 0;
+}
+
+.entete-carte-etudiants {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.entete-carte-etudiants h2 {
+    margin: 4px 0 5px;
+    font-size: 21px;
+}
+
+.entete-carte-etudiants p {
+    margin: 0;
+    color: var(--secondaire);
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.mini-label-etudiants {
+    color: var(--bleu);
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+}
+
+.badge-filtres-etudiants {
+    padding: 7px 10px;
+    border-radius: 999px;
+    background: var(--orange-clair);
+    color: #92400e;
+    font-size: 9px;
+    font-weight: 900;
+}
+
+/* =========================================================
+   FILTERS
+========================================================= */
+
+.formulaire-filtres-etudiants {
+    display: grid;
+    grid-template-columns:
+        minmax(280px, 1.55fr)
+        repeat(3, minmax(150px, 1fr));
+    gap: 12px;
+    align-items: end;
+}
+
+.groupe-filtre-etudiant {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.groupe-filtre-etudiant label {
+    color: #334155;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.groupe-filtre-etudiant input,
+.groupe-filtre-etudiant select {
+    width: 100%;
+    height: 42px;
+    padding: 0 11px;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    outline: 0;
+    background: #fff;
+    color: var(--texte);
+    font-size: 10px;
+}
+
+.groupe-filtre-etudiant input:focus,
+.groupe-filtre-etudiant select:focus {
+    border-color: var(--bleu);
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, .1);
+}
+
+.actions-filtres-etudiants {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+/* =========================================================
+   PROFILE GRID
+========================================================= */
+
+.grille-profils-etudiants {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.profil-etudiant-premium {
+    overflow: hidden;
+    border: 1px solid #dbe4f0;
+    border-radius: 15px;
+    background: #fff;
+    box-shadow:
+        0 5px 17px rgba(15,23,42,.04);
+    transition:
+        transform .17s ease,
+        box-shadow .17s ease;
+}
+
+.profil-etudiant-premium:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 12px 28px rgba(15,23,42,.075);
+}
+
+.entete-profil-etudiant {
+    padding: 15px 16px;
+    display: grid;
+    grid-template-columns:
+        auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 11px;
+    border-bottom: 1px solid #eef2f7;
+    background: #fbfdff;
+}
+
+.photo-profil-etudiant,
+.photo-formulaire-resume {
+    width: 49px;
+    height: 49px;
+    flex: 0 0 49px;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+    border-radius: 13px;
+    background:
+        linear-gradient(
+            135deg,
+            var(--bleu),
+            #60a5fa
+        );
+    color: #fff;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.photo-profil-etudiant img,
+.photo-formulaire-resume img,
+.photo-hero-etudiant img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.identite-profil-etudiant {
+    min-width: 0;
+}
+
+.identite-profil-etudiant h3 {
+    margin: 2px 0;
+    overflow: hidden;
+    font-size: 16px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.identite-profil-etudiant p {
+    margin: 0;
+    overflow: hidden;
+    color: var(--secondaire);
+    font-size: 9px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.badge-statut-etudiant {
+    padding: 7px 9px;
+    border-radius: 999px;
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 9px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.badge-statut-actif,
+.badge-statut-active {
+    background: var(--vert-clair);
+    color: #166534;
+}
+
+.badge-statut-inactif,
+.badge-statut-inactive {
+    background: var(--rouge-clair);
+    color: #991b1b;
+}
+
+.grille-infos-profil-etudiant {
+    padding: 14px 16px;
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.grille-infos-profil-etudiant > div {
+    min-width: 0;
+    padding: 9px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    border: 1px solid #e7edf5;
+    border-radius: 8px;
+    background: #f8fafc;
+}
+
+.grille-infos-profil-etudiant span {
+    color: #94a3b8;
+    font-size: 7px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.grille-infos-profil-etudiant strong {
+    overflow: hidden;
+    font-size: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.etat-compte-etudiant {
+    padding: 0 16px 13px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--secondaire);
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.pastille-compte {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #94a3b8;
+}
+
+.pastille-compte-active {
+    background: #16a34a;
+}
+
+.pastille-compte-inactive {
+    background: #dc2626;
+}
+
+.actions-profil-etudiant {
+    padding: 12px 16px;
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 7px;
+    border-top: 1px solid #eef2f7;
+    background: #fbfdff;
+}
+
+/* =========================================================
+   DETAIL HERO
+========================================================= */
+
+.identite-hero-dossier {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.photo-hero-etudiant {
+    width: 70px;
+    height: 70px;
+    flex: 0 0 70px;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255,255,255,.24);
+    border-radius: 18px;
+    background: rgba(255,255,255,.13);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 900;
+}
+
+.badges-hero-etudiant {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.badge-statut-hero,
+.badge-compte-hero {
+    border: 1px solid rgba(255,255,255,.2);
+}
+
+.badge-compte-hero {
+    padding: 7px 9px;
+    border-radius: 999px;
+    font-size: 9px;
+    font-weight: 900;
+}
+
+.badge-compte-actif {
+    background: rgba(22,163,74,.22);
+    color: #dcfce7;
+}
+
+.badge-compte-inactif {
+    background: rgba(220,38,38,.22);
+    color: #fee2e2;
+}
+
+/* =========================================================
+   DETAIL PROFILE
+========================================================= */
+
+.grille-dossier-etudiant {
+    margin-bottom: 22px;
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1.65fr)
+        minmax(280px, .55fr);
+    gap: 20px;
+    align-items: start;
+}
+
+.colonne-actions-dossier {
+    position: sticky;
+    top: 18px;
+}
+
+.grille-informations-dossier {
+    display: grid;
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+    gap: 9px;
+}
+
+.information-dossier {
+    min-width: 0;
+    min-height: 72px;
+    padding: 11px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    border: 1px solid #e7edf5;
+    border-radius: 9px;
+    background: #f8fafc;
+}
+
+.information-dossier span,
+.bloc-adresse-etudiant span {
+    color: #94a3b8;
+    font-size: 8px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.information-dossier strong {
+    overflow: hidden;
+    font-size: 10px;
+    text-overflow: ellipsis;
+}
+
+.bloc-adresse-etudiant {
+    margin-top: 9px;
+    padding: 12px;
+    border: 1px solid #dbeafe;
+    border-radius: 9px;
+    background: var(--bleu-clair);
+}
+
+.bloc-adresse-etudiant p {
+    margin: 4px 0 0;
+    color: #334155;
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+.titre-actions-dossier {
+    margin: 4px 0 14px;
+    font-size: 18px;
+}
+
+.actions-verticales-etudiant {
+    display: grid;
+    gap: 8px;
+}
+
+.actions-verticales-etudiant .bouton-etudiant {
+    width: 100%;
+}
+
+/* =========================================================
+   HISTORY
+========================================================= */
+
+.liste-historique-etudiant {
+    display: grid;
+    gap: 8px;
+}
+
+.ligne-historique-etudiant {
+    padding: 11px;
+    display: grid;
+    grid-template-columns:
+        auto minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid #e7edf5;
+    border-radius: 10px;
+    background: #fbfdff;
+}
+
+.icone-historique-etudiant {
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    border-radius: 9px;
+    background: var(--bleu-clair);
+}
+
+.contenu-historique-etudiant {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.contenu-historique-etudiant strong {
+    font-size: 10px;
+}
+
+.contenu-historique-etudiant span {
+    color: var(--secondaire);
+    font-size: 8px;
+}
+
+.badge-statut-historique,
+.badge-finance-etudiant {
+    padding: 6px 8px;
+    border-radius: 999px;
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 8px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.badge-demande-acceptee,
+.badge-affectation-active,
+.badge-reclamation-resolue {
+    background: var(--vert-clair);
+    color: #166534;
+}
+
+.badge-demande-refusee,
+.badge-affectation-annulee,
+.badge-reclamation-rejetee {
+    background: var(--rouge-clair);
+    color: #991b1b;
+}
+
+.badge-demande-soumise,
+.badge-demande-en_etude,
+.badge-affectation-prevue,
+.badge-reclamation-nouvelle {
+    background: var(--bleu-clair);
+    color: #1e40af;
+}
+
+.badge-demande-incomplete,
+.badge-demande-attente,
+.badge-reclamation-en_cours {
+    background: var(--orange-clair);
+    color: #92400e;
+}
+
+.lien-historique-etudiant {
+    color: var(--bleu);
+    font-size: 9px;
+    font-weight: 900;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.grille-historique-dossier {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.mini-carte-dossier {
+    padding: 12px;
+    border: 1px solid #e7edf5;
+    border-radius: 10px;
+    background: #fbfdff;
+}
+
+.entete-mini-carte-dossier {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.entete-mini-carte-dossier > div {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.entete-mini-carte-dossier span:not(.badge-statut-historique) {
+    color: #94a3b8;
+    font-size: 8px;
+}
+
+.entete-mini-carte-dossier strong {
+    font-size: 16px;
+}
+
+.grille-meta-mini-carte {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    gap: 7px;
+}
+
+.grille-meta-mini-carte > div {
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    border-radius: 7px;
+    background: #f1f5f9;
+}
+
+.grille-meta-mini-carte span {
+    color: #94a3b8;
+    font-size: 7px;
+    text-transform: uppercase;
+}
+
+.grille-meta-mini-carte strong {
+    font-size: 9px;
+}
+
+.grille-bas-dossier {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.ligne-finance-etudiant,
+.ligne-reclamation-etudiant {
+    padding: 10px;
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 9px;
+    border: 1px solid #e7edf5;
+    border-radius: 9px;
+    background: #fbfdff;
+}
+
+.ligne-finance-etudiant > div,
+.ligne-reclamation-etudiant > div {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.ligne-finance-etudiant span,
+.ligne-reclamation-etudiant div > span {
+    color: #94a3b8;
+    font-size: 7px;
+    text-transform: uppercase;
+}
+
+.ligne-finance-etudiant strong,
+.ligne-reclamation-etudiant strong {
+    overflow: hidden;
+    font-size: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ligne-finance-etudiant small,
+.ligne-reclamation-etudiant small {
+    color: var(--secondaire);
+    font-size: 8px;
+}
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.conteneur-formulaire-etudiant {
+    max-width: 1380px;
+}
+
+.icone-formulaire-etudiant {
+    width: 76px;
+    height: 76px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 18px;
+    background: rgba(255,255,255,.12);
+    font-size: 31px;
+}
+
+.grille-formulaire-etudiant {
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1.6fr)
+        minmax(290px, .6fr);
+    gap: 20px;
+    align-items: start;
+}
+
+.colonne-aide-etudiant {
+    display: grid;
+    gap: 15px;
+    position: sticky;
+    top: 18px;
+}
+
+.badge-mode-etudiant {
+    padding: 7px 9px;
+    border-radius: 999px;
+    background: var(--vert-clair);
+    color: #166534;
+    font-size: 9px;
+    font-weight: 900;
+}
+
+.badge-mode-modification {
+    background: var(--bleu-clair);
+    color: #1e40af;
+}
+
+.bloc-erreurs-etudiant {
+    margin-bottom: 15px;
+    padding: 11px 12px;
+    border: 1px solid #fecaca;
+    border-radius: 9px;
+    background: #fef2f2;
+    color: var(--rouge);
+    font-size: 9px;
+}
+
+.bloc-erreurs-etudiant p {
+    margin: 4px 0 0;
+}
+
+.grille-champs-etudiant {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    gap: 15px;
+}
+
+.groupe-champ-etudiant {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.champ-etudiant-large {
+    grid-column: 1 / -1;
+}
+
+.groupe-champ-etudiant label {
+    color: #334155;
+    font-size: 10px;
+    font-weight: 900;
+}
+
+.obligatoire-etudiant {
+    color: var(--rouge);
+}
+
+.groupe-champ-etudiant input:not([type="checkbox"]),
+.groupe-champ-etudiant select,
+.groupe-champ-etudiant textarea {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 11px;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    outline: 0;
+    background: #fff;
+    color: var(--texte);
+    font-size: 10px;
+}
+
+.groupe-champ-etudiant textarea {
+    min-height: 100px;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+.groupe-champ-etudiant input[type="file"] {
+    padding: 8px;
+    border: 1px dashed #cbd5e1;
+    background: #f8fafc;
+}
+
+.groupe-champ-etudiant input:focus,
+.groupe-champ-etudiant select:focus,
+.groupe-champ-etudiant textarea:focus {
+    border-color: var(--bleu);
+    box-shadow:
+        0 0 0 3px rgba(37,99,235,.1);
+}
+
+.aide-champ-etudiant {
+    color: var(--secondaire);
+    font-size: 8px;
+    line-height: 1.45;
+}
+
+.erreurs-champ-etudiant {
+    display: grid;
+    gap: 4px;
+}
+
+.erreurs-champ-etudiant span {
+    padding: 6px 8px;
+    border-radius: 7px;
+    background: #fef2f2;
+    color: var(--rouge);
+    font-size: 8px;
+    font-weight: 700;
+}
+
+.separateur-formulaire-etudiant {
+    height: 1px;
+    margin: 20px 0 15px;
+    background: #eef2f7;
+}
+
+.actions-formulaire-etudiant {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.bouton-validation-etudiant {
+    min-width: 170px;
+}
+
+.profil-formulaire-resume {
+    margin: 8px 0 13px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.profil-formulaire-resume > div:last-child {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.profil-formulaire-resume strong {
+    overflow: hidden;
+    font-size: 11px;
+    text-overflow: ellipsis;
+}
+
+.profil-formulaire-resume span {
+    color: var(--secondaire);
+    font-size: 9px;
+}
+
+.ligne-resume-etudiant {
+    padding: 9px 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    border-bottom: 1px solid #eef2f7;
+}
+
+.ligne-resume-etudiant span {
+    color: var(--secondaire);
+    font-size: 8px;
+}
+
+.ligne-resume-etudiant strong {
+    max-width: 65%;
+    overflow: hidden;
+    font-size: 9px;
+    text-align: right;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.carte-aide-etudiant h2 {
+    margin: 4px 0 13px;
+    font-size: 17px;
+}
+
+.liste-conseils-etudiant {
+    display: grid;
+    gap: 9px;
+}
+
+.liste-conseils-etudiant > div {
+    display: grid;
+    grid-template-columns:
+        auto minmax(0, 1fr);
+    align-items: center;
+    gap: 8px;
+}
+
+.liste-conseils-etudiant > div > span {
+    width: 27px;
+    height: 27px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    background: var(--bleu-clair);
+    color: var(--bleu);
+    font-size: 8px;
+    font-weight: 900;
+}
+
+.liste-conseils-etudiant p {
+    margin: 0;
+    color: var(--secondaire);
+    font-size: 8px;
+    line-height: 1.45;
+}
+
+/* =========================================================
+   EMPTY
+========================================================= */
+
+.etat-vide-etudiants,
+.etat-vide-compact-etudiant {
+    grid-column: 1 / -1;
+    padding: 40px 18px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.etat-vide-etudiants > span {
+    width: 54px;
+    height: 54px;
+    display: grid;
+    place-items: center;
+    border-radius: 15px;
+    background: var(--bleu-clair);
+    font-size: 23px;
+}
+
+.etat-vide-etudiants h3 {
+    margin: 10px 0 4px;
+}
+
+.etat-vide-etudiants p {
+    margin: 0 0 13px;
+    color: var(--secondaire);
+    font-size: 9px;
+}
+
+.etat-vide-compact-etudiant {
+    min-height: 80px;
+    justify-content: center;
+    padding: 20px;
+    border: 1px dashed #cbd5e1;
+    border-radius: 9px;
+    color: var(--secondaire);
+    font-size: 9px;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1050px) {
+    .formulaire-filtres-etudiants {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .filtre-recherche-etudiant {
+        grid-column: 1 / -1;
+    }
+
+    .grille-informations-dossier {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 900px) {
+    .entete-etudiants-premium {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .hero-etudiants-premium,
+    .hero-dossier-etudiant,
+    .hero-formulaire-etudiant {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .grille-profils-etudiants,
+    .grille-dossier-etudiant,
+    .grille-formulaire-etudiant,
+    .grille-bas-dossier {
+        grid-template-columns: 1fr;
+    }
+
+    .colonne-actions-dossier,
+    .colonne-aide-etudiant {
+        position: static;
+    }
+}
+
+@media (max-width: 650px) {
+    .conteneur-etudiants-premium {
+        width: calc(100% - 22px);
+        padding-top: 18px;
+    }
+
+    .entete-etudiants-premium {
+        padding: 15px 16px;
+    }
+
+    .actions-entete-etudiants {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .actions-entete-etudiants .bouton-etudiant {
+        width: 100%;
+    }
+
+    .formulaire-filtres-etudiants,
+    .grille-informations-dossier,
+    .grille-champs-etudiant,
+    .grille-historique-dossier {
+        grid-template-columns: 1fr;
+    }
+
+    .filtre-recherche-etudiant,
+    .champ-etudiant-large {
+        grid-column: auto;
+    }
+
+    .carte-etudiants-premium {
+        padding: 16px;
+    }
+
+    .entete-carte-etudiants,
+    .entete-profil-etudiant {
+        align-items: stretch;
+    }
+
+    .entete-profil-etudiant {
+        grid-template-columns:
+            auto minmax(0, 1fr);
+    }
+
+    .entete-profil-etudiant .badge-statut-etudiant {
+        grid-column: 1 / -1;
+        width: max-content;
+    }
+
+    .actions-filtres-etudiants,
+    .actions-formulaire-etudiant {
+        flex-direction: column-reverse;
+    }
+
+    .actions-filtres-etudiants .bouton-etudiant,
+    .actions-formulaire-etudiant .bouton-etudiant {
+        width: 100%;
+    }
+
+    .ligne-historique-etudiant,
+    .ligne-finance-etudiant,
+    .ligne-reclamation-etudiant {
+        grid-template-columns: 1fr;
+    }
+
+    .icone-historique-etudiant {
+        display: none;
+    }
+
+    .identite-hero-dossier {
+        align-items: flex-start;
+    }
+}
+
+
+/* =========================================================
+   LISTE ÉTUDIANTS — INTÉGRATION AU LAYOUT GESTIONINTERNAT
+   Le CSS existant reste disponible pour detail_etudiant.html
+   et formulaire_etudiant.html.
+========================================================= */
+
+body.page-etudiants-premium {
+    overflow-x: hidden;
+    background: #f3f6fb;
+}
+
+.page-etudiants-premium .app-shell {
+    min-height: 100vh;
+}
+
+.page-etudiants-premium .main-area {
+    min-width: 0;
+    min-height: 100vh;
+}
+
+/* =========================================================
+   TOPBAR ÉTUDIANTS
+========================================================= */
+
+.topbar-etudiants {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+
+    min-height: 92px;
+
+    padding:
+        16px
+        clamp(20px, 3vw, 40px);
+
+    border-bottom: 1px solid #e2e8f0;
+
+    background:
+        rgba(255, 255, 255, 0.96);
+
+    box-shadow:
+        0 6px 22px
+        rgba(15, 23, 42, 0.045);
+
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.topbar-etudiants-gauche {
+    min-width: 0;
+}
+
+.topbar-etudiants-gauche h1 {
+    margin: 3px 0 0;
+
+    color: #0f172a;
+
+    font-size:
+        clamp(
+            23px,
+            2.3vw,
+            31px
+        );
+
+    font-weight: 850;
+    letter-spacing: -0.025em;
+}
+
+.topbar-etudiants-gauche p {
+    margin: 5px 0 0;
+
+    color: #64748b;
+
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.topbar-etudiants-droite {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    flex: 0 0 auto;
+}
+
+.date-topbar-etudiants {
+    display: grid;
+
+    min-width: 112px;
+
+    padding: 8px 12px;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 11px;
+
+    background: #f8fafc;
+
+    text-align: center;
+}
+
+.date-topbar-etudiants span {
+    color: #94a3b8;
+
+    font-size: 8px;
+    font-weight: 900;
+
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+.date-topbar-etudiants strong {
+    margin-top: 2px;
+
+    color: #0f172a;
+
+    font-size: 12px;
+}
+
+.notification-topbar-etudiants {
+    position: relative;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+
+    min-width: 42px;
+    height: 42px;
+
+    padding: 0 9px;
+
+    border-radius: 11px;
+
+    background: #eff6ff;
+    color: #1d4ed8;
+
+    text-decoration: none;
+}
+
+.notification-topbar-etudiants strong {
+    display: inline-grid;
+
+    min-width: 19px;
+    height: 19px;
+
+    padding: 0 5px;
+
+    place-items: center;
+
+    border-radius: 999px;
+
+    background: #dc2626;
+    color: #ffffff;
+
+    font-size: 9px;
+}
+
+.profil-topbar-etudiants {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    padding:
+        6px 10px
+        6px 7px;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+
+    background: #ffffff;
+}
+
+.avatar-topbar-etudiants {
+    display: grid;
+
+    width: 38px;
+    height: 38px;
+
+    place-items: center;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #60a5fa
+        );
+
+    color: #ffffff;
+
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.identite-topbar-etudiants {
+    min-width: 0;
+}
+
+.identite-topbar-etudiants strong,
+.identite-topbar-etudiants span {
+    display: block;
+}
+
+.identite-topbar-etudiants strong {
+    max-width: 155px;
+
+    overflow: hidden;
+
+    color: #0f172a;
+
+    font-size: 11px;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.identite-topbar-etudiants span {
+    margin-top: 2px;
+
+    color: #64748b;
+
+    font-size: 9px;
+}
+
+/* =========================================================
+   CONTENU DE LA LISTE
+========================================================= */
+
+.page-etudiants-premium
+.conteneur-etudiants-premium {
+    width:
+        min(
+            1480px,
+            calc(100% - 36px)
+        );
+
+    margin: 0 auto;
+
+    padding:
+        24px 0
+        44px;
+}
+
+.page-etudiants-premium
+.hero-etudiants-premium {
+    margin-bottom: 20px;
+
+    padding:
+        27px
+        clamp(24px, 3vw, 34px);
+
+    border-radius: 21px;
+
+    box-shadow:
+        0 14px 32px
+        rgba(37, 99, 235, 0.16);
+}
+
+.page-etudiants-premium
+.hero-etudiants-premium h2 {
+    font-size:
+        clamp(
+            26px,
+            2.8vw,
+            36px
+        );
+}
+
+.page-etudiants-premium
+.carte-etudiants-premium {
+    width: 100%;
+
+    border-color: #e2e8f0;
+
+    box-shadow:
+        0 8px 24px
+        rgba(15, 23, 42, 0.045);
+}
+
+.page-etudiants-premium
+.profil-etudiant-premium {
+    transition:
+        transform 0.18s ease,
+        border-color 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+.page-etudiants-premium
+.profil-etudiant-premium:hover {
+    transform: translateY(-3px);
+
+    border-color: #bfdbfe;
+
+    box-shadow:
+        0 14px 30px
+        rgba(37, 99, 235, 0.075);
+}
+
+/* =========================================================
+   RESPONSIVE — LISTE AVEC SIDEBAR
+========================================================= */
+
+@media (max-width: 1180px) {
+
+    .topbar-etudiants {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .topbar-etudiants-droite {
+        width: 100%;
+
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 760px) {
+
+    .topbar-etudiants {
+        position: static;
+
+        padding:
+            15px 14px;
+    }
+
+    .topbar-etudiants-droite {
+        align-items: stretch;
+    }
+
+    .date-topbar-etudiants {
+        display: none;
+    }
+
+    .profil-topbar-etudiants {
+        flex: 1 1 180px;
+    }
+
+    .page-etudiants-premium
+    .conteneur-etudiants-premium {
+        width:
+            calc(100% - 22px);
+
+        padding-top: 16px;
+    }
+
+    .page-etudiants-premium
+    .hero-etudiants-premium {
+        padding: 22px 20px;
+    }
+}
+
+@media (max-width: 520px) {
+
+    .topbar-etudiants-droite {
+        flex-direction: column;
+    }
+
+    .notification-topbar-etudiants {
+        width: 100%;
+    }
+
+    .topbar-etudiants-droite
+    .bouton-etudiant {
+        width: 100%;
+    }
+
+    .profil-topbar-etudiants {
+        width: 100%;
+    }
+}
+

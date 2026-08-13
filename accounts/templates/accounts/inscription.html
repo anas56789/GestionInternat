@@ -1,0 +1,498 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Créer un compte — GestionInternat
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'accounts/inscription.css' %}?v=1"
+    >
+</head>
+
+
+<body class="page-inscription">
+
+
+<main class="inscription-layout">
+
+
+    <!-- ============================================= -->
+    <!-- PARTIE VISUELLE -->
+    <!-- ============================================= -->
+
+    <section class="inscription-visual">
+
+
+        <div class="overlay-inscription"></div>
+
+
+        <div class="contenu-visual-inscription">
+
+
+            <a
+                href="{% url 'accounts:connexion' %}"
+                class="logo-inscription"
+            >
+
+                <img
+                    src="{% static 'accounts/images/logo-gestioninternat.png' %}"
+                    alt="GestionInternat"
+                >
+
+            </a>
+
+
+            <div class="texte-visual-inscription">
+
+                <span class="mini-titre-inscription">
+                    Internat universitaire
+                </span>
+
+
+                <h1>
+                    Votre espace étudiant
+                    commence ici.
+                </h1>
+
+
+                <p>
+                    Créez votre compte pour suivre
+                    votre demande d'hébergement,
+                    votre affectation, votre situation
+                    financière et vos réclamations.
+                </p>
+
+
+                <div class="avantages-inscription">
+
+
+                    <div>
+                        <span>✓</span>
+
+                        <p>
+                            Suivi des demandes
+                            d'hébergement
+                        </p>
+                    </div>
+
+
+                    <div>
+                        <span>✓</span>
+
+                        <p>
+                            Consultation de votre chambre
+                            et de votre affectation
+                        </p>
+                    </div>
+
+
+                    <div>
+                        <span>✓</span>
+
+                        <p>
+                            Paiements, réclamations
+                            et notifications centralisés
+                        </p>
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <span class="copyright-inscription">
+                GestionInternat — {% now "Y" %}
+            </span>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- ============================================= -->
+    <!-- FORMULAIRE -->
+    <!-- ============================================= -->
+
+    <section class="zone-formulaire-inscription">
+
+
+        <div class="carte-inscription">
+
+
+            <header class="entete-formulaire-inscription">
+
+
+                <span class="sur-titre-formulaire">
+                    Nouveau compte
+                </span>
+
+
+                <h2>
+                    Créer votre compte étudiant
+                </h2>
+
+
+                <p>
+                    Renseignez vos informations
+                    pour accéder à votre espace personnel.
+                </p>
+
+
+            </header>
+
+
+            {% if messages %}
+
+                <div class="messages-inscription">
+
+                    {% for message in messages %}
+
+                        <div
+                            class="
+                                message-inscription
+                                {{ message.tags }}
+                            "
+                        >
+                            {{ message }}
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
+
+            {% if formulaire.non_field_errors %}
+
+                <div class="erreur-generale-inscription">
+
+                    {% for erreur in formulaire.non_field_errors %}
+
+                        <p>
+                            {{ erreur }}
+                        </p>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
+
+            <form
+                method="post"
+                class="formulaire-inscription"
+                novalidate
+            >
+
+                {% csrf_token %}
+
+
+                <!-- NOM / PRENOM -->
+
+                <div class="grille-inscription">
+
+
+                    <div class="groupe-inscription">
+
+                        <label
+                            for="{{ formulaire.first_name.id_for_label }}"
+                        >
+                            Prénom
+                        </label>
+
+                        {{ formulaire.first_name }}
+
+                        {% for erreur in formulaire.first_name.errors %}
+                            <span class="erreur-champ-inscription">
+                                {{ erreur }}
+                            </span>
+                        {% endfor %}
+
+                    </div>
+
+
+                    <div class="groupe-inscription">
+
+                        <label
+                            for="{{ formulaire.last_name.id_for_label }}"
+                        >
+                            Nom
+                        </label>
+
+                        {{ formulaire.last_name }}
+
+                        {% for erreur in formulaire.last_name.errors %}
+                            <span class="erreur-champ-inscription">
+                                {{ erreur }}
+                            </span>
+                        {% endfor %}
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- USERNAME -->
+
+                <div class="groupe-inscription">
+
+                    <label
+                        for="{{ formulaire.username.id_for_label }}"
+                    >
+                        Nom d'utilisateur
+                    </label>
+
+                    {{ formulaire.username }}
+
+                    {% for erreur in formulaire.username.errors %}
+                        <span class="erreur-champ-inscription">
+                            {{ erreur }}
+                        </span>
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- EMAIL -->
+
+                <div class="groupe-inscription">
+
+                    <label
+                        for="{{ formulaire.email.id_for_label }}"
+                    >
+                        Adresse e-mail
+                    </label>
+
+                    {{ formulaire.email }}
+
+                    {% for erreur in formulaire.email.errors %}
+                        <span class="erreur-champ-inscription">
+                            {{ erreur }}
+                        </span>
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- PASSWORDS -->
+
+                <div class="grille-inscription">
+
+
+                    <div class="groupe-inscription">
+
+                        <label
+                            for="{{ formulaire.password1.id_for_label }}"
+                        >
+                            Mot de passe
+                        </label>
+
+                        <div class="password-wrapper">
+
+                            {{ formulaire.password1 }}
+
+                            <button
+                                type="button"
+                                class="toggle-password"
+                                data-target="{{ formulaire.password1.id_for_label }}"
+                                aria-label="Afficher le mot de passe"
+                            >
+                                ◉
+                            </button>
+
+                        </div>
+
+                        {% for erreur in formulaire.password1.errors %}
+                            <span class="erreur-champ-inscription">
+                                {{ erreur }}
+                            </span>
+                        {% endfor %}
+
+                    </div>
+
+
+                    <div class="groupe-inscription">
+
+                        <label
+                            for="{{ formulaire.password2.id_for_label }}"
+                        >
+                            Confirmation
+                        </label>
+
+                        <div class="password-wrapper">
+
+                            {{ formulaire.password2 }}
+
+                            <button
+                                type="button"
+                                class="toggle-password"
+                                data-target="{{ formulaire.password2.id_for_label }}"
+                                aria-label="Afficher le mot de passe"
+                            >
+                                ◉
+                            </button>
+
+                        </div>
+
+                        {% for erreur in formulaire.password2.errors %}
+                            <span class="erreur-champ-inscription">
+                                {{ erreur }}
+                            </span>
+                        {% endfor %}
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- PASSWORD RULES -->
+
+                <div class="regles-mot-de-passe">
+
+                    <strong>
+                        Sécurité du mot de passe
+                    </strong>
+
+                    <p>
+                        Utilisez un mot de passe suffisamment
+                        long et difficile à deviner.
+                    </p>
+
+                </div>
+
+
+                <!-- CONDITIONS -->
+
+                <div class="conditions-inscription">
+
+                    {{ formulaire.accepter_conditions }}
+
+                    <label
+                        for="{{ formulaire.accepter_conditions.id_for_label }}"
+                    >
+                        J'accepte les conditions d'utilisation
+                        et la politique de confidentialité.
+                    </label>
+
+                </div>
+
+
+                {% for erreur in formulaire.accepter_conditions.errors %}
+
+                    <span class="erreur-champ-inscription">
+                        {{ erreur }}
+                    </span>
+
+                {% endfor %}
+
+
+                <!-- SUBMIT -->
+
+                <button
+                    type="submit"
+                    class="bouton-creer-compte"
+                >
+                    Créer mon compte
+                    <span>→</span>
+                </button>
+
+
+            </form>
+
+
+            <div class="separateur-inscription">
+
+                <span>
+                    Déjà inscrit ?
+                </span>
+
+            </div>
+
+
+            <a
+                href="{% url 'accounts:connexion' %}"
+                class="bouton-connexion-inscription"
+            >
+                Se connecter
+            </a>
+
+
+            <div class="note-securite-inscription">
+
+                <span>
+                    🔒
+                </span>
+
+                <p>
+                    Votre compte est créé uniquement
+                    avec le rôle Étudiant.
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+</main>
+
+
+<script>
+    document
+        .querySelectorAll(".toggle-password")
+        .forEach(function (button) {
+
+            button.addEventListener(
+                "click",
+                function () {
+
+                    const targetId =
+                        this.dataset.target;
+
+                    const input =
+                        document.getElementById(
+                            targetId
+                        );
+
+                    if (!input) {
+                        return;
+                    }
+
+                    if (input.type === "password") {
+                        input.type = "text";
+                        this.textContent = "◌";
+                    } else {
+                        input.type = "password";
+                        this.textContent = "◉";
+                    }
+
+                }
+            );
+
+        });
+</script>
+
+
+</body>
+</html>

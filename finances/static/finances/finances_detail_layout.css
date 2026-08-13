@@ -1,0 +1,324 @@
+/* =========================================================
+   FINANCES — DETAIL DOSSIER
+========================================================= */
+
+.finance-detail-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.55fr) minmax(300px, .65fr);
+    align-items: start;
+    gap: 18px;
+}
+
+.finance-detail-main,
+.finance-detail-aside {
+    min-width: 0;
+    display: grid;
+    gap: 18px;
+}
+
+.finance-detail-main .finance-panel,
+.finance-detail-aside .finance-panel {
+    margin-bottom: 0;
+}
+
+.finance-info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.finance-info-grid > div {
+    min-width: 0;
+    padding: 11px;
+    border: 1px solid #e7edf6;
+    border-radius: 10px;
+    background: #f8fafc;
+}
+
+.finance-info-grid span,
+.finance-info-grid strong {
+    display: block;
+}
+
+.finance-info-grid span {
+    color: #64748b;
+    font-size: 8px;
+}
+
+.finance-info-grid strong {
+    margin-top: 4px;
+    color: #0f172a;
+    font-size: 10px;
+    overflow-wrap: anywhere;
+}
+
+.finance-alert {
+    padding: 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    border-radius: 14px;
+}
+
+.finance-alert-success {
+    border: 1px solid #bbf7d0;
+    background: #f0fdf4;
+}
+
+.finance-alert-warning {
+    border: 1px solid #fed7aa;
+    background: #fff7ed;
+}
+
+.finance-alert-icon {
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    background: rgba(255,255,255,.8);
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.finance-alert strong {
+    color: #0f172a;
+    font-size: 11px;
+}
+
+.finance-alert p {
+    margin: 4px 0 0;
+    color: #64748b;
+    font-size: 9px;
+    line-height: 1.45;
+}
+
+.finance-history-card {
+    box-shadow: none;
+    background: #fbfdff;
+}
+
+.finance-history-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.finance-history-top > div strong,
+.finance-history-top > div span {
+    display: block;
+}
+
+.finance-history-top > div strong {
+    color: #0f172a;
+    font-size: 18px;
+}
+
+.finance-history-top > div span {
+    margin-top: 3px;
+    color: #64748b;
+    font-size: 9px;
+}
+
+.finance-proof-box {
+    margin-top: 12px;
+    padding: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border: 1px solid #bfdbfe;
+    border-radius: 10px;
+    background: #eff6ff;
+}
+
+.finance-proof-box strong,
+.finance-proof-box span {
+    display: block;
+}
+
+.finance-proof-box strong {
+    color: #1e3a8a;
+    font-size: 9px;
+}
+
+.finance-proof-box span {
+    margin-top: 3px;
+    color: #64748b;
+    font-size: 8px;
+}
+
+.finance-proof-missing {
+    margin-top: 12px;
+    padding: 10px;
+    border: 1px solid #fecaca;
+    border-radius: 9px;
+    background: #fef2f2;
+    color: #b91c1c;
+    font-size: 9px;
+    font-weight: 750;
+}
+
+.finance-cancel-reason {
+    margin-top: 12px;
+    padding: 11px;
+    border: 1px solid #fecaca;
+    border-radius: 10px;
+    background: #fffafa;
+}
+
+.finance-cancel-reason strong {
+    color: #991b1b;
+    font-size: 9px;
+}
+
+.finance-cancel-reason p {
+    margin: 4px 0 0;
+    color: #7f1d1d;
+    font-size: 9px;
+    line-height: 1.45;
+}
+
+.finance-text-cancelled {
+    color: #991b1b;
+    font-size: 9px;
+    font-weight: 800;
+}
+
+/* aside */
+
+.finance-aside-title {
+    margin: 5px 0 0;
+    color: #0f172a;
+    font-size: 18px;
+}
+
+.finance-profile-card {
+    margin-top: 15px;
+    padding-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    border-bottom: 1px solid #edf1f6;
+}
+
+.finance-profile-avatar {
+    width: 54px;
+    height: 54px;
+    flex: 0 0 54px;
+    display: grid;
+    place-items: center;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #2563eb, #60a5fa);
+    color: #fff;
+    box-shadow: 0 8px 18px rgba(37,99,235,.20);
+    font-size: 15px;
+    font-weight: 900;
+}
+
+.finance-profile-card strong,
+.finance-profile-card span {
+    display: block;
+}
+
+.finance-profile-card strong {
+    color: #0f172a;
+    font-size: 11px;
+}
+
+.finance-profile-card span {
+    margin-top: 3px;
+    color: #64748b;
+    font-size: 9px;
+}
+
+.finance-progress-circle {
+    width: 105px;
+    height: 105px;
+    margin: 18px auto 12px;
+    display: grid;
+    place-items: center;
+    border: 12px solid #dbeafe;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: inset 0 0 0 1px #eff6ff;
+}
+
+.finance-progress-circle strong {
+    color: #1d4ed8;
+    font-size: 19px;
+}
+
+.finance-progress-text {
+    margin: 0;
+    color: #64748b;
+    font-size: 9px;
+    text-align: center;
+}
+
+.finance-progress-track {
+    width: 100%;
+    height: 8px;
+    margin-top: 14px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #e5e7eb;
+}
+
+.finance-progress-track span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #2563eb, #60a5fa);
+}
+
+.finance-aside-actions {
+    margin-top: 15px;
+    display: grid;
+    gap: 8px;
+}
+
+.finance-aside-actions .finance-button {
+    width: 100%;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1100px) {
+    .finance-detail-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .finance-detail-aside {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 800px) {
+    .finance-info-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .finance-detail-aside {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 560px) {
+    .finance-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .finance-proof-box {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .finance-proof-box .finance-button {
+        width: 100%;
+    }
+}

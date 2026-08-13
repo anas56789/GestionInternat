@@ -1,0 +1,652 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Dossier étudiant — Internat universitaire
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'dashboard/style.css' %}?v=11"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'etudiants/gestion_etudiants_premium.css' %}?v=3"
+    >
+</head>
+
+<body class="page-etudiants-premium">
+
+
+<div class="app-shell">
+
+   {% include "dashboard/sidebar_responsable.html" %}
+
+    <div class="main-area">
+
+        <header class="topbar-etudiants">
+
+            <div class="topbar-etudiants-gauche">
+                <span class="sur-titre-etudiants">Espace responsable</span>
+                <h1>Dossier étudiant</h1>
+                <p>Vue administrative complète du profil étudiant.</p>
+            </div>
+
+            <div class="topbar-etudiants-droite">
+
+                <div class="date-topbar-etudiants">
+                    <span>Aujourd’hui</span>
+                    <strong>{% now "d/m/Y" %}</strong>
+                </div>
+
+                <a
+                    href="{% url 'etudiants:modifier_etudiant' etudiant.pk %}"
+                    class="bouton-etudiant bouton-etudiant-principal"
+                >
+                    Modifier le profil
+                </a>
+
+                <a
+                    href="{% url 'etudiants:liste_etudiants' %}"
+                    class="bouton-etudiant bouton-etudiant-clair"
+                >
+                    ← Retour
+                </a>
+
+                <div class="profil-topbar-etudiants">
+                    <div class="avatar-topbar-etudiants" aria-hidden="true">
+                        {% if request.user.first_name %}
+                            {{ request.user.first_name|first|upper }}
+                            {{ request.user.last_name|first|upper }}
+                        {% else %}
+                            {{ request.user.username|first|upper }}
+                        {% endif %}
+                    </div>
+
+                    <div class="identite-topbar-etudiants">
+                        <strong>
+                            {{ request.user.get_full_name|default:request.user.username }}
+                        </strong>
+                        <span>
+                            {% if request.user.is_superuser %}
+                                Super administrateur
+                            {% else %}
+                                {{ request.user.get_role_display }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+        </header>
+
+<main class="conteneur-etudiants-premium">
+
+    {% if messages %}
+        <section class="messages-etudiants-premium">
+            {% for message in messages %}
+                <div class="message-etudiant-premium {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </section>
+    {% endif %}
+
+    <!-- =====================================================
+         HERO PROFIL
+    ====================================================== -->
+
+    <section class="hero-dossier-etudiant">
+
+        <div class="identite-hero-dossier">
+
+            <div class="photo-hero-etudiant">
+
+                {% if etudiant.photo %}
+                    <img
+                        src="{{ etudiant.photo.url }}"
+                        alt="Photo étudiant"
+                    >
+                {% else %}
+                    <span>
+                        {% if etudiant.utilisateur.first_name %}
+                            {{ etudiant.utilisateur.first_name|first|upper }}
+                            {{ etudiant.utilisateur.last_name|first|upper }}
+                        {% else %}
+                            {{ etudiant.utilisateur.username|first|upper }}
+                        {% endif %}
+                    </span>
+                {% endif %}
+
+            </div>
+
+            <div>
+                <span class="sur-titre-hero-etudiants">
+                    {{ etudiant.matricule }}
+                </span>
+
+                <h2>
+                    {{ etudiant.utilisateur.get_full_name|default:etudiant.utilisateur.username }}
+                </h2>
+
+                <p>
+                    {{ etudiant.filiere|default:"Filière non renseignée" }}
+                    ·
+                    {{ etudiant.niveau_etude|default:"Niveau non renseigné" }}
+                </p>
+            </div>
+
+        </div>
+
+        <div class="badges-hero-etudiant">
+
+            <span class="
+                badge-statut-etudiant badge-statut-hero
+                badge-statut-{{ etudiant.statut|lower }}
+            ">
+                {{ etudiant.get_statut_display }}
+            </span>
+
+            {% if etudiant.utilisateur.is_active %}
+                <span class="badge-compte-hero badge-compte-actif">
+                    Compte actif
+                </span>
+            {% else %}
+                <span class="badge-compte-hero badge-compte-inactif">
+                    Compte inactif
+                </span>
+            {% endif %}
+
+        </div>
+
+    </section>
+
+    <!-- =====================================================
+         INFORMATIONS GÉNÉRALES
+    ====================================================== -->
+
+    <section class="grille-dossier-etudiant">
+
+        <section class="carte-etudiants-premium carte-sans-marge">
+
+            <div class="entete-carte-etudiants">
+                <div>
+                    <span class="mini-label-etudiants">
+                        Identité
+                    </span>
+
+                    <h2>
+                        Informations personnelles et académiques
+                    </h2>
+
+                    <p>
+                        Coordonnées et données administratives
+                        du dossier étudiant.
+                    </p>
+                </div>
+            </div>
+
+            <div class="grille-informations-dossier">
+
+                <div class="information-dossier">
+                    <span>Matricule</span>
+                    <strong>{{ etudiant.matricule }}</strong>
+                </div>
+
+                <div class="information-dossier">
+                    <span>CNE</span>
+                    <strong>
+                        {{ etudiant.cne|default:"Non renseigné" }}
+                    </strong>
+                </div>
+
+                <div class="information-dossier">
+                    <span>Date de naissance</span>
+                    <strong>
+                        {% if etudiant.date_naissance %}
+                            {{ etudiant.date_naissance|date:"d/m/Y" }}
+                        {% else %}
+                            Non renseignée
+                        {% endif %}
+                    </strong>
+                </div>
+
+                <div class="information-dossier">
+                    <span>Sexe</span>
+                    <strong>
+                        {{ etudiant.get_sexe_display|default:"Non renseigné" }}
+                    </strong>
+                </div>
+
+                <div class="information-dossier">
+                    <span>Filière</span>
+                    <strong>
+                        {{ etudiant.filiere|default:"Non renseignée" }}
+                    </strong>
+                </div>
+
+                <div class="information-dossier">
+                    <span>Niveau d'étude</span>
+                    <strong>
+                        {{ etudiant.niveau_etude|default:"Non renseigné" }}
+                    </strong>
+                </div>
+
+                <div class="information-dossier">
+                    <span>Ville d'origine</span>
+                    <strong>
+                        {{ etudiant.ville_origine|default:"Non renseignée" }}
+                    </strong>
+                </div>
+
+                <div class="information-dossier">
+                    <span>Adresse email</span>
+                    <strong>
+                        {{ etudiant.utilisateur.email|default:"Non renseignée" }}
+                    </strong>
+                </div>
+
+                <div class="information-dossier">
+                    <span>Compte utilisateur</span>
+                    <strong>
+                        {{ etudiant.utilisateur.username }}
+                    </strong>
+                </div>
+
+                <div class="information-dossier">
+                    <span>Statut étudiant</span>
+                    <strong>
+                        {{ etudiant.get_statut_display }}
+                    </strong>
+                </div>
+
+            </div>
+
+            <div class="bloc-adresse-etudiant">
+                <span>Adresse</span>
+
+                <p>
+                    {{ etudiant.adresse|default:"Adresse non renseignée." }}
+                </p>
+            </div>
+
+        </section>
+
+        <aside class="colonne-actions-dossier">
+
+            <section class="carte-etudiants-premium carte-sans-marge">
+
+                <span class="mini-label-etudiants">
+                    Gestion
+                </span>
+
+                <h2 class="titre-actions-dossier">
+                    Actions rapides
+                </h2>
+
+                <div class="actions-verticales-etudiant">
+
+                    <a
+                        href="{% url 'etudiants:modifier_etudiant' etudiant.pk %}"
+                        class="bouton-etudiant bouton-etudiant-principal"
+                    >
+                        Modifier le dossier
+                    </a>
+
+                    <a
+                        href="{% url 'hebergement:liste_demandes_responsable' %}?recherche={{ etudiant.matricule|urlencode }}"
+                        class="bouton-etudiant bouton-etudiant-clair"
+                    >
+                        Voir ses demandes
+                    </a>
+
+                    <a
+                        href="{% url 'hebergement:liste_affectations_responsable' %}?recherche={{ etudiant.matricule|urlencode }}"
+                        class="bouton-etudiant bouton-etudiant-clair"
+                    >
+                        Voir ses affectations
+                    </a>
+
+                    <a
+                        href="{% url 'finances:liste_frais' %}?recherche={{ etudiant.matricule|urlencode }}"
+                        class="bouton-etudiant bouton-etudiant-clair"
+                    >
+                        Situation financière
+                    </a>
+
+                    <a
+                        href="{% url 'reclamations:liste_reclamations_responsable' %}?recherche={{ etudiant.matricule|urlencode }}"
+                        class="bouton-etudiant bouton-etudiant-clair"
+                    >
+                        Réclamations
+                    </a>
+
+                </div>
+
+            </section>
+
+        </aside>
+
+    </section>
+
+    <!-- =====================================================
+         DEMANDES
+    ====================================================== -->
+
+    <section class="carte-etudiants-premium">
+
+        <div class="entete-carte-etudiants">
+
+            <div>
+                <span class="mini-label-etudiants">
+                    Hébergement
+                </span>
+
+                <h2>
+                    Demandes récentes
+                </h2>
+
+                <p>
+                    Les cinq dernières demandes du dossier.
+                </p>
+            </div>
+
+            <a
+                href="{% url 'hebergement:liste_demandes_responsable' %}?recherche={{ etudiant.matricule|urlencode }}"
+                class="bouton-etudiant bouton-etudiant-clair"
+            >
+                Voir toutes
+            </a>
+
+        </div>
+
+        <div class="liste-historique-etudiant">
+
+            {% for demande in demandes %}
+
+                <article class="ligne-historique-etudiant">
+
+                    <div class="icone-historique-etudiant">
+                        📄
+                    </div>
+
+                    <div class="contenu-historique-etudiant">
+                        <strong>
+                            Demande {{ demande.annee_universitaire.libelle }}
+                        </strong>
+
+                        <span>
+                            Créée le
+                            {{ demande.date_creation|date:"d/m/Y à H:i" }}
+                        </span>
+                    </div>
+
+                    <span class="
+                        badge-statut-historique
+                        badge-demande-{{ demande.statut|lower }}
+                    ">
+                        {{ demande.get_statut_display }}
+                    </span>
+
+                    <a
+                        href="{% url 'hebergement:detail_demande_responsable' demande.pk %}"
+                        class="lien-historique-etudiant"
+                    >
+                        Consulter →
+                    </a>
+
+                </article>
+
+            {% empty %}
+
+                <div class="etat-vide-compact-etudiant">
+                    Aucune demande enregistrée.
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+    <!-- =====================================================
+         AFFECTATIONS
+    ====================================================== -->
+
+    <section class="carte-etudiants-premium">
+
+        <div class="entete-carte-etudiants">
+
+            <div>
+                <span class="mini-label-etudiants">
+                    Logement
+                </span>
+
+                <h2>
+                    Affectations récentes
+                </h2>
+
+                <p>
+                    Historique récent des chambres attribuées.
+                </p>
+            </div>
+
+            <a
+                href="{% url 'hebergement:liste_affectations_responsable' %}?recherche={{ etudiant.matricule|urlencode }}"
+                class="bouton-etudiant bouton-etudiant-clair"
+            >
+                Voir toutes
+            </a>
+
+        </div>
+
+        <div class="grille-historique-dossier">
+
+            {% for affectation in affectations %}
+
+                <article class="mini-carte-dossier">
+
+                    <div class="entete-mini-carte-dossier">
+                        <div>
+                            <span>
+                                {{ affectation.annee_universitaire.libelle }}
+                            </span>
+
+                            <strong>
+                                {{ affectation.chambre.batiment.code }}
+                                /
+                                {{ affectation.chambre.numero }}
+                            </strong>
+                        </div>
+
+                        <span class="
+                            badge-statut-historique
+                            badge-affectation-{{ affectation.statut|lower }}
+                        ">
+                            {{ affectation.get_statut_display }}
+                        </span>
+                    </div>
+
+                    <div class="grille-meta-mini-carte">
+
+                        <div>
+                            <span>Entrée</span>
+                            <strong>
+                                {% if affectation.date_entree_reelle %}
+                                    {{ affectation.date_entree_reelle|date:"d/m/Y" }}
+                                {% else %}
+                                    {{ affectation.date_entree_prevue|date:"d/m/Y" }}
+                                {% endif %}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Sortie prévue</span>
+                            <strong>
+                                {{ affectation.date_sortie_prevue|date:"d/m/Y" }}
+                            </strong>
+                        </div>
+
+                    </div>
+
+                </article>
+
+            {% empty %}
+
+                <div class="etat-vide-compact-etudiant">
+                    Aucune affectation enregistrée.
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+    <!-- =====================================================
+         FINANCES + RÉCLAMATIONS
+    ====================================================== -->
+
+    <section class="grille-bas-dossier">
+
+        <section class="carte-etudiants-premium carte-sans-marge">
+
+            <div class="entete-carte-etudiants">
+                <div>
+                    <span class="mini-label-etudiants">
+                        Finances
+                    </span>
+
+                    <h2>
+                        Situations financières
+                    </h2>
+                </div>
+            </div>
+
+            <div class="liste-historique-etudiant">
+
+                {% for dossier in frais %}
+
+                    <article class="ligne-finance-etudiant">
+
+                        <div>
+                            <span>
+                                {{ dossier.annee_universitaire.libelle }}
+                            </span>
+
+                            <strong>
+                                {{ dossier.montant_total }} DH
+                            </strong>
+
+                            <small>
+                                Restant :
+                                {{ dossier.montant_restant }} DH
+                            </small>
+                        </div>
+
+                        <span class="badge-finance-etudiant">
+                            {{ dossier.statut_financier }}
+                        </span>
+
+                        <a
+                            href="{% url 'finances:detail_frais' dossier.pk %}"
+                            class="lien-historique-etudiant"
+                        >
+                            Consulter →
+                        </a>
+
+                    </article>
+
+                {% empty %}
+
+                    <div class="etat-vide-compact-etudiant">
+                        Aucun frais enregistré.
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+        <section class="carte-etudiants-premium carte-sans-marge">
+
+            <div class="entete-carte-etudiants">
+                <div>
+                    <span class="mini-label-etudiants">
+                        Suivi
+                    </span>
+
+                    <h2>
+                        Réclamations récentes
+                    </h2>
+                </div>
+            </div>
+
+            <div class="liste-historique-etudiant">
+
+                {% for reclamation in reclamations %}
+
+                    <article class="ligne-reclamation-etudiant">
+
+                        <div>
+                            <span>
+                                {{ reclamation.get_categorie_display }}
+                            </span>
+
+                            <strong>
+                                {{ reclamation.titre }}
+                            </strong>
+
+                            <small>
+                                {{ reclamation.date_creation|date:"d/m/Y" }}
+                            </small>
+                        </div>
+
+                        <span class="
+                            badge-statut-historique
+                            badge-reclamation-{{ reclamation.statut|lower }}
+                        ">
+                            {{ reclamation.get_statut_display }}
+                        </span>
+
+                        <a
+                            href="{% url 'reclamations:detail_reclamation_responsable' reclamation.pk %}"
+                            class="lien-historique-etudiant"
+                        >
+                            Consulter →
+                        </a>
+
+                    </article>
+
+                {% empty %}
+
+                    <div class="etat-vide-compact-etudiant">
+                        Aucune réclamation enregistrée.
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+    </section>
+
+</main>
+
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,537 @@
+/* =========================================================
+   MON HÉBERGEMENT — ESPACE ÉTUDIANT
+========================================================= */
+
+.hebergement-etudiant-page {
+    display: grid;
+    gap: 22px;
+}
+
+.mini-label-hebergement {
+    display: inline-block;
+    color: #2563eb;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+/* HERO */
+
+.hero-hebergement-etudiant {
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 250px;
+    align-items: center;
+    gap: 30px;
+    padding: 34px 38px;
+    border: 1px solid #c8d8ef;
+    border-radius: 24px;
+    background:
+        radial-gradient(
+            circle at 90% 20%,
+            rgba(96, 165, 250, 0.26),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            #173d91 0%,
+            #2563eb 55%,
+            #4f8df7 100%
+        );
+    color: #fff;
+    box-shadow: 0 18px 40px rgba(37, 99, 235, 0.16);
+}
+
+.hero-hebergement-etudiant::after {
+    content: "";
+    position: absolute;
+    width: 280px;
+    height: 280px;
+    right: -80px;
+    top: -130px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.hero-hebergement-etudiant .mini-label-hebergement {
+    color: #dbeafe;
+}
+
+.hero-hebergement-contenu h2 {
+    margin: 8px 0 10px;
+    font-size: clamp(30px, 3vw, 46px);
+    line-height: 1;
+}
+
+.hero-hebergement-contenu p {
+    max-width: 760px;
+    margin: 0;
+    color: #e8f0ff;
+    line-height: 1.65;
+}
+
+.hero-hebergement-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.hero-hebergement-chambre {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    min-height: 175px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(12px);
+    text-align: center;
+}
+
+.hero-hebergement-chambre span,
+.hero-hebergement-chambre small {
+    color: #e0ecff;
+}
+
+.hero-hebergement-chambre strong {
+    font-size: 54px;
+    line-height: 1;
+}
+
+/* BOUTONS */
+
+.bouton-hebergement {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 850;
+    text-decoration: none;
+    transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.bouton-hebergement:hover {
+    transform: translateY(-2px);
+}
+
+.bouton-hebergement-principal {
+    background: #fff;
+    color: #1d4ed8;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+}
+
+.bouton-hebergement-clair {
+    border: 1px solid rgba(255, 255, 255, .35);
+    background: rgba(255, 255, 255, .10);
+    color: #fff;
+}
+
+/* STATS */
+
+.grille-stats-hebergement {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.stat-hebergement {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    min-height: 112px;
+    padding: 18px;
+    border: 1px solid #d8e2ef;
+    border-radius: 18px;
+    background: linear-gradient(145deg, #fff, #fbfdff);
+    box-shadow: 0 9px 24px rgba(15, 23, 42, .045);
+}
+
+.stat-hebergement::before {
+    content: "";
+    position: absolute;
+    top: 13px;
+    bottom: 13px;
+    left: 0;
+    width: 4px;
+    border-radius: 0 999px 999px 0;
+    background: #3b82f6;
+}
+
+.stat-hebergement:nth-child(2)::before {
+    background: #7c3aed;
+}
+
+.stat-hebergement:nth-child(3)::before {
+    background: #16a34a;
+}
+
+.stat-hebergement:nth-child(4)::before {
+    background: #f59e0b;
+}
+
+.icone-stat-hebergement {
+    display: grid;
+    place-items: center;
+    flex: 0 0 48px;
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: #eff6ff;
+    font-size: 21px;
+}
+
+.stat-hebergement span,
+.stat-hebergement strong,
+.stat-hebergement small {
+    display: block;
+}
+
+.stat-hebergement div > span {
+    color: #64748b;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.stat-hebergement strong {
+    margin-top: 3px;
+    color: #0f172a;
+    font-size: 20px;
+}
+
+.stat-hebergement small {
+    margin-top: 3px;
+    color: #64748b;
+}
+
+/* CARTES */
+
+.grille-hebergement-principale {
+    display: grid;
+    grid-template-columns: 1.2fr .8fr;
+    gap: 22px;
+    align-items: start;
+}
+
+.carte-hebergement {
+    padding: 24px;
+    border: 1px solid #d7e1ed;
+    border-radius: 22px;
+    background: #fff;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, .05);
+}
+
+.entete-carte-hebergement {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+.entete-carte-hebergement h3 {
+    margin: 5px 0 0;
+    color: #0f172a;
+    font-size: 24px;
+}
+
+.entete-carte-hebergement p {
+    margin: 6px 0 0;
+    color: #64748b;
+}
+
+.grille-infos-hebergement {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.info-hebergement {
+    min-width: 0;
+    padding: 15px;
+    border: 1px solid #e1e8f1;
+    border-radius: 13px;
+    background: #f8fafc;
+}
+
+.info-hebergement span,
+.info-hebergement strong {
+    display: block;
+}
+
+.info-hebergement span {
+    color: #64748b;
+    font-size: 10px;
+}
+
+.info-hebergement strong {
+    margin-top: 5px;
+    color: #0f172a;
+    font-size: 14px;
+}
+
+/* BADGES */
+
+.badge-hebergement {
+    display: inline-flex;
+    padding: 7px 11px;
+    border-radius: 999px;
+    background: #e2e8f0;
+    color: #475569;
+    font-size: 10px;
+    font-weight: 900;
+}
+
+.badge-hebergement-active {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.badge-hebergement-prevue {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.badge-hebergement-cloturee {
+    background: #e2e8f0;
+    color: #475569;
+}
+
+.badge-hebergement-annulee {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+/* TIMELINE */
+
+.timeline-hebergement {
+    position: relative;
+    display: grid;
+    gap: 15px;
+}
+
+.etape-hebergement {
+    position: relative;
+    display: grid;
+    grid-template-columns: 18px minmax(0, 1fr);
+    gap: 12px;
+    align-items: start;
+}
+
+.etape-hebergement:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    left: 7px;
+    top: 18px;
+    bottom: -16px;
+    width: 2px;
+    background: #dbe4f0;
+}
+
+.point-timeline {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 16px;
+    height: 16px;
+    margin-top: 2px;
+    border: 4px solid #dbeafe;
+    border-radius: 50%;
+    background: #94a3b8;
+}
+
+.etape-hebergement-faite .point-timeline {
+    background: #2563eb;
+}
+
+.etape-hebergement span,
+.etape-hebergement strong {
+    display: block;
+}
+
+.etape-hebergement div > span {
+    color: #64748b;
+    font-size: 10px;
+}
+
+.etape-hebergement strong {
+    margin-top: 3px;
+    color: #0f172a;
+}
+
+/* DEMANDE */
+
+.resume-demande-hebergement {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.resume-demande-hebergement > div {
+    padding: 14px;
+    border: 1px solid #e1e8f1;
+    border-radius: 13px;
+    background: #f8fafc;
+}
+
+.resume-demande-hebergement span,
+.resume-demande-hebergement strong {
+    display: block;
+}
+
+.resume-demande-hebergement span {
+    color: #64748b;
+    font-size: 10px;
+}
+
+.resume-demande-hebergement strong {
+    margin-top: 5px;
+    color: #0f172a;
+    font-size: 13px;
+}
+
+.lien-hebergement {
+    color: #2563eb;
+    font-size: 11px;
+    font-weight: 850;
+    text-decoration: none;
+}
+
+/* HISTORIQUE */
+
+.compteur-historique {
+    display: grid;
+    place-items: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 12px;
+    border-radius: 999px;
+    background: #eff6ff;
+    color: #2563eb;
+    font-weight: 900;
+}
+
+.tableau-hebergement-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.tableau-hebergement {
+    width: 100%;
+    min-width: 840px;
+    border-collapse: collapse;
+}
+
+.tableau-hebergement th,
+.tableau-hebergement td {
+    padding: 13px 14px;
+    border-bottom: 1px solid #e5ebf3;
+    text-align: left;
+}
+
+.tableau-hebergement th {
+    background: #f8fafc;
+    color: #64748b;
+    font-size: 10px;
+    text-transform: uppercase;
+}
+
+.tableau-hebergement td {
+    color: #334155;
+    font-size: 12px;
+}
+
+.historique-vide {
+    padding: 30px;
+    border: 1px dashed #cbd5e1;
+    border-radius: 14px;
+    color: #64748b;
+    text-align: center;
+}
+
+/* VIDE */
+
+.etat-vide-hebergement {
+    padding: 55px 28px;
+    border: 1px solid #d7e1ed;
+    border-radius: 24px;
+    background: #fff;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, .05);
+    text-align: center;
+}
+
+.icone-vide-hebergement {
+    display: grid;
+    place-items: center;
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 16px;
+    border-radius: 20px;
+    background: #eff6ff;
+    font-size: 30px;
+}
+
+.etat-vide-hebergement h2 {
+    margin: 8px 0 8px;
+    color: #0f172a;
+    font-size: 28px;
+}
+
+.etat-vide-hebergement p {
+    max-width: 620px;
+    margin: 0 auto 20px;
+    color: #64748b;
+    line-height: 1.65;
+}
+
+.etat-vide-hebergement .bouton-hebergement-principal {
+    background: #2563eb;
+    color: #fff;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1180px) {
+    .grille-stats-hebergement {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grille-hebergement-principale {
+        grid-template-columns: 1fr;
+    }
+
+    .resume-demande-hebergement {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 760px) {
+    .hero-hebergement-etudiant {
+        grid-template-columns: 1fr;
+        padding: 26px 22px;
+    }
+
+    .hero-hebergement-chambre {
+        min-height: 135px;
+    }
+
+    .grille-stats-hebergement,
+    .grille-infos-hebergement,
+    .resume-demande-hebergement {
+        grid-template-columns: 1fr;
+    }
+
+    .entete-carte-hebergement {
+        flex-direction: column;
+    }
+}

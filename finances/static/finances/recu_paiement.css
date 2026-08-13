@@ -1,0 +1,771 @@
+/* =========================================================
+   REÇU DE PAIEMENT — VERSION PREMIUM / IMPRESSION
+========================================================= */
+
+:root {
+    --recu-blue: #1d4ed8;
+    --recu-blue-soft: #eff6ff;
+    --recu-navy: #172554;
+    --recu-text: #0f172a;
+    --recu-muted: #64748b;
+    --recu-border: #dbe4f0;
+    --recu-green: #15803d;
+    --recu-red: #b91c1c;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+
+    background:
+        linear-gradient(
+            180deg,
+            #eef3f8,
+            #f8fafc
+        );
+
+    color: var(--recu-text);
+
+    font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+}
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.entete-recu-actions {
+    width: min(1060px, calc(100% - 32px));
+
+    margin: 24px auto 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 10px;
+}
+
+.bouton-recu {
+    min-height: 42px;
+
+    padding: 9px 14px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid transparent;
+    border-radius: 10px;
+
+    font-size: 11px;
+    font-weight: 850;
+
+    text-decoration: none;
+
+    cursor: pointer;
+}
+
+.bouton-recu-clair {
+    border-color: #dbe4f0;
+
+    background: #ffffff;
+
+    color: #1e293b;
+}
+
+.bouton-recu-principal {
+    border-color: #2563eb;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #3b82f6
+        );
+
+    color: #ffffff;
+
+    box-shadow:
+        0 8px 18px
+        rgba(
+            37,
+            99,
+            235,
+            .16
+        );
+}
+
+
+/* =========================================================
+   DOCUMENT
+========================================================= */
+
+.document-recu {
+    width: min(1060px, calc(100% - 32px));
+
+    margin: 0 auto 36px;
+
+    padding: 34px;
+
+    border:
+        1px solid
+        var(--recu-border);
+
+    border-radius: 20px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 22px 48px
+        rgba(
+            15,
+            23,
+            42,
+            .11
+        );
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.entete-document-recu {
+    padding-bottom: 25px;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 24px;
+
+    border-bottom:
+        1px solid
+        #e6edf6;
+}
+
+.identite-recu {
+    display: flex;
+    align-items: center;
+
+    gap: 18px;
+}
+
+.logo-recu-image {
+    width: 155px;
+    height: 72px;
+
+    object-fit: contain;
+
+    filter:
+        brightness(1.08)
+        contrast(1.05)
+        drop-shadow(
+            0 5px 10px
+            rgba(
+                37,
+                99,
+                235,
+                .17
+            )
+        );
+}
+
+.sur-titre-recu {
+    display: block;
+
+    color: var(--recu-blue);
+
+    font-size: 9px;
+    font-weight: 900;
+
+    letter-spacing: .10em;
+    text-transform: uppercase;
+}
+
+.identite-recu h1 {
+    margin: 6px 0 0;
+
+    font-size: 29px;
+
+    letter-spacing: -.025em;
+}
+
+.identite-recu p {
+    max-width: 530px;
+
+    margin: 7px 0 0;
+
+    color: var(--recu-muted);
+
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+.numero-recu {
+    min-width: 230px;
+
+    padding: 14px;
+
+    border:
+        1px solid
+        #dbeafe;
+
+    border-radius: 13px;
+
+    background:
+        #f8fbff;
+}
+
+.numero-recu span,
+.numero-recu strong,
+.numero-recu small {
+    display: block;
+}
+
+.numero-recu span {
+    color: var(--recu-muted);
+
+    font-size: 8px;
+
+    text-transform: uppercase;
+}
+
+.numero-recu strong {
+    margin-top: 5px;
+
+    color: var(--recu-navy);
+
+    font-size: 15px;
+}
+
+.numero-recu small {
+    margin-top: 5px;
+
+    color: #94a3b8;
+
+    font-size: 8px;
+}
+
+
+/* =========================================================
+   CONFIRMATION
+========================================================= */
+
+.confirmation-recu {
+    margin: 22px 0;
+
+    padding: 14px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    border:
+        1px solid
+        #bbf7d0;
+
+    border-radius: 13px;
+
+    background:
+        #f0fdf4;
+}
+
+.icone-confirmation-recu {
+    width: 42px;
+    height: 42px;
+
+    flex: 0 0 42px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 12px;
+
+    background:
+        #dcfce7;
+
+    color: var(--recu-green);
+
+    font-size: 19px;
+    font-weight: 900;
+}
+
+.confirmation-recu strong {
+    color: #166534;
+
+    font-size: 11px;
+}
+
+.confirmation-recu p {
+    margin: 3px 0 0;
+
+    color: #475569;
+
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   BLOCKS
+========================================================= */
+
+.grille-recu {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            2,
+            minmax(
+                0,
+                1fr
+            )
+        );
+
+    gap: 16px;
+}
+
+.bloc-recu {
+    padding: 18px;
+
+    border:
+        1px solid
+        var(--recu-border);
+
+    border-radius: 15px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #ffffff,
+            #fbfdff
+        );
+}
+
+.bloc-recu-large {
+    margin-top: 16px;
+}
+
+.titre-bloc-recu {
+    margin-bottom: 14px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+}
+
+.titre-bloc-recu > span {
+    width: 28px;
+    height: 28px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 8px;
+
+    background: var(--recu-blue-soft);
+
+    color: var(--recu-blue);
+
+    font-size: 8px;
+    font-weight: 900;
+}
+
+.titre-bloc-recu h2 {
+    margin: 0;
+
+    font-size: 15px;
+}
+
+.liste-recu {
+    display: grid;
+}
+
+.liste-recu > div {
+    padding: 9px 0;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 14px;
+
+    border-bottom:
+        1px solid
+        #edf1f6;
+}
+
+.liste-recu > div:last-child {
+    border-bottom: 0;
+}
+
+.liste-recu span {
+    color: var(--recu-muted);
+
+    font-size: 8px;
+}
+
+.liste-recu strong {
+    max-width: 62%;
+
+    font-size: 9px;
+
+    text-align: right;
+
+    overflow-wrap: anywhere;
+}
+
+.montant-recu {
+    color: var(--recu-green);
+
+    font-size: 13px !important;
+}
+
+
+/* =========================================================
+   FINANCIAL SUMMARY
+========================================================= */
+
+.resume-financier-recu {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            4,
+            minmax(
+                0,
+                1fr
+            )
+        );
+
+    gap: 10px;
+}
+
+.resume-financier-recu > div {
+    padding: 12px;
+
+    border:
+        1px solid
+        #e7edf6;
+
+    border-radius: 10px;
+
+    background:
+        #f8fafc;
+}
+
+.resume-financier-recu span,
+.resume-financier-recu strong {
+    display: block;
+}
+
+.resume-financier-recu span {
+    color: var(--recu-muted);
+
+    font-size: 8px;
+}
+
+.resume-financier-recu strong {
+    margin-top: 5px;
+
+    font-size: 10px;
+}
+
+.valeur-succes {
+    color: var(--recu-green) !important;
+}
+
+.valeur-danger {
+    color: var(--recu-red) !important;
+}
+
+
+/* =========================================================
+   COMMENT
+========================================================= */
+
+.observation-recu {
+    margin-top: 16px;
+
+    padding: 14px;
+
+    border-left:
+        4px solid
+        #94a3b8;
+
+    border-radius:
+        0 11px 11px 0;
+
+    background: #f8fafc;
+}
+
+.observation-recu strong {
+    font-size: 9px;
+}
+
+.observation-recu p {
+    margin: 5px 0 0;
+
+    color: var(--recu-muted);
+
+    font-size: 9px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   SIGNATURE
+========================================================= */
+
+.signature-recu {
+    margin-top: 22px;
+    padding-top: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    border-top:
+        1px solid
+        #e6edf6;
+}
+
+.signature-recu > div:first-child {
+    max-width: 620px;
+}
+
+.signature-recu span {
+    color: #475569;
+
+    font-size: 9px;
+    font-weight: 850;
+}
+
+.signature-recu p {
+    margin: 5px 0 0;
+
+    color: var(--recu-muted);
+
+    font-size: 8px;
+
+    line-height: 1.45;
+}
+
+.cachet-recu {
+    width: 100px;
+    height: 100px;
+
+    display: grid;
+    place-content: center;
+
+    border:
+        3px double
+        var(--recu-green);
+
+    border-radius: 50%;
+
+    color: var(--recu-green);
+
+    text-align: center;
+
+    transform: rotate(-7deg);
+}
+
+.cachet-recu span,
+.cachet-recu small {
+    display: block;
+}
+
+.cachet-recu span {
+    font-size: 13px;
+    font-weight: 950;
+}
+
+.cachet-recu small {
+    margin-top: 3px;
+
+    font-size: 7px;
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.pied-recu {
+    margin-top: 23px;
+    padding-top: 12px;
+
+    display: flex;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    border-top:
+        1px solid
+        #edf1f6;
+
+    color: #94a3b8;
+
+    font-size: 7px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 760px) {
+
+    .entete-recu-actions,
+    .entete-document-recu,
+    .signature-recu {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .numero-recu {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .grille-recu {
+        grid-template-columns: 1fr;
+    }
+
+    .resume-financier-recu {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(
+                    0,
+                    1fr
+                )
+            );
+    }
+
+    .logo-recu-image {
+        width: 125px;
+    }
+}
+
+
+/* =========================================================
+   PRINT / PDF
+========================================================= */
+
+@media print {
+
+    @page {
+        size: A4;
+        margin: 10mm;
+    }
+
+    body {
+        background: #ffffff;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+
+    .document-recu {
+        width: 100%;
+
+        margin: 0;
+        padding: 0;
+
+        border: 0;
+        border-radius: 0;
+
+        box-shadow: none;
+    }
+
+    .entete-document-recu,
+    .confirmation-recu,
+    .grille-recu,
+    .bloc-recu,
+    .signature-recu,
+    .pied-recu {
+        break-inside: avoid;
+    }
+
+    .logo-recu-image {
+        filter: none;
+    }
+}
+
+/* =========================================================
+   REÇU DANS LE LAYOUT ÉTUDIANT
+========================================================= */
+
+.page-etudiant-layout .recu-dans-layout-etudiant {
+    width: 100%;
+}
+
+.page-etudiant-layout .entete-recu-actions {
+    width: min(1060px, 100%);
+    margin-top: 0;
+}
+
+.page-etudiant-layout .document-recu {
+    width: min(1060px, 100%);
+}
+
+/* Impression : on masque tout le shell étudiant */
+@media print {
+
+    .sidebar-admin,
+    .topbar-etudiant-commune,
+    .messages-layout-etudiant,
+    .footer-layout-etudiant,
+    .entete-recu-actions {
+        display: none !important;
+    }
+
+    .student-main-area,
+    .contenu-layout-etudiant,
+    .recu-dans-layout-etudiant {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+    }
+
+    .app-shell,
+    .student-app-shell {
+        display: block !important;
+        min-height: 0 !important;
+    }
+
+    .document-recu {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+}

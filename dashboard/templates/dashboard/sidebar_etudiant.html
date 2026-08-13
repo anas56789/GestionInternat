@@ -1,0 +1,112 @@
+{% load static %}
+
+<aside class="sidebar-admin sidebar-etudiant">
+
+    <div class="sidebar-brand">
+        <a href="{% url 'accounts:espace_etudiant' %}">
+            <img
+                src="{% static 'accounts/images/logo-gestioninternat.png' %}"
+                alt="GestionInternat"
+                class="sidebar-logo"
+            >
+        </a>
+    </div>
+
+    <nav class="sidebar-nav" aria-label="Navigation étudiant">
+
+        <a
+            href="{% url 'accounts:espace_etudiant' %}"
+            class="sidebar-link
+            {% if request.resolver_match.url_name == 'espace_etudiant' %}
+                active
+            {% endif %}"
+        >
+            <span class="sidebar-icon">▦</span>
+            <span class="sidebar-text">Tableau de bord</span>
+        </a>
+
+        <a
+            href="{% url 'hebergement:mes_demandes' %}"
+            class="sidebar-link
+            {% if request.resolver_match.url_name == 'mes_demandes' or request.resolver_match.url_name == 'detail_demande' or request.resolver_match.url_name == 'deposer_demande' or request.resolver_match.url_name == 'modifier_demande' %}
+                active
+            {% endif %}"
+        >
+            <span class="sidebar-icon">📄</span>
+            <span class="sidebar-text">Mes demandes</span>
+        </a>
+
+        <a
+            href="{% url 'hebergement:mon_hebergement' %}"
+            class="sidebar-link
+            {% if request.resolver_match.url_name == 'detail_demande' %}
+                active
+            {% endif %}"
+        >
+            <span class="sidebar-icon">🛏️</span>
+            <span class="sidebar-text">Mon hébergement</span>
+        </a>
+
+        <a
+            href="{% url 'finances:ma_situation_financiere' %}"
+            class="sidebar-link
+            {% if request.resolver_match.namespace == 'finances' %}
+                active
+            {% endif %}"
+        >
+            <span class="sidebar-icon">💳</span>
+            <span class="sidebar-text">Finances</span>
+        </a>
+
+        <a
+            href="{% url 'reclamations:mes_reclamations' %}"
+            class="sidebar-link
+            {% if request.resolver_match.namespace == 'reclamations' %}
+                active
+            {% endif %}"
+        >
+            <span class="sidebar-icon">🛠️</span>
+            <span class="sidebar-text">Réclamations</span>
+        </a>
+
+        <a
+            href="{% url 'notifications:mes_notifications' %}"
+            class="sidebar-link
+            {% if request.resolver_match.namespace == 'notifications' %}
+                active
+            {% endif %}"
+        >
+            <span class="sidebar-icon">🔔</span>
+            <span class="sidebar-text">Notifications</span>
+
+            {% if nombre_notifications_non_lues %}
+                <strong class="sidebar-badge">
+                    {{ nombre_notifications_non_lues }}
+                </strong>
+            {% endif %}
+        </a>
+
+        <a
+            href="{% url 'etudiants:mon_profil' %}"
+            class="sidebar-link
+            {% if request.resolver_match.url_name == 'mon_profil' or request.resolver_match.url_name == 'modifier_mon_profil' %}
+                active
+            {% endif %}"
+        >
+            <span class="sidebar-icon">👤</span>
+            <span class="sidebar-text">Mon profil</span>
+        </a>
+
+    </nav>
+
+    <div class="sidebar-footer">
+        <a
+            href="{% url 'accounts:deconnexion' %}"
+            class="sidebar-link sidebar-logout"
+        >
+            <span class="sidebar-icon">↪</span>
+            <span class="sidebar-text">Déconnexion</span>
+        </a>
+    </div>
+
+</aside>

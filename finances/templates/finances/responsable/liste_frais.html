@@ -1,0 +1,281 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Gestion des frais — GestionInternat</title>
+
+    <link rel="stylesheet" href="{% static 'dashboard/style.css' %}?v=12">
+    <link rel="stylesheet" href="{% static 'finances/finances_premium.css' %}?v=1">
+    <link rel="stylesheet" href="{% static 'finances/finances_responsable_layout.css' %}?v=2">
+    <link rel="stylesheet" href="{% static 'finances/finances_responsable_forms.css' %}?v=1">
+</head>
+
+<body class="finance-page">
+
+<div class="app-shell finance-shell">
+
+    {% include "dashboard/sidebar_responsable.html" %}
+
+    <div class="main-area finance-main">
+
+        <header class="finance-topbar">
+
+            <div class="finance-topbar-copy">
+                <span class="finance-eyebrow">Espace responsable</span>
+
+                <h1>Gestion des frais</h1>
+
+                <p>
+                    Paramétrez les frais d’hébergement
+                    et accédez aux situations financières.
+                </p>
+            </div>
+
+            <div class="finance-topbar-actions">
+
+                <a
+                    href="{% url 'finances:creer_frais' %}"
+                    class="finance-button finance-button-primary"
+                >
+                    + Créer des frais
+                </a>
+
+                <a
+                    href="{% url 'finances:liste_paiements_en_attente' %}"
+                    class="finance-button finance-button-light"
+                >
+                    Paiements en attente
+                </a>
+
+                <div class="finance-user-card">
+                    <div class="finance-user-avatar">
+                        {% if request.user.first_name %}
+                            {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
+                        {% else %}
+                            {{ request.user.username|first|upper }}
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <strong>
+                            {{ request.user.get_full_name|default:request.user.username }}
+                        </strong>
+
+                        <span>
+                            {% if request.user.is_superuser %}
+                                Super administrateur
+                            {% else %}
+                                {{ request.user.get_role_display }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <main class="finance-content">
+
+            {% if messages %}
+                <section class="finance-messages">
+                    {% for message in messages %}
+                        <div class="finance-message {{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </section>
+            {% endif %}
+
+
+            <section class="finance-hero finance-hero-compact">
+
+                <div class="finance-hero-copy">
+                    <span class="finance-eyebrow finance-eyebrow-light">
+                        Administration financière
+                    </span>
+
+                    <h2>
+                        Frais d’hébergement
+                    </h2>
+
+                    <p>
+                        Créez, modifiez et suivez les frais associés
+                        aux étudiants et aux années universitaires.
+                    </p>
+                </div>
+
+                <div class="finance-hero-symbol">
+                    💳
+                </div>
+
+            </section>
+
+
+            <section class="finance-management-grid">
+
+                <a
+                    href="{% url 'finances:creer_frais' %}"
+                    class="finance-management-card"
+                >
+                    <div class="finance-management-icon">
+                        ＋
+                    </div>
+
+                    <div>
+                        <span class="finance-eyebrow">
+                            Création
+                        </span>
+
+                        <h3>
+                            Nouveaux frais
+                        </h3>
+
+                        <p>
+                            Enregistrer une nouvelle situation financière
+                            pour un étudiant.
+                        </p>
+                    </div>
+
+                    <span class="finance-management-arrow">
+                        →
+                    </span>
+                </a>
+
+
+                <a
+                    href="{% url 'finances:situations_financieres' %}"
+                    class="finance-management-card"
+                >
+                    <div class="finance-management-icon">
+                        📊
+                    </div>
+
+                    <div>
+                        <span class="finance-eyebrow">
+                            Suivi
+                        </span>
+
+                        <h3>
+                            Situations financières
+                        </h3>
+
+                        <p>
+                            Consulter les montants dus, réglés,
+                            restants et les échéances.
+                        </p>
+                    </div>
+
+                    <span class="finance-management-arrow">
+                        →
+                    </span>
+                </a>
+
+
+                <a
+                    href="{% url 'finances:liste_paiements_en_attente' %}"
+                    class="finance-management-card"
+                >
+                    <div class="finance-management-icon">
+                        ✓
+                    </div>
+
+                    <div>
+                        <span class="finance-eyebrow">
+                            Validation
+                        </span>
+
+                        <h3>
+                            Paiements en attente
+                        </h3>
+
+                        <p>
+                            Contrôler les déclarations de paiement
+                            soumises par les étudiants.
+                        </p>
+                    </div>
+
+                    <span class="finance-management-arrow">
+                        →
+                    </span>
+                </a>
+
+            </section>
+
+
+            <section class="finance-panel finance-info-panel">
+
+                <div class="finance-panel-heading">
+                    <div>
+                        <span class="finance-eyebrow">
+                            Fonctionnement
+                        </span>
+
+                        <h2>
+                            Cycle de gestion financière
+                        </h2>
+
+                        <p>
+                            Le responsable crée les frais,
+                            l’étudiant déclare son règlement,
+                            puis le paiement est contrôlé et validé.
+                        </p>
+                    </div>
+                </div>
+
+
+                <div class="finance-process">
+
+                    <div>
+                        <span>1</span>
+                        <strong>Créer les frais</strong>
+                        <small>
+                            Étudiant, année, montant et échéance.
+                        </small>
+                    </div>
+
+                    <div>
+                        <span>2</span>
+                        <strong>Déclaration étudiant</strong>
+                        <small>
+                            Le règlement est déclaré avec sa preuve.
+                        </small>
+                    </div>
+
+                    <div>
+                        <span>3</span>
+                        <strong>Contrôle responsable</strong>
+                        <small>
+                            Vérification de la déclaration et du justificatif.
+                        </small>
+                    </div>
+
+                    <div>
+                        <span>4</span>
+                        <strong>Mise à jour du solde</strong>
+                        <small>
+                            Seuls les paiements validés sont comptabilisés.
+                        </small>
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+
+        <footer class="finance-footer">
+            Gestion de l’internat universitaire — {% now "Y" %}
+        </footer>
+
+    </div>
+
+</div>
+
+</body>
+</html>

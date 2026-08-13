@@ -1,0 +1,504 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Gestion des étudiants — Internat universitaire
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'dashboard/style.css' %}?v=11"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'etudiants/gestion_etudiants_premium.css' %}?v=2"
+    >
+</head>
+
+<body class="page-etudiants-premium">
+
+
+<div class="app-shell">
+
+    <!-- =====================================================
+         SIDEBAR COMMUNE GESTIONINTERNAT
+    ====================================================== -->
+   {% include "dashboard/sidebar_responsable.html" %}
+
+
+    <!-- =====================================================
+         ZONE PRINCIPALE
+    ====================================================== -->
+    <div class="main-area">
+
+        <header class="topbar-etudiants">
+
+            <div class="topbar-etudiants-gauche">
+
+                <span class="sur-titre-etudiants">
+                    Espace responsable
+                </span>
+
+                <h1>
+                    Gestion des étudiants
+                </h1>
+
+                <p>
+                    Dossiers personnels, académiques
+                    et administratifs de l'internat.
+                </p>
+
+            </div>
+
+            <div class="topbar-etudiants-droite">
+
+                <div class="date-topbar-etudiants">
+                    <span>Aujourd’hui</span>
+                    <strong>{% now "d/m/Y" %}</strong>
+                </div>
+
+                <a
+                    href="{% url 'notifications:mes_notifications' %}"
+                    class="notification-topbar-etudiants"
+                    title="Consulter les notifications"
+                >
+                    <span aria-hidden="true">🔔</span>
+
+                    {% if nombre_notifications_non_lues %}
+                        <strong>
+                            {{ nombre_notifications_non_lues }}
+                        </strong>
+                    {% endif %}
+                </a>
+
+                <a
+                    href="{% url 'etudiants:creer_etudiant' %}"
+                    class="bouton-etudiant bouton-etudiant-principal"
+                >
+                    + Ajouter un étudiant
+                </a>
+
+                <div class="profil-topbar-etudiants">
+
+                    <div class="avatar-topbar-etudiants" aria-hidden="true">
+                        {% if request.user.first_name %}
+                            {{ request.user.first_name|first|upper }}
+                            {{ request.user.last_name|first|upper }}
+                        {% else %}
+                            {{ request.user.username|first|upper }}
+                        {% endif %}
+                    </div>
+
+                    <div class="identite-topbar-etudiants">
+                        <strong>
+                            {{ request.user.get_full_name|default:request.user.username }}
+                        </strong>
+
+                        <span>
+                            {% if request.user.is_superuser %}
+                                Super administrateur
+                            {% else %}
+                                {{ request.user.get_role_display }}
+                            {% endif %}
+                        </span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+<main class="conteneur-etudiants-premium">
+
+    {% if messages %}
+        <section class="messages-etudiants-premium">
+            {% for message in messages %}
+                <div class="message-etudiant-premium {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </section>
+    {% endif %}
+
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
+
+    <section class="hero-etudiants-premium">
+
+        <div>
+            <span class="sur-titre-hero-etudiants">
+                Administration des dossiers
+            </span>
+
+            <h2>
+                Étudiants de l'internat
+            </h2>
+
+            <p>
+                Recherchez un étudiant, consultez son dossier
+                complet et accédez rapidement à ses demandes,
+                affectations, finances et réclamations.
+            </p>
+        </div>
+
+        <div class="compteur-hero-etudiants">
+            <strong>
+                {{ nombre_etudiants|default:0 }}
+            </strong>
+
+            <span>
+                résultat(s)
+            </span>
+        </div>
+
+    </section>
+
+    <!-- =====================================================
+         FILTRES
+    ====================================================== -->
+
+    <section class="carte-etudiants-premium">
+
+        <div class="entete-carte-etudiants">
+
+            <div>
+                <span class="mini-label-etudiants">
+                    Recherche
+                </span>
+
+                <h2>
+                    Filtrer les profils
+                </h2>
+
+                <p>
+                    Combinez la recherche avec le statut,
+                    la filière et le niveau d'étude.
+                </p>
+            </div>
+
+            {% if recherche or statut_selectionne or filiere_selectionnee or niveau_selectionne %}
+                <span class="badge-filtres-etudiants">
+                    Filtres actifs
+                </span>
+            {% endif %}
+
+        </div>
+
+        <form
+            method="get"
+            class="formulaire-filtres-etudiants"
+        >
+
+            <div class="groupe-filtre-etudiant filtre-recherche-etudiant">
+                <label for="recherche">
+                    Recherche
+                </label>
+
+                <input
+                    type="search"
+                    id="recherche"
+                    name="recherche"
+                    value="{{ recherche }}"
+                    placeholder="Nom, matricule, CNE ou email..."
+                >
+            </div>
+
+            <div class="groupe-filtre-etudiant">
+                <label for="statut">
+                    Statut étudiant
+                </label>
+
+                <select
+                    id="statut"
+                    name="statut"
+                >
+                    <option value="">
+                        Tous les statuts
+                    </option>
+
+                    {% for valeur, libelle in choix_statuts %}
+                        <option
+                            value="{{ valeur }}"
+                            {% if statut_selectionne == valeur %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ libelle }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="groupe-filtre-etudiant">
+                <label for="filiere">
+                    Filière
+                </label>
+
+                <select
+                    id="filiere"
+                    name="filiere"
+                >
+                    <option value="">
+                        Toutes les filières
+                    </option>
+
+                    {% for filiere in filieres %}
+                        <option
+                            value="{{ filiere }}"
+                            {% if filiere_selectionnee == filiere %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ filiere }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="groupe-filtre-etudiant">
+                <label for="niveau">
+                    Niveau
+                </label>
+
+                <select
+                    id="niveau"
+                    name="niveau"
+                >
+                    <option value="">
+                        Tous les niveaux
+                    </option>
+
+                    {% for niveau in niveaux %}
+                        <option
+                            value="{{ niveau }}"
+                            {% if niveau_selectionne == niveau %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ niveau }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="actions-filtres-etudiants">
+
+                <a
+                    href="{% url 'etudiants:liste_etudiants' %}"
+                    class="bouton-etudiant bouton-etudiant-clair"
+                >
+                    Réinitialiser
+                </a>
+
+                <button
+                    type="submit"
+                    class="bouton-etudiant bouton-etudiant-principal"
+                >
+                    Appliquer les filtres
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+    <!-- =====================================================
+         LISTE
+    ====================================================== -->
+
+    <section class="carte-etudiants-premium">
+
+        <div class="entete-carte-etudiants">
+
+            <div>
+                <span class="mini-label-etudiants">
+                    Dossiers
+                </span>
+
+                <h2>
+                    Profils étudiants
+                </h2>
+
+                <p>
+                    {{ nombre_etudiants|default:0 }}
+                    profil(s) correspondent aux critères.
+                </p>
+            </div>
+
+            <a
+                href="{% url 'etudiants:creer_etudiant' %}"
+                class="bouton-etudiant bouton-etudiant-principal"
+            >
+                + Nouveau profil
+            </a>
+
+        </div>
+
+        <div class="grille-profils-etudiants">
+
+            {% for etudiant in etudiants %}
+
+                <article class="profil-etudiant-premium">
+
+                    <div class="entete-profil-etudiant">
+
+                        <div class="photo-profil-etudiant">
+
+                            {% if etudiant.photo %}
+                                <img
+                                    src="{{ etudiant.photo.url }}"
+                                    alt="Photo de {{ etudiant.utilisateur.get_full_name|default:etudiant.utilisateur.username }}"
+                                >
+                            {% else %}
+                                <span>
+                                    {% if etudiant.utilisateur.first_name %}
+                                        {{ etudiant.utilisateur.first_name|first|upper }}
+                                        {{ etudiant.utilisateur.last_name|first|upper }}
+                                    {% else %}
+                                        {{ etudiant.utilisateur.username|first|upper }}
+                                    {% endif %}
+                                </span>
+                            {% endif %}
+
+                        </div>
+
+                        <div class="identite-profil-etudiant">
+                            <span class="mini-label-etudiants">
+                                {{ etudiant.matricule }}
+                            </span>
+
+                            <h3>
+                                {{ etudiant.utilisateur.get_full_name|default:etudiant.utilisateur.username }}
+                            </h3>
+
+                            <p>
+                                {{ etudiant.utilisateur.email|default:"Aucun email" }}
+                            </p>
+                        </div>
+
+                        <span class="
+                            badge-statut-etudiant
+                            badge-statut-{{ etudiant.statut|lower }}
+                        ">
+                            {{ etudiant.get_statut_display }}
+                        </span>
+
+                    </div>
+
+                    <div class="grille-infos-profil-etudiant">
+
+                        <div>
+                            <span>CNE</span>
+                            <strong>
+                                {{ etudiant.cne|default:"—" }}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Filière</span>
+                            <strong>
+                                {{ etudiant.filiere|default:"—" }}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Niveau</span>
+                            <strong>
+                                {{ etudiant.niveau_etude|default:"—" }}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Ville d'origine</span>
+                            <strong>
+                                {{ etudiant.ville_origine|default:"—" }}
+                            </strong>
+                        </div>
+
+                    </div>
+
+                    <div class="etat-compte-etudiant">
+
+                        <span class="
+                            pastille-compte
+                            {% if etudiant.utilisateur.is_active %}
+                                pastille-compte-active
+                            {% else %}
+                                pastille-compte-inactive
+                            {% endif %}
+                        "></span>
+
+                        {% if etudiant.utilisateur.is_active %}
+                            Compte utilisateur actif
+                        {% else %}
+                            Compte utilisateur inactif
+                        {% endif %}
+
+                    </div>
+
+                    <div class="actions-profil-etudiant">
+
+                        <a
+                            href="{% url 'etudiants:modifier_etudiant' etudiant.pk %}"
+                            class="bouton-etudiant bouton-etudiant-clair"
+                        >
+                            Modifier
+                        </a>
+
+                        <a
+                            href="{% url 'etudiants:detail_etudiant' etudiant.pk %}"
+                            class="bouton-etudiant bouton-etudiant-principal"
+                        >
+                            Consulter le dossier →
+                        </a>
+
+                    </div>
+
+                </article>
+
+            {% empty %}
+
+                <div class="etat-vide-etudiants">
+                    <span>🎓</span>
+
+                    <h3>
+                        Aucun étudiant trouvé
+                    </h3>
+
+                    <p>
+                        Aucun profil ne correspond aux critères.
+                    </p>
+
+                    <a
+                        href="{% url 'etudiants:liste_etudiants' %}"
+                        class="bouton-etudiant bouton-etudiant-clair"
+                    >
+                        Réinitialiser
+                    </a>
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+</main>
+
+    </div>
+</div>
+
+</body>
+</html>

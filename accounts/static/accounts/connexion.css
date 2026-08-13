@@ -1,0 +1,347 @@
+:root {
+    --bleu: #2563eb;
+    --bleu-clair: #3b82f6;
+    --bleu-fonce: #1d4ed8;
+
+    --blanc: #ffffff;
+
+    --texte: #111827;
+    --texte-secondaire: #64748b;
+
+    --bordure: #dbe3ee;
+
+    --erreur: #b91c1c;
+}
+
+
+/* ==============================
+   RESET
+================================ */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+}
+
+
+/* ==============================
+   BODY / CAMPUS
+================================ */
+
+body {
+    min-height: 100vh;
+
+    font-family:
+        "Inter",
+        "Segoe UI",
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    color: var(--texte);
+
+    background:
+        linear-gradient(
+            rgba(5, 18, 45, 0.30),
+            rgba(5, 18, 45, 0.30)
+        ),
+        url("images/campus-bg.png");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+
+/* ==============================
+   PAGE
+================================ */
+
+.page-connexion {
+    width: 100%;
+    min-height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 32px 20px;
+}
+
+
+/* ==============================
+   CARTE
+================================ */
+
+.carte-connexion {
+    width: min(440px, 100%);
+
+    padding: 38px 38px 32px;
+
+    background: rgba(255, 255, 255, 0.96);
+
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    border-radius: 20px;
+
+    box-shadow:
+        0 25px 60px rgba(15, 23, 42, 0.25);
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+
+/* ==============================
+   LOGO
+================================ */
+
+.logo-container {
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+
+    margin-bottom: 20px;
+}
+
+.auth-logo {
+    display: block;
+
+    width: 300px;
+    max-width: 90%;
+
+    height: auto;
+
+    object-fit: contain;
+}
+
+
+/* ==============================
+   ENTETE
+================================ */
+
+.entete-connexion {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.entete-connexion h1 {
+    margin: 0 0 9px;
+
+    color: #0f172a;
+
+    font-size: 27px;
+    font-weight: 750;
+}
+
+.entete-connexion p {
+    margin: 0;
+
+    color: var(--texte-secondaire);
+
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+
+/* ==============================
+   FORMULAIRE
+================================ */
+
+.formulaire-connexion {
+    width: 100%;
+}
+
+
+/* ==============================
+   CHAMPS
+================================ */
+
+.groupe-champ {
+    margin-bottom: 20px;
+}
+
+.groupe-champ label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #1e293b;
+
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.groupe-champ input {
+    display: block;
+
+    width: 100%;
+    height: 50px;
+
+    padding: 0 15px;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+
+    background-color: #ffffff;
+
+    color: #1f2937;
+
+    font-family: inherit;
+    font-size: 15px;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.groupe-champ input::placeholder {
+    color: #94a3b8;
+}
+
+.groupe-champ input:focus {
+    border-color: var(--bleu);
+
+    box-shadow:
+        0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+
+/* ==============================
+   BOUTON
+================================ */
+
+.bouton-connexion {
+    width: 100%;
+    min-height: 52px;
+
+    margin-top: 5px;
+
+    padding: 0 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    border: none;
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--bleu),
+            var(--bleu-clair)
+        );
+
+    color: #ffffff;
+
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 8px 20px rgba(37, 99, 235, 0.25);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+.bouton-connexion:hover {
+    background:
+        linear-gradient(
+            135deg,
+            var(--bleu-fonce),
+            var(--bleu)
+        );
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 11px 25px rgba(37, 99, 235, 0.30);
+}
+
+.bouton-connexion:active {
+    transform: translateY(0);
+}
+
+.fleche {
+    font-size: 20px;
+    line-height: 1;
+}
+
+
+/* ==============================
+   ERREURS
+================================ */
+
+.message-erreur {
+    margin-bottom: 20px;
+
+    padding: 12px 14px;
+
+    border: 1px solid #fecaca;
+    border-radius: 9px;
+
+    background-color: #fef2f2;
+
+    color: var(--erreur);
+
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+
+/* ==============================
+   AIDE
+================================ */
+
+.aide {
+    margin: 22px 0 0;
+
+    color: var(--texte-secondaire);
+
+    text-align: center;
+
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+
+/* ==============================
+   RESPONSIVE
+================================ */
+
+@media (max-width: 600px) {
+
+    .page-connexion {
+        padding: 20px 14px;
+    }
+
+    .carte-connexion {
+        padding: 30px 22px 26px;
+        border-radius: 16px;
+    }
+
+    .auth-logo {
+        width: 250px;
+    }
+
+    .entete-connexion h1 {
+        font-size: 24px;
+    }
+
+}

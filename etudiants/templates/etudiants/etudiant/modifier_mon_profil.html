@@ -1,0 +1,264 @@
+{% extends "dashboard/base_etudiant.html" %}
+{% load static %}
+
+{% block title %}
+Modifier mon profil — GestionInternat
+{% endblock %}
+
+{% block titre_page %}
+Modifier mon profil
+{% endblock %}
+
+{% block sous_titre_page %}
+Mettez à jour vos coordonnées personnelles tout en conservant
+la protection de vos données académiques.
+{% endblock %}
+
+{% block css_page %}
+<link
+    rel="stylesheet"
+    href="{% static 'etudiants/profil_etudiant.css' %}?v=2"
+>
+{% endblock %}
+
+{% block contenu_etudiant %}
+
+<div class="profil-etudiant-page">
+
+    <div class="actions-page-etudiant">
+        <a
+            href="{% url 'etudiants:mon_profil' %}"
+            class="bouton-profil bouton-profil-secondaire"
+        >
+            ← Retour à mon profil
+        </a>
+    </div>
+
+
+    <section class="hero-profil-etudiant hero-profil-formulaire">
+
+        <div class="hero-profil-identite">
+
+            <div class="avatar-profil-etudiant">
+                {% if profil.photo %}
+                    <img
+                        src="{{ profil.photo.url }}"
+                        alt="Photo de profil"
+                    >
+                {% else %}
+                    <span>
+                        {% if profil.utilisateur.first_name %}
+                            {{ profil.utilisateur.first_name|first|upper }}
+                            {{ profil.utilisateur.last_name|first|upper }}
+                        {% else %}
+                            {{ profil.utilisateur.username|first|upper }}
+                        {% endif %}
+                    </span>
+                {% endif %}
+            </div>
+
+            <div class="hero-profil-texte">
+                <span class="mini-label-profil">
+                    {{ profil.matricule }}
+                </span>
+
+                <h2>
+                    Informations modifiables
+                </h2>
+
+                <p>
+                    Les données académiques restent protégées
+                    et sont modifiées uniquement par l’administration.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="grille-edition-profil">
+
+        <article class="carte-profil carte-formulaire-profil">
+
+            <div class="entete-carte-profil">
+                <div>
+                    <span class="mini-label-profil">
+                        Formulaire
+                    </span>
+
+                    <h3>Mes coordonnées</h3>
+
+                    <p>
+                        Vérifiez les informations avant de les enregistrer.
+                    </p>
+                </div>
+            </div>
+
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                {% if formulaire.non_field_errors %}
+                    <div class="message-profil message-profil-erreur">
+                        {{ formulaire.non_field_errors }}
+                    </div>
+                {% endif %}
+
+
+                <div class="grille-formulaire-profil">
+
+                    <div class="groupe-champ-profil">
+                        <label for="{{ formulaire.prenom.id_for_label }}">
+                            {{ formulaire.prenom.label }}
+                        </label>
+
+                        {{ formulaire.prenom }}
+                        {{ formulaire.prenom.errors }}
+                    </div>
+
+
+                    <div class="groupe-champ-profil">
+                        <label for="{{ formulaire.nom.id_for_label }}">
+                            {{ formulaire.nom.label }}
+                        </label>
+
+                        {{ formulaire.nom }}
+                        {{ formulaire.nom.errors }}
+                    </div>
+
+
+                    <div class="groupe-champ-profil groupe-champ-profil-large">
+                        <label for="{{ formulaire.email.id_for_label }}">
+                            {{ formulaire.email.label }}
+                        </label>
+
+                        {{ formulaire.email }}
+                        {{ formulaire.email.errors }}
+                    </div>
+
+
+                    {% for champ in formulaire %}
+                        {% if champ.name != "prenom" and champ.name != "nom" and champ.name != "email" %}
+
+                            <div
+                                class="
+                                    groupe-champ-profil
+                                    {% if champ.name == 'adresse' %}
+                                        groupe-champ-profil-large
+                                    {% endif %}
+                                "
+                            >
+                                <label for="{{ champ.id_for_label }}">
+                                    {{ champ.label }}
+                                </label>
+
+                                {{ champ }}
+
+                                {% if champ.help_text %}
+                                    <small class="aide-profil">
+                                        {{ champ.help_text }}
+                                    </small>
+                                {% endif %}
+
+                                {{ champ.errors }}
+                            </div>
+
+                        {% endif %}
+                    {% endfor %}
+
+                </div>
+
+
+                <div class="bloc-donnees-protegees-profil">
+
+                    <div class="icone-protection-profil">
+                        🔒
+                    </div>
+
+                    <div>
+                        <strong>
+                            Données administratives protégées
+                        </strong>
+
+                        <p>
+                            Matricule : {{ profil.matricule }}
+                            · CNE : {{ profil.cne|default:"Non renseigné" }}
+                            · Filière : {{ profil.filiere|default:"Non renseignée" }}
+                            · Niveau : {{ profil.niveau_etude|default:"Non renseigné" }}
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="actions-formulaire-profil">
+
+                    <a
+                        href="{% url 'etudiants:mon_profil' %}"
+                        class="bouton-profil bouton-profil-secondaire"
+                    >
+                        Annuler
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="bouton-profil bouton-profil-principal"
+                    >
+                        Enregistrer les modifications
+                    </button>
+
+                </div>
+
+            </form>
+
+        </article>
+
+
+        <aside class="carte-profil carte-conseils-profil">
+
+            <span class="mini-label-profil">
+                Sécurité
+            </span>
+
+            <h3>Bonnes pratiques</h3>
+
+            <ul>
+                <li>
+                    Utilisez une adresse e-mail à laquelle
+                    vous avez réellement accès.
+                </li>
+
+                <li>
+                    Vérifiez votre date de naissance
+                    et votre ville d’origine.
+                </li>
+
+                <li>
+                    Ne partagez jamais vos identifiants
+                    de connexion.
+                </li>
+
+                <li>
+                    Les changements académiques doivent être
+                    demandés à l’administration.
+                </li>
+            </ul>
+
+            <div class="note-profil">
+                <strong>Besoin d’une correction administrative ?</strong>
+
+                <p>
+                    Contactez le responsable de l’internat
+                    pour le matricule, le CNE, la filière,
+                    le niveau ou le statut.
+                </p>
+            </div>
+
+        </aside>
+
+    </section>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,726 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Demandes d'hébergement — Internat universitaire
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'hebergement/responsable.css' %}"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'dashboard/style.css' %}?v=11"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'hebergement/demandes_premium.css' %}?v=2"
+    >
+</head>
+
+<body class="page-demandes-premium">
+
+
+<div class="app-shell">
+
+    {% include "dashboard/sidebar_responsable.html" %}
+
+    <div class="main-area">
+
+
+        <header class="topbar-hebergement">
+            <div>
+                <span class="sur-titre-topbar-hebergement">Espace responsable</span>
+                <h1>Demandes d'hébergement</h1>
+                <p>Consultation, vérification des dossiers et suivi des décisions administratives.</p>
+            </div>
+
+            <div class="actions-topbar-hebergement">
+                <a href="{% url 'hebergement:liste_demandes_a_affecter' %}"
+                   class="bouton-demande bouton-demande-clair">
+                    Demandes acceptées
+                </a>
+
+                <a href="{% url 'hebergement:liste_affectations_responsable' %}"
+                   class="bouton-demande bouton-demande-clair">
+                    Affectations
+                </a>
+
+                <div class="profil-topbar-hebergement">
+                    <div class="avatar-topbar-hebergement">
+                        {% if request.user.first_name %}
+                            {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
+                        {% else %}
+                            {{ request.user.username|first|upper }}
+                        {% endif %}
+                    </div>
+                    <div>
+                        <strong>{{ request.user.get_full_name|default:request.user.username }}</strong>
+                        <span>
+                            {% if request.user.is_superuser %}
+                                Super administrateur
+                            {% else %}
+                                {{ request.user.get_role_display }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+        </header>
+
+<main class="conteneur-demandes-premium">
+
+        <!-- =================================================
+             MESSAGES
+        ================================================== -->
+
+        {% if messages %}
+            <section class="messages-demandes">
+                {% for message in messages %}
+                    <div class="message-demande {{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </section>
+        {% endif %}
+
+        <!-- =================================================
+             HERO
+        ================================================== -->
+
+        <section class="hero-demandes">
+
+            <div>
+                <span class="sur-titre-hero-demandes">
+                    Gestion des dossiers
+                </span>
+
+                <h2>
+                    Suivi des demandes d'hébergement
+                </h2>
+
+                <p>
+                    Retrouvez rapidement les demandes soumises,
+                    en étude, acceptées, refusées ou placées
+                    sur liste d'attente.
+                </p>
+            </div>
+
+            <div class="compteur-hero-demandes">
+                <strong>
+                    {{ nombre_demandes|default:0 }}
+                </strong>
+
+                <span>
+                    résultat(s)
+                </span>
+            </div>
+
+        </section>
+
+        <!-- =================================================
+             STATISTIQUES
+        ================================================== -->
+
+        <section class="grille-stats-demandes">
+
+            <article class="stat-demande">
+                <span class="icone-stat-demande">▦</span>
+
+                <div>
+                    <span>Total</span>
+
+                    <strong>
+                        {{ nombre_total_global|default:0 }}
+                    </strong>
+                </div>
+            </article>
+
+            <article class="stat-demande stat-brouillon">
+                <span class="icone-stat-demande">✎</span>
+
+                <div>
+                    <span>Brouillons</span>
+
+                    <strong>
+                        {{ nombre_brouillons|default:0 }}
+                    </strong>
+                </div>
+            </article>
+
+            <article class="stat-demande stat-soumise">
+                <span class="icone-stat-demande">→</span>
+
+                <div>
+                    <span>Soumises</span>
+
+                    <strong>
+                        {{ nombre_soumises|default:0 }}
+                    </strong>
+                </div>
+            </article>
+
+            <article class="stat-demande stat-etude">
+                <span class="icone-stat-demande">◷</span>
+
+                <div>
+                    <span>En étude</span>
+
+                    <strong>
+                        {{ nombre_en_etude|default:0 }}
+                    </strong>
+                </div>
+            </article>
+
+            <article class="stat-demande stat-acceptee">
+                <span class="icone-stat-demande">✓</span>
+
+                <div>
+                    <span>Acceptées</span>
+
+                    <strong>
+                        {{ nombre_acceptees|default:0 }}
+                    </strong>
+                </div>
+            </article>
+
+            <article class="stat-demande stat-refusee">
+                <span class="icone-stat-demande">×</span>
+
+                <div>
+                    <span>Refusées</span>
+
+                    <strong>
+                        {{ nombre_refusees|default:0 }}
+                    </strong>
+                </div>
+            </article>
+
+            <article class="stat-demande stat-attente">
+                <span class="icone-stat-demande">…</span>
+
+                <div>
+                    <span>Liste d'attente</span>
+
+                    <strong>
+                        {{ nombre_attente|default:0 }}
+                    </strong>
+                </div>
+            </article>
+
+        </section>
+
+        <!-- =================================================
+             FILTRES
+        ================================================== -->
+
+        <section class="carte-demandes-premium">
+
+            <div class="entete-carte-demandes">
+
+                <div>
+                    <span class="mini-label-demandes">
+                        Recherche
+                    </span>
+
+                    <h2>
+                        Rechercher un dossier
+                    </h2>
+
+                    <p>
+                        Combinez les critères pour retrouver
+                        rapidement une demande.
+                    </p>
+                </div>
+
+                <span class="badge-resultats-demandes">
+                    {{ nombre_demandes|default:0 }}
+                    résultat(s)
+                </span>
+
+            </div>
+
+            <form
+                method="get"
+                class="formulaire-filtres-demandes-premium"
+            >
+
+                <div class="champ-filtre-demande recherche-demande-large">
+                    <label for="recherche">
+                        Étudiant
+                    </label>
+
+                    <input
+                        type="search"
+                        id="recherche"
+                        name="recherche"
+                        value="{{ recherche }}"
+                        placeholder="Nom, matricule, CNE..."
+                    >
+                </div>
+
+                <div class="champ-filtre-demande">
+                    <label for="statut">
+                        Statut
+                    </label>
+
+                    <select
+                        id="statut"
+                        name="statut"
+                    >
+                        <option value="">
+                            Tous les statuts
+                        </option>
+
+                        {% for valeur, libelle in choix_statuts %}
+                            <option
+                                value="{{ valeur }}"
+                                {% if statut_selectionne == valeur %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ libelle }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="champ-filtre-demande">
+                    <label for="annee">
+                        Année universitaire
+                    </label>
+
+                    <select
+                        id="annee"
+                        name="annee"
+                    >
+                        <option value="">
+                            Toutes les années
+                        </option>
+
+                        {% for annee in annees_universitaires %}
+                            <option
+                                value="{{ annee.pk }}"
+                                {% if annee_selectionnee == annee.pk|stringformat:"s" %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ annee.libelle }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="champ-filtre-demande">
+                    <label for="date_debut">
+                        Créée du
+                    </label>
+
+                    <input
+                        type="date"
+                        id="date_debut"
+                        name="date_debut"
+                        value="{{ date_debut }}"
+                    >
+                </div>
+
+                <div class="champ-filtre-demande">
+                    <label for="date_fin">
+                        Créée au
+                    </label>
+
+                    <input
+                        type="date"
+                        id="date_fin"
+                        name="date_fin"
+                        value="{{ date_fin }}"
+                    >
+                </div>
+
+                <div class="actions-filtres-demandes-premium">
+
+                    <a
+                        href="{% url 'hebergement:liste_demandes_responsable' %}"
+                        class="bouton-demande bouton-demande-clair"
+                    >
+                        Réinitialiser
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="bouton-demande bouton-demande-principal"
+                    >
+                        Appliquer les filtres
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+        <!-- =================================================
+             DOSSIERS
+        ================================================== -->
+
+        <section class="carte-demandes-premium">
+
+            <div class="entete-carte-demandes">
+
+                <div>
+                    <span class="mini-label-demandes">
+                        Dossiers étudiants
+                    </span>
+
+                    <h2>
+                        Demandes enregistrées
+                    </h2>
+
+                    <p>
+                        Consultez le statut, les justificatifs
+                        et ouvrez le dossier pour le traiter.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="liste-demandes-premium">
+
+                {% for demande in demandes %}
+
+                    <article class="
+                        dossier-demande-premium
+                        dossier-demande-{{ demande.statut|lower }}
+                    ">
+
+                        <!-- EN-TÊTE -->
+
+                        <div class="entete-dossier-demande">
+
+                            <div class="etudiant-demande-premium">
+
+                                <div class="avatar-demande-premium">
+
+                                    {% if demande.etudiant.utilisateur.first_name %}
+                                        {{ demande.etudiant.utilisateur.first_name|first|upper }}
+                                        {{ demande.etudiant.utilisateur.last_name|first|upper }}
+                                    {% else %}
+                                        {{ demande.etudiant.utilisateur.username|first|upper }}
+                                    {% endif %}
+
+                                </div>
+
+                                <div>
+                                    <span class="label-demande-premium">
+                                        Étudiant
+                                    </span>
+
+                                    <h3>
+                                        {{ demande.etudiant.utilisateur.get_full_name|default:demande.etudiant.utilisateur.username }}
+                                    </h3>
+
+                                    <p>
+                                        {{ demande.etudiant.utilisateur.email|default:"Aucun email" }}
+                                    </p>
+                                </div>
+
+                            </div>
+
+                            <span class="
+                                badge-statut-demande
+                                statut-demande-{{ demande.statut|lower }}
+                            ">
+                                {{ demande.get_statut_display }}
+                            </span>
+
+                        </div>
+
+                        <!-- INFORMATIONS -->
+
+                        <div class="grille-infos-demande">
+
+                            <div class="info-demande-premium">
+                                <span>Matricule</span>
+
+                                <strong>
+                                    {{ demande.etudiant.matricule }}
+                                </strong>
+
+                                <small>
+                                    CNE :
+                                    {{ demande.etudiant.cne }}
+                                </small>
+                            </div>
+
+                            <div class="info-demande-premium">
+                                <span>Année universitaire</span>
+
+                                <strong>
+                                    {{ demande.annee_universitaire.libelle }}
+                                </strong>
+                            </div>
+
+                            <div class="info-demande-premium">
+                                <span>Distance domicile</span>
+
+                                <strong>
+                                    {{ demande.distance_domicile }}
+                                    km
+                                </strong>
+                            </div>
+
+                            <div class="info-demande-premium">
+                                <span>Justificatifs</span>
+
+                                <strong>
+                                    {{ demande.justificatifs.count }}
+                                    document(s)
+                                </strong>
+                            </div>
+
+                            <div class="info-demande-premium">
+                                <span>Créée le</span>
+
+                                <strong>
+                                    {{ demande.date_creation|date:"d/m/Y" }}
+                                </strong>
+
+                                <small>
+                                    {{ demande.date_creation|date:"H:i" }}
+                                </small>
+                            </div>
+
+                            <div class="info-demande-premium">
+                                <span>Soumise le</span>
+
+                                {% if demande.date_soumission %}
+                                    <strong>
+                                        {{ demande.date_soumission|date:"d/m/Y" }}
+                                    </strong>
+
+                                    <small>
+                                        {{ demande.date_soumission|date:"H:i" }}
+                                    </small>
+                                {% else %}
+                                    <strong>—</strong>
+                                {% endif %}
+                            </div>
+
+                            <div class="info-demande-premium">
+                                <span>Décision</span>
+
+                                {% if demande.date_decision %}
+                                    <strong>
+                                        {{ demande.date_decision|date:"d/m/Y" }}
+                                    </strong>
+                                {% else %}
+                                    <strong class="texte-attente-demande">
+                                        En attente
+                                    </strong>
+                                {% endif %}
+                            </div>
+
+                            <div class="info-demande-premium">
+                                <span>Traitée par</span>
+
+                                <strong>
+                                    {% if demande.traitee_par %}
+                                        {{ demande.traitee_par.get_full_name|default:demande.traitee_par.username }}
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </strong>
+                            </div>
+
+                        </div>
+
+                        <!-- MOTIF -->
+
+                        <div class="resume-motif-demande">
+                            <span>
+                                Motif de la demande
+                            </span>
+
+                            <p>
+                                {{ demande.motif|truncatechars:190 }}
+                            </p>
+                        </div>
+
+                        <!-- ACTION -->
+
+                        <div class="actions-dossier-demande">
+
+                            <div class="etat-dossier-demande">
+
+                                {% if demande.statut == "SOUMISE" %}
+                                    <span class="pastille-action pastille-nouveau"></span>
+                                    Dossier à examiner
+
+                                {% elif demande.statut == "EN_ETUDE" %}
+                                    <span class="pastille-action pastille-etude"></span>
+                                    Traitement en cours
+
+                                {% elif demande.statut == "ACCEPTEE" %}
+                                    <span class="pastille-action pastille-accepte"></span>
+                                    Demande acceptée
+
+                                {% elif demande.statut == "REFUSEE" %}
+                                    <span class="pastille-action pastille-refuse"></span>
+                                    Demande refusée
+
+                                {% elif demande.statut == "INCOMPLETE" %}
+                                    <span class="pastille-action pastille-incomplet"></span>
+                                    Dossier incomplet
+
+                                {% elif demande.statut == "ATTENTE" %}
+                                    <span class="pastille-action pastille-attente"></span>
+                                    Liste d'attente
+
+                                {% else %}
+                                    <span class="pastille-action"></span>
+                                    {{ demande.get_statut_display }}
+                                {% endif %}
+
+                            </div>
+
+                            <a
+                                href="{% url 'hebergement:detail_demande_responsable' demande.pk %}"
+                                class="bouton-demande bouton-demande-principal"
+                            >
+                                Consulter le dossier
+                                <span aria-hidden="true">→</span>
+                            </a>
+
+                        </div>
+
+                    </article>
+
+                {% empty %}
+
+                    <div class="etat-vide-demandes">
+
+                        <div class="icone-vide-demandes">
+                            ⌕
+                        </div>
+
+                        <h3>
+                            Aucune demande trouvée
+                        </h3>
+
+                        <p>
+                            Aucun dossier ne correspond
+                            aux filtres sélectionnés.
+                        </p>
+
+                        <a
+                            href="{% url 'hebergement:liste_demandes_responsable' %}"
+                            class="bouton-demande bouton-demande-clair"
+                        >
+                            Réinitialiser les filtres
+                        </a>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+            <!-- =================================================
+                 PAGINATION
+            ================================================== -->
+
+            {% if page_obj.paginator.num_pages > 1 %}
+
+                <nav class="pagination-demandes-premium">
+
+                    <div class="infos-pagination-demandes">
+                        Page {{ page_obj.number }}
+                        sur {{ page_obj.paginator.num_pages }}
+                        —
+                        {{ page_obj.paginator.count }}
+                        résultat(s)
+                    </div>
+
+                    <div class="liens-pagination-demandes">
+
+                        {% if page_obj.has_previous %}
+                            <a
+                                href="?page=1{% if chaine_filtres %}&{{ chaine_filtres }}{% endif %}"
+                                class="bouton-page-demande"
+                            >
+                                Première
+                            </a>
+
+                            <a
+                                href="?page={{ page_obj.previous_page_number }}{% if chaine_filtres %}&{{ chaine_filtres }}{% endif %}"
+                                class="bouton-page-demande"
+                            >
+                                Précédente
+                            </a>
+                        {% endif %}
+
+                        {% for numero_page in page_obj.paginator.page_range %}
+
+                            {% if numero_page == page_obj.number %}
+
+                                <span class="page-demande-active">
+                                    {{ numero_page }}
+                                </span>
+
+                            {% elif numero_page >= page_obj.number|add:"-2" and numero_page <= page_obj.number|add:"2" %}
+
+                                <a
+                                    href="?page={{ numero_page }}{% if chaine_filtres %}&{{ chaine_filtres }}{% endif %}"
+                                    class="bouton-page-demande"
+                                >
+                                    {{ numero_page }}
+                                </a>
+
+                            {% endif %}
+
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                            <a
+                                href="?page={{ page_obj.next_page_number }}{% if chaine_filtres %}&{{ chaine_filtres }}{% endif %}"
+                                class="bouton-page-demande"
+                            >
+                                Suivante
+                            </a>
+
+                            <a
+                                href="?page={{ page_obj.paginator.num_pages }}{% if chaine_filtres %}&{{ chaine_filtres }}{% endif %}"
+                                class="bouton-page-demande"
+                            >
+                                Dernière
+                            </a>
+                        {% endif %}
+
+                    </div>
+
+                </nav>
+
+            {% endif %}
+
+        </section>
+
+    </main>
+
+    </div>
+</div>
+
+</body>
+</html>

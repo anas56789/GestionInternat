@@ -1,0 +1,503 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {{ batiment.code }} — {{ batiment.nom }}
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'dashboard/style.css' %}?v=11"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'hebergement/gestion_locaux_premium.css' %}?v=3"
+    >
+</head>
+
+<body>
+    <div class="app-shell">
+
+   {% include "dashboard/sidebar_responsable.html" %}
+
+    <div class="main-area">
+        <header class="topbar-locaux">
+            <div>
+                <span class="sur-titre-topbar-locaux">Espace responsable</span>
+                <h1>Détail du bâtiment</h1>
+                <p>{{ batiment.code }} — {{ batiment.nom }}</p>
+            </div>
+            <div class="actions-topbar-locaux">
+                <a href="{% url 'hebergement:modifier_batiment' batiment.pk %}" class="bouton">Modifier</a>
+                <a href="{% url 'hebergement:creer_chambre' %}?batiment={{ batiment.pk }}" class="bouton bouton-succes">+ Ajouter une chambre</a>
+                <a href="{% url 'hebergement:liste_batiments' %}" class="bouton bouton-secondaire">← Bâtiments</a>
+                <div class="profil-topbar-locaux">
+                    <div class="avatar-topbar-locaux">{% if request.user.first_name %}{{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}{% else %}{{ request.user.username|first|upper }}{% endif %}</div>
+                    <div><strong>{{ request.user.get_full_name|default:request.user.username }}</strong><span>{% if request.user.is_superuser %}Super administrateur{% else %}{{ request.user.get_role_display }}{% endif %}</span></div>
+                </div>
+            </div>
+        </header>
+
+
+    <main class="conteneur">
+
+        {% if messages %}
+            <section class="messages">
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </section>
+        {% endif %}
+
+        <!-- BANNIÈRE -->
+
+        <section class="banniere-detail-batiment">
+            <div>
+                <span class="petit-titre">
+                    Fiche du bâtiment
+                </span>
+
+                <h2>
+                    {{ batiment.code }} — {{ batiment.nom }}
+                </h2>
+
+                <p>
+                    {{ batiment.description|default:"Aucune description enregistrée pour ce bâtiment." }}
+                </p>
+            </div>
+
+            <div>
+                {% if batiment.statut == "ACTIF" %}
+                    <span class="badge-batiment badge-batiment-actif">
+                        {{ batiment.get_statut_display }}
+                    </span>
+
+                {% elif batiment.statut == "INACTIF" %}
+                    <span class="badge-batiment badge-batiment-inactif">
+                        {{ batiment.get_statut_display }}
+                    </span>
+
+                {% elif batiment.statut == "MAINTENANCE" %}
+                    <span class="badge-batiment badge-batiment-maintenance">
+                        {{ batiment.get_statut_display }}
+                    </span>
+                {% endif %}
+            </div>
+        </section>
+
+        <!-- STATISTIQUES -->
+
+        <section class="statistiques-detail-batiment">
+            <article class="statistique-detail">
+                <span>Étages</span>
+                <strong>{{ batiment.nombre_etages }}</strong>
+            </article>
+
+            <article class="statistique-detail">
+                <span>Chambres</span>
+                <strong>{{ nombre_chambres }}</strong>
+            </article>
+
+            <article class="statistique-detail">
+                <span>Chambres actives</span>
+                <strong>{{ nombre_chambres_actives }}</strong>
+            </article>
+
+            <article class="statistique-detail">
+                <span>Chambres inactives</span>
+                <strong>{{ nombre_chambres_inactives }}</strong>
+            </article>
+
+            <article class="statistique-detail">
+                <span>Disponibles</span>
+                <strong>{{ nombre_chambres_disponibles }}</strong>
+            </article>
+
+            <article class="statistique-detail">
+                <span>Complètes</span>
+                <strong>{{ nombre_chambres_completes }}</strong>
+            </article>
+
+            <article class="statistique-detail">
+                <span>Maintenance</span>
+                <strong>{{ nombre_chambres_maintenance }}</strong>
+            </article>
+
+            <article class="statistique-detail">
+                <span>Hors service</span>
+                <strong>{{ nombre_chambres_hors_service }}</strong>
+            </article>
+
+            <article class="statistique-detail">
+                <span>Capacité</span>
+                <strong>{{ capacite_totale }}</strong>
+            </article>
+
+            <article class="statistique-detail">
+                <span>Places occupées</span>
+                <strong>{{ places_occupees }}</strong>
+            </article>
+
+            <article class="statistique-detail">
+                <span>Places disponibles</span>
+                <strong>{{ places_disponibles }}</strong>
+            </article>
+
+            <article class="statistique-detail">
+                <span>Taux d’occupation</span>
+                <strong>{{ taux_occupation }} %</strong>
+            </article>
+        </section>
+
+        <!-- OCCUPATION GLOBALE -->
+
+        <section class="carte">
+            <div class="entete-section">
+                <div>
+                    <h2>Occupation du bâtiment</h2>
+
+                    <p>
+                        Vue globale de la capacité utilisée.
+                    </p>
+                </div>
+
+                <strong class="taux-global-batiment">
+                    {{ taux_occupation }} %
+                </strong>
+            </div>
+
+            <div class="barre-detail-batiment">
+                <div
+                    class="progression-detail-batiment
+                    {% if taux_occupation >= 100 %}
+                        progression-batiment-complete
+                    {% elif taux_occupation >= 70 %}
+                        progression-batiment-elevee
+                    {% else %}
+                        progression-batiment-normale
+                    {% endif %}"
+                    style="width: {{ taux_occupation }}%;"
+                ></div>
+            </div>
+
+            <div class="legende-occupation">
+                <span>
+                    {{ places_occupees }} occupée(s)
+                </span>
+
+                <span>
+                    {{ places_disponibles }} disponible(s)
+                </span>
+
+                <span>
+                    {{ capacite_totale }} place(s) au total
+                </span>
+            </div>
+        </section>
+
+        <!-- RÉPARTITION PAR ÉTAGE -->
+
+        <section class="carte">
+            <div class="entete-section">
+                <div>
+                    <h2>Répartition par étage</h2>
+
+                    <p>
+                        Capacité et occupation pour chaque niveau.
+                    </p>
+                </div>
+            </div>
+
+            <div class="grille-etages">
+                {% for etage in repartition_etages %}
+                    <article class="carte-etage">
+                        <div class="entete-etage">
+                            <div>
+                                <span class="numero-etage">
+                                    {% if etage.numero == 0 %}
+                                        Rez-de-chaussée
+                                    {% else %}
+                                        Étage {{ etage.numero }}
+                                    {% endif %}
+                                </span>
+
+                                <strong>
+                                    {{ etage.nombre_chambres }}
+                                    chambre(s)
+                                </strong>
+                            </div>
+
+                            <span class="taux-etage">
+                                {{ etage.taux_occupation }} %
+                            </span>
+                        </div>
+
+                        <div class="statistiques-etage">
+                            <div>
+                                <span>Capacité</span>
+                                <strong>{{ etage.capacite }}</strong>
+                            </div>
+
+                            <div>
+                                <span>Occupation</span>
+                                <strong>{{ etage.occupation }}</strong>
+                            </div>
+
+                            <div>
+                                <span>Disponible</span>
+                                <strong>{{ etage.disponibilite }}</strong>
+                            </div>
+                        </div>
+
+                        <div class="barre-etage">
+                            <div
+                                class="progression-etage"
+                                style="width: {{ etage.taux_occupation }}%;"
+                            ></div>
+                        </div>
+                    </article>
+
+                {% empty %}
+                    <div class="etat-vide">
+                        <strong>
+                            Aucun étage contenant des chambres
+                        </strong>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- CHAMBRES -->
+
+        <section class="carte">
+            <div class="entete-section">
+                <div>
+                    <h2>Chambres du bâtiment</h2>
+
+                    <p>
+                        {{ nombre_chambres }}
+                        chambre(s) enregistrée(s).
+                    </p>
+                </div>
+
+                <a
+                    href="{% url 'hebergement:creer_chambre' %}?batiment={{ batiment.pk }}"
+                    class="bouton bouton-succes"
+                >
+                    Ajouter une chambre
+                </a>
+            </div>
+
+            <div class="tableau-responsive">
+                <table class="tableau-detail-batiment">
+                    <thead>
+                        <tr>
+                            <th>Chambre</th>
+                            <th>Étage</th>
+                            <th>Type</th>
+                            <th>Capacité</th>
+                            <th>Occupation</th>
+                            <th>Places libres</th>
+                            <th>Progression</th>
+                            <th>État</th>
+                            <th>Activation</th>
+                            <th>Étudiants hébergés</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for chambre in chambres %}
+                            <tr>
+                                <td>
+                                    <strong>
+                                        Chambre {{ chambre.numero }}
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    {% if chambre.etage == 0 %}
+                                        RDC
+                                    {% else %}
+                                        Étage {{ chambre.etage }}
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {{ chambre.get_type_chambre_display }}
+                                </td>
+
+                                <td>
+                                    {{ chambre.capacite }}
+                                </td>
+
+                                <td>
+                                    <strong>
+                                        {{ chambre.nombre_places_occupees_calcule }}
+                                        /
+                                        {{ chambre.capacite }}
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    {% if chambre.nombre_places_disponibles_calcule > 0 %}
+                                        <span class="badge-chambre badge-disponible">
+                                            {{ chambre.nombre_places_disponibles_calcule }}
+                                            libre(s)
+                                        </span>
+                                    {% else %}
+                                        <span class="badge-chambre badge-complete">
+                                            Complète
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    <div class="bloc-progression">
+                                        <div class="barre-occupation">
+                                            <div
+                                                class="progression-occupation
+                                                {% if chambre.taux_occupation_calcule >= 100 %}
+                                                    progression-complete
+                                                {% elif chambre.taux_occupation_calcule >= 70 %}
+                                                    progression-elevee
+                                                {% else %}
+                                                    progression-normale
+                                                {% endif %}"
+                                                style="width: {{ chambre.taux_occupation_calcule }}%;"
+                                            ></div>
+                                        </div>
+
+                                        <small>
+                                            {{ chambre.taux_occupation_calcule }} %
+                                        </small>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    {% if chambre.etat == "DISPONIBLE" %}
+                                        <span class="badge-chambre badge-disponible">
+                                            {{ chambre.get_etat_display }}
+                                        </span>
+
+                                    {% elif chambre.etat == "PARTIELLE" %}
+                                        <span class="badge-chambre badge-partielle">
+                                            {{ chambre.get_etat_display }}
+                                        </span>
+
+                                    {% elif chambre.etat == "COMPLETE" %}
+                                        <span class="badge-chambre badge-complete">
+                                            {{ chambre.get_etat_display }}
+                                        </span>
+
+                                    {% elif chambre.etat == "MAINTENANCE" %}
+                                        <span class="badge-chambre badge-maintenance">
+                                            {{ chambre.get_etat_display }}
+                                        </span>
+
+                                    {% elif chambre.etat == "HORS_SERVICE" %}
+                                        <span class="badge-chambre badge-hors-service">
+                                            {{ chambre.get_etat_display }}
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {% if chambre.est_active %}
+                                        <span class="badge-chambre badge-disponible">
+                                            Active
+                                        </span>
+                                    {% else %}
+                                        <span class="badge-chambre badge-hors-service">
+                                            Inactive
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    <div class="liste-residents">
+                                        {% for affectation in chambre.affectations_actives_calculees %}
+                                            <div class="resident-chambre">
+                                                <strong>
+                                                    {% if affectation.etudiant.utilisateur.get_full_name %}
+                                                        {{ affectation.etudiant.utilisateur.get_full_name }}
+                                                    {% else %}
+                                                        {{ affectation.etudiant.utilisateur.username }}
+                                                    {% endif %}
+                                                </strong>
+
+                                                <small>
+                                                    {{ affectation.etudiant.matricule }}
+                                                </small>
+                                            </div>
+
+                                        {% empty %}
+                                            <span class="texte-secondaire">
+                                                Aucun étudiant
+                                            </span>
+                                        {% endfor %}
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <a
+                                        href="{% url 'hebergement:modifier_chambre' chambre.pk %}"
+                                        class="bouton bouton-petit"
+                                    >
+                                        Modifier
+                                    </a>
+                                </td>
+                            </tr>
+
+                        {% empty %}
+                            <tr>
+                                <td
+                                    colspan="11"
+                                    class="aucune-donnee"
+                                >
+                                    <div class="etat-vide">
+                                        <span class="icone-vide">
+                                            🚪
+                                        </span>
+
+                                        <strong>
+                                            Aucune chambre enregistrée
+                                        </strong>
+
+                                        <p>
+                                            Ajoutez une première chambre
+                                            à ce bâtiment.
+                                        </p>
+
+                                        <a
+                                            href="{% url 'hebergement:creer_chambre' %}?batiment={{ batiment.pk }}"
+                                            class="bouton bouton-succes"
+                                        >
+                                            Ajouter une chambre
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    </div>
+</div>
+</body>
+</html>

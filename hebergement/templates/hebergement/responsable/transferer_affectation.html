@@ -1,0 +1,322 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Transférer un étudiant — Internat universitaire
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'dashboard/style.css' %}?v=11"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'hebergement/transferts_annees_premium.css' %}?v=1"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'hebergement/transferer_affectation_layout.css' %}?v=1"
+    >
+</head>
+
+<body class="page-administration-premium page-transfert-affectation">
+
+<div class="app-shell">
+
+   {% include "dashboard/sidebar_responsable.html" %}
+
+    <div class="main-area">
+
+        <header class="topbar-operation-affectation">
+
+            <div>
+                <span class="sur-titre-operation-affectation">
+                    Espace responsable
+                </span>
+
+                <h1>Transférer un étudiant</h1>
+
+                <p>
+                    Changement de chambre avec traçabilité
+                    complète de l'opération.
+                </p>
+            </div>
+
+            <div class="actions-topbar-operation-affectation">
+
+                <a
+                    href="{% url 'hebergement:liste_transferts_responsable' %}"
+                    class="bouton-operation-topbar"
+                >
+                    Historique
+                </a>
+
+                <a
+                    href="{% url 'hebergement:liste_affectations_responsable' %}"
+                    class="bouton-operation-topbar"
+                >
+                    ← Affectations
+                </a>
+
+                <div class="profil-operation-topbar">
+                    <div class="avatar-operation-topbar">
+                        {% if request.user.first_name %}
+                            {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
+                        {% else %}
+                            {{ request.user.username|first|upper }}
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <strong>
+                            {{ request.user.get_full_name|default:request.user.username }}
+                        </strong>
+
+                        <span>
+                            {% if request.user.is_superuser %}
+                                Super administrateur
+                            {% else %}
+                                {{ request.user.get_role_display }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+        </header>
+
+        <main class="conteneur-premium conteneur-transfert-layout">
+
+            {% if messages %}
+                <section class="messages-premium">
+                    {% for message in messages %}
+                        <div class="message-premium {{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </section>
+            {% endif %}
+
+            <section class="hero-premium hero-formulaire-transfert">
+
+                <div>
+                    <span class="sur-titre-hero-premium">
+                        Opération d'hébergement
+                    </span>
+
+                    <h2>
+                        {{ affectation.etudiant.utilisateur.get_full_name|default:affectation.etudiant.utilisateur.username }}
+                    </h2>
+
+                    <p>
+                        Matricule {{ affectation.etudiant.matricule }}
+                        ·
+                        {{ affectation.annee_universitaire.libelle }}
+                    </p>
+                </div>
+
+                <span class="badge-hero-actif">
+                    Affectation active
+                </span>
+
+            </section>
+
+            <section class="grille-formulaire-transfert">
+
+                <section class="carte-premium">
+
+                    <div class="entete-carte-premium">
+                        <div>
+                            <span class="mini-label-premium">
+                                Nouveau logement
+                            </span>
+
+                            <h2>
+                                Paramètres du transfert
+                            </h2>
+
+                            <p>
+                                Sélectionnez une chambre disponible,
+                                la date effective et indiquez le motif.
+                            </p>
+                        </div>
+                    </div>
+
+                    {% if formulaire.non_field_errors %}
+                        <div class="bloc-erreurs-premium">
+                            {% for erreur in formulaire.non_field_errors %}
+                                <p>{{ erreur }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <form
+                        method="post"
+                        class="formulaire-operation-premium"
+                        novalidate
+                    >
+                        {% csrf_token %}
+
+                        <div class="groupe-champ-premium">
+                            <label for="{{ formulaire.nouvelle_chambre.id_for_label }}">
+                                Nouvelle chambre *
+                            </label>
+
+                            {{ formulaire.nouvelle_chambre }}
+
+                            <small>
+                                Seules les chambres actives
+                                disposant d'au moins une place sont proposées.
+                            </small>
+
+                            {% for erreur in formulaire.nouvelle_chambre.errors %}
+                                <span class="erreur-champ-premium">
+                                    {{ erreur }}
+                                </span>
+                            {% endfor %}
+                        </div>
+
+                        <div class="groupe-champ-premium">
+                            <label for="{{ formulaire.date_transfert.id_for_label }}">
+                                Date effective du transfert *
+                            </label>
+
+                            {{ formulaire.date_transfert }}
+
+                            {% for erreur in formulaire.date_transfert.errors %}
+                                <span class="erreur-champ-premium">
+                                    {{ erreur }}
+                                </span>
+                            {% endfor %}
+                        </div>
+
+                        <div class="groupe-champ-premium">
+                            <label for="{{ formulaire.motif.id_for_label }}">
+                                Motif du transfert *
+                            </label>
+
+                            {{ formulaire.motif }}
+
+                            <small>
+                                Le motif doit contenir au moins
+                                5 caractères.
+                            </small>
+
+                            {% for erreur in formulaire.motif.errors %}
+                                <span class="erreur-champ-premium">
+                                    {{ erreur }}
+                                </span>
+                            {% endfor %}
+                        </div>
+
+                        <div class="actions-formulaire-premium">
+
+                            <a
+                                href="{% url 'hebergement:liste_affectations_responsable' %}"
+                                class="bouton-premium bouton-premium-clair"
+                            >
+                                Annuler
+                            </a>
+
+                            <button
+                                type="submit"
+                                class="bouton-premium bouton-premium-transfert"
+                                onclick="return confirm('Confirmer le transfert de cet étudiant vers la nouvelle chambre ?');"
+                            >
+                                ↻ Confirmer le transfert
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </section>
+
+                <aside class="colonne-resume-transfert">
+
+                    <section class="carte-premium">
+
+                        <span class="mini-label-premium">
+                            Situation actuelle
+                        </span>
+
+                        <h2 class="titre-resume-transfert">
+                            Chambre actuelle
+                        </h2>
+
+                        <div class="chambre-actuelle-premium">
+                            <strong>
+                                {{ affectation.chambre.batiment.code }}
+                                /
+                                {{ affectation.chambre.numero }}
+                            </strong>
+
+                            <span>
+                                {{ affectation.chambre.batiment.nom }}
+                            </span>
+                        </div>
+
+                        <div class="ligne-resume-premium">
+                            <span>Étage</span>
+                            <strong>
+                                {% if affectation.chambre.etage == 0 %}
+                                    RDC
+                                {% else %}
+                                    {{ affectation.chambre.etage }}
+                                {% endif %}
+                            </strong>
+                        </div>
+
+                        <div class="ligne-resume-premium">
+                            <span>Entrée réelle</span>
+                            <strong>
+                                {{ affectation.date_entree_reelle|date:"d/m/Y" }}
+                            </strong>
+                        </div>
+
+                        <div class="ligne-resume-premium">
+                            <span>Sortie prévue</span>
+                            <strong>
+                                {{ affectation.date_sortie_prevue|date:"d/m/Y" }}
+                            </strong>
+                        </div>
+
+                    </section>
+
+                    <section class="carte-premium alerte-operation-premium">
+
+                        <strong>
+                            Effet du transfert
+                        </strong>
+
+                        <p>
+                            L'affectation actuelle sera clôturée
+                            et une nouvelle affectation active sera créée
+                            dans la chambre choisie.
+                        </p>
+
+                    </section>
+
+                </aside>
+
+            </section>
+
+        </main>
+
+    </div>
+</div>
+
+</body>
+</html>

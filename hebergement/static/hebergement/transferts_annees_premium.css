@@ -1,0 +1,1646 @@
+/* =========================================================
+   TRANSFERTS + ANNÉES UNIVERSITAIRES — RESPONSABLE PREMIUM
+========================================================= */
+
+:root {
+    --bleu: #2563eb;
+    --bleu-fonce: #1e3a8a;
+    --bleu-clair: #eff6ff;
+    --texte: #0f172a;
+    --secondaire: #64748b;
+    --bordure: #e2e8f0;
+    --vert: #15803d;
+    --vert-clair: #dcfce7;
+    --rouge: #b91c1c;
+    --rouge-clair: #fee2e2;
+    --orange: #b45309;
+    --orange-clair: #fef3c7;
+    --violet: #6d28d9;
+    --violet-clair: #ede9fe;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body,
+body.page-administration-premium {
+    min-height: 100vh;
+    margin: 0;
+    background:
+        linear-gradient(
+            180deg,
+            #f8fafc 0,
+            #f3f6fb 300px,
+            #eef2f7 100%
+        );
+    color: var(--texte);
+    font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+/* =========================================================
+   HEADER — NEW + LEGACY COMPATIBILITY
+========================================================= */
+
+.entete-premium,
+.entete {
+    min-height: 104px;
+    padding: 18px clamp(22px, 4vw, 60px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 26px;
+    border-bottom: 1px solid var(--bordure);
+    background: rgba(255,255,255,.97);
+    box-shadow: 0 7px 25px rgba(15,23,42,.055);
+}
+
+.identite-premium,
+.identite-page {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.logo-premium,
+.logo-page {
+    width: 60px;
+    height: 60px;
+    flex: 0 0 60px;
+    display: grid;
+    place-items: center;
+    border-radius: 17px;
+    background: linear-gradient(135deg, var(--bleu), #60a5fa);
+    color: #fff;
+    box-shadow: 0 10px 22px rgba(37,99,235,.22);
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.sur-titre-premium {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--bleu);
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+.identite-premium h1,
+.identite-page h1 {
+    margin: 0;
+    font-size: clamp(22px, 2.1vw, 30px);
+    letter-spacing: -.025em;
+}
+
+.identite-premium p,
+.identite-page p {
+    margin: 5px 0 0;
+    color: var(--secondaire);
+    font-size: 13px;
+}
+
+.actions-entete-premium,
+.actions-entete {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 9px;
+}
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.bouton-premium,
+.bouton,
+.lien-retour {
+    min-height: 42px;
+    padding: 9px 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    font: inherit;
+    font-size: 11px;
+    font-weight: 800;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+        transform .16s ease,
+        background .16s ease,
+        border-color .16s ease;
+}
+
+.bouton-premium:hover,
+.bouton:hover,
+.lien-retour:hover {
+    transform: translateY(-1px);
+}
+
+.bouton-premium-principal,
+.bouton {
+    background: var(--bleu);
+    color: #fff;
+}
+
+.bouton-premium-principal:hover,
+.bouton:hover {
+    background: #1d4ed8;
+}
+
+.bouton-premium-clair,
+.bouton-secondaire,
+.lien-retour {
+    border-color: #dbe4f0;
+    background: #fff;
+    color: #334155;
+}
+
+.bouton-premium-clair:hover,
+.bouton-secondaire:hover,
+.lien-retour:hover {
+    border-color: #bfdbfe;
+    background: var(--bleu-clair);
+    color: #1d4ed8;
+}
+
+.bouton-premium-sombre {
+    background: #334155;
+    color: #fff;
+}
+
+.bouton-premium-transfert {
+    background: var(--violet);
+    color: #fff;
+}
+
+.bouton-succes {
+    background: var(--vert);
+    color: #fff;
+}
+
+.bouton-danger {
+    background: #dc2626;
+    color: #fff;
+}
+
+.bouton-petit {
+    min-height: 34px;
+    padding: 6px 10px;
+    font-size: 9px;
+}
+
+/* =========================================================
+   CONTAINER / MESSAGES
+========================================================= */
+
+.conteneur-premium,
+.conteneur {
+    width: min(1480px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 30px 0 46px;
+}
+
+.messages-premium,
+.messages {
+    margin-bottom: 18px;
+    display: grid;
+    gap: 9px;
+}
+
+.message-premium,
+.message {
+    padding: 13px 15px;
+    border: 1px solid #bfdbfe;
+    border-radius: 11px;
+    background: var(--bleu-clair);
+    color: #1e40af;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.message-premium.success,
+.message.success {
+    border-color: #bbf7d0;
+    background: #f0fdf4;
+    color: #166534;
+}
+
+.message-premium.error,
+.message.error {
+    border-color: #fecaca;
+    background: #fef2f2;
+    color: var(--rouge);
+}
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero-premium,
+.banniere-transferts,
+.banniere-annees {
+    margin-bottom: 22px;
+    padding: clamp(25px, 3vw, 36px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+    border-radius: 22px;
+    background:
+        radial-gradient(
+            circle at 88% 15%,
+            rgba(255,255,255,.18),
+            transparent 24%
+        ),
+        linear-gradient(
+            135deg,
+            var(--bleu-fonce),
+            var(--bleu) 57%,
+            #3b82f6
+        );
+    color: #fff;
+    box-shadow: 0 18px 35px rgba(37,99,235,.19);
+}
+
+.sur-titre-hero-premium,
+.petit-titre {
+    display: block;
+    margin-bottom: 7px;
+    color: #bfdbfe;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: .11em;
+    text-transform: uppercase;
+}
+
+.hero-premium h2,
+.banniere-transferts h2,
+.banniere-annees h2 {
+    margin: 0 0 9px;
+    font-size: clamp(28px, 3vw, 38px);
+    letter-spacing: -.03em;
+}
+
+.hero-premium p,
+.banniere-transferts p,
+.banniere-annees p {
+    max-width: 800px;
+    margin: 0;
+    color: #dbeafe;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.compteur-hero-premium,
+.compteur-banniere {
+    min-width: 145px;
+    padding: 19px 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 17px;
+    background: rgba(255,255,255,.12);
+}
+
+.compteur-hero-premium strong,
+.compteur-banniere strong {
+    font-size: 33px;
+}
+
+.compteur-hero-premium span,
+.compteur-banniere span {
+    color: #dbeafe;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.badge-hero-actif {
+    padding: 8px 11px;
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 999px;
+    background: rgba(255,255,255,.13);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 900;
+}
+
+/* =========================================================
+   STATS
+========================================================= */
+
+.grille-stats-premium,
+.statistiques-transferts,
+.statistiques-annees {
+    margin-bottom: 22px;
+    display: grid;
+    gap: 11px;
+}
+
+.grille-stats-transferts,
+.statistiques-transferts {
+    grid-template-columns: repeat(4, minmax(150px, 1fr));
+}
+
+.statistiques-annees {
+    grid-template-columns: repeat(6, minmax(135px, 1fr));
+}
+
+.stat-premium,
+.statistique-transfert,
+.statistique-annee {
+    min-width: 0;
+    min-height: 102px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    border: 1px solid var(--bordure);
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 5px 16px rgba(15,23,42,.045);
+}
+
+.icone-stat-premium,
+.icone-statistique {
+    width: 41px;
+    height: 41px;
+    flex: 0 0 41px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    background: var(--bleu-clair);
+    color: var(--bleu);
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.stat-premium > div,
+.statistique-transfert > div:last-child,
+.statistique-annee > div:last-child {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.stat-premium span:not(.icone-stat-premium),
+.statistique-transfert span,
+.statistique-annee span {
+    color: var(--secondaire);
+    font-size: 9px;
+    font-weight: 800;
+}
+
+.stat-premium strong,
+.statistique-transfert strong,
+.statistique-annee strong {
+    font-size: 23px;
+}
+
+.stat-premium small,
+.statistique-transfert small {
+    color: #94a3b8;
+    font-size: 8px;
+}
+
+/* =========================================================
+   CARDS / SECTION HEAD
+========================================================= */
+
+.carte-premium,
+.carte {
+    margin-bottom: 22px;
+    padding: 23px;
+    border: 1px solid var(--bordure);
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 7px 22px rgba(15,23,42,.05);
+}
+
+.entete-carte-premium,
+.entete-section {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.entete-carte-premium h2,
+.entete-section h2 {
+    margin: 4px 0 5px;
+    font-size: 21px;
+}
+
+.entete-carte-premium p,
+.entete-section p {
+    margin: 0;
+    color: var(--secondaire);
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.mini-label-premium {
+    color: var(--bleu);
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+}
+
+.badge-resultats-premium,
+.badge-resultats {
+    padding: 7px 10px;
+    border-radius: 999px;
+    background: var(--bleu-clair);
+    color: #1d4ed8;
+    font-size: 9px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+/* =========================================================
+   FILTERS
+========================================================= */
+
+.formulaire-filtres-premium,
+.formulaire-filtres-transferts,
+.formulaire-filtres-annees {
+    display: grid;
+    align-items: end;
+    gap: 12px;
+}
+
+.formulaire-filtres-transferts-premium,
+.formulaire-filtres-transferts {
+    grid-template-columns:
+        minmax(280px, 1.5fr)
+        repeat(3, minmax(150px, 1fr));
+}
+
+.formulaire-filtres-annees {
+    grid-template-columns:
+        minmax(300px, 1.7fr)
+        minmax(190px, .7fr);
+}
+
+.groupe-filtre-premium,
+.groupe-filtre {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.groupe-filtre-premium label,
+.groupe-filtre label {
+    color: #334155;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.groupe-filtre-premium input,
+.groupe-filtre-premium select,
+.groupe-filtre input,
+.groupe-filtre select {
+    width: 100%;
+    height: 42px;
+    padding: 0 11px;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    outline: 0;
+    background: #fff;
+    color: var(--texte);
+    font-size: 10px;
+}
+
+.groupe-filtre-premium input:focus,
+.groupe-filtre-premium select:focus,
+.groupe-filtre input:focus,
+.groupe-filtre select:focus {
+    border-color: var(--bleu);
+    box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+}
+
+.actions-filtres-premium,
+.actions-filtres-transferts,
+.actions-filtres-annees {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+/* =========================================================
+   TRANSFER CARDS
+========================================================= */
+
+.liste-transferts-premium {
+    display: grid;
+    gap: 14px;
+}
+
+.carte-transfert-premium {
+    overflow: hidden;
+    border: 1px solid #dbe4f0;
+    border-radius: 15px;
+    background: #fff;
+    box-shadow: 0 5px 17px rgba(15,23,42,.04);
+}
+
+.entete-transfert-premium {
+    padding: 15px 17px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    border-bottom: 1px solid #eef2f7;
+    background: #fbfdff;
+}
+
+.etudiant-transfert-premium {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+.avatar-premium {
+    width: 45px;
+    height: 45px;
+    flex: 0 0 45px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--bleu), #60a5fa);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.etudiant-transfert-premium h3 {
+    margin: 2px 0;
+    font-size: 16px;
+}
+
+.etudiant-transfert-premium p {
+    margin: 0;
+    color: var(--secondaire);
+    font-size: 9px;
+}
+
+.badge-transfert-premium,
+.badge-transfert {
+    padding: 7px 9px;
+    border-radius: 999px;
+    font-size: 9px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.badge-transfert-interne,
+.badge-meme-batiment {
+    background: var(--bleu-clair);
+    color: #1e40af;
+}
+
+.badge-transfert-externe,
+.badge-autre-batiment {
+    background: var(--violet-clair);
+    color: #5b21b6;
+}
+
+.trajet-transfert-premium {
+    padding: 16px 17px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 14px;
+}
+
+.chambre-trajet {
+    min-width: 0;
+    padding: 13px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    border-radius: 11px;
+}
+
+.chambre-trajet span {
+    font-size: 8px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.chambre-trajet strong {
+    font-size: 17px;
+}
+
+.chambre-trajet small {
+    font-size: 9px;
+}
+
+.chambre-trajet-origine {
+    border: 1px solid #fecaca;
+    background: #fef2f2;
+    color: #991b1b;
+}
+
+.chambre-trajet-destination {
+    border: 1px solid #bbf7d0;
+    background: #f0fdf4;
+    color: #166534;
+}
+
+.fleche-transfert-premium {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #0f172a;
+    color: #fff;
+    font-size: 17px;
+    font-weight: 900;
+}
+
+.grille-meta-transfert-premium {
+    padding: 0 17px 14px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 9px;
+}
+
+.grille-meta-transfert-premium > div {
+    min-width: 0;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    border: 1px solid #e7edf5;
+    border-radius: 9px;
+    background: #f8fafc;
+}
+
+.grille-meta-transfert-premium span,
+.motif-transfert-premium span {
+    color: #94a3b8;
+    font-size: 8px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.grille-meta-transfert-premium strong {
+    overflow: hidden;
+    font-size: 10px;
+    text-overflow: ellipsis;
+}
+
+.grille-meta-transfert-premium small {
+    color: var(--secondaire);
+    font-size: 8px;
+}
+
+.motif-transfert-premium {
+    margin: 0 17px 16px;
+    padding: 11px 12px;
+    border: 1px solid #dbeafe;
+    border-radius: 9px;
+    background: var(--bleu-clair);
+}
+
+.motif-transfert-premium p {
+    margin: 4px 0 0;
+    color: #334155;
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+/* =========================================================
+   YEAR LIST — EXISTING TEMPLATE
+========================================================= */
+
+.carte-annee-active,
+.alerte-aucune-annee-active {
+    margin-bottom: 22px;
+    padding: 15px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid #bbf7d0;
+    border-radius: 14px;
+    background: #f0fdf4;
+    color: #166534;
+    box-shadow: 0 5px 16px rgba(15,23,42,.035);
+}
+
+.icone-annee-active {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    background: #dcfce7;
+}
+
+.contenu-annee-active {
+    min-width: 0;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.contenu-annee-active span {
+    font-size: 9px;
+    font-weight: 800;
+}
+
+.contenu-annee-active strong {
+    font-size: 17px;
+}
+
+.contenu-annee-active small {
+    font-size: 9px;
+}
+
+.alerte-aucune-annee-active {
+    align-items: flex-start;
+    flex-direction: column;
+    border-color: #fde68a;
+    background: #fffbeb;
+    color: #92400e;
+}
+
+.alerte-aucune-annee-active strong {
+    font-size: 12px;
+}
+
+.alerte-aucune-annee-active span {
+    font-size: 10px;
+}
+
+.grille-annees {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.carte-annee {
+    overflow: hidden;
+    border: 1px solid #dbe4f0;
+    border-radius: 15px;
+    background: #fff;
+    box-shadow: 0 5px 17px rgba(15,23,42,.04);
+}
+
+.entete-carte-annee {
+    padding: 15px 16px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    border-bottom: 1px solid #eef2f7;
+    background: #fbfdff;
+}
+
+.libelle-annee {
+    display: block;
+    color: #0f172a;
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: -.02em;
+}
+
+.entete-carte-annee small {
+    color: var(--secondaire);
+    font-size: 8px;
+}
+
+.badge-annee {
+    padding: 7px 9px;
+    border-radius: 999px;
+    font-size: 9px;
+    font-weight: 900;
+}
+
+.badge-annee-planifiee {
+    background: var(--bleu-clair);
+    color: #1e40af;
+}
+
+.badge-annee-active {
+    background: var(--vert-clair);
+    color: #166534;
+}
+
+.badge-annee-cloturee {
+    background: #e2e8f0;
+    color: #334155;
+}
+
+.situation-annee {
+    padding: 10px 16px 0;
+}
+
+.situation-a-venir,
+.situation-en-cours,
+.situation-terminee {
+    display: inline-flex;
+    padding: 5px 8px;
+    border-radius: 999px;
+    font-size: 8px;
+    font-weight: 900;
+}
+
+.situation-a-venir {
+    background: var(--bleu-clair);
+    color: #1e40af;
+}
+
+.situation-en-cours {
+    background: var(--vert-clair);
+    color: #166534;
+}
+
+.situation-terminee {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.periode-annee {
+    margin: 12px 16px;
+    padding: 12px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid #e7edf5;
+    border-radius: 10px;
+    background: #f8fafc;
+}
+
+.periode-annee > div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.periode-annee span {
+    color: #94a3b8;
+    font-size: 7px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.periode-annee strong {
+    font-size: 10px;
+}
+
+.fleche-periode {
+    color: var(--bleu);
+    font-weight: 900;
+}
+
+.bloc-statistiques-annee {
+    padding: 0 16px 12px;
+}
+
+.grille-statistiques-annee {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 7px;
+}
+
+.grille-statistiques-annee > div {
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    border-radius: 8px;
+    background: #f8fafc;
+}
+
+.grille-statistiques-annee span {
+    color: #94a3b8;
+    font-size: 7px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.grille-statistiques-annee strong {
+    font-size: 11px;
+}
+
+.valeur-succes {
+    color: var(--vert);
+}
+
+.valeur-attente {
+    color: var(--orange);
+}
+
+.valeur-danger {
+    color: var(--rouge);
+}
+
+.alerte-affectations-ouvertes {
+    margin: 0 16px 12px;
+    padding: 9px 10px;
+    border: 1px solid #fde68a;
+    border-radius: 8px;
+    background: #fffbeb;
+    color: #92400e;
+    font-size: 8px;
+}
+
+.meta-annee {
+    padding: 0 16px 12px;
+    color: #94a3b8;
+    font-size: 8px;
+}
+
+.actions-carte-annee {
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+    border-top: 1px solid #eef2f7;
+    background: #fbfdff;
+}
+
+.actions-carte-annee form {
+    margin: 0;
+}
+
+/* =========================================================
+   FORMS
+========================================================= */
+
+.grille-formulaire-transfert,
+.grille-formulaire-annee {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(300px, .65fr);
+    gap: 20px;
+    align-items: start;
+}
+
+.colonne-resume-transfert,
+.colonne-aide-annee {
+    display: grid;
+    gap: 15px;
+    position: sticky;
+    top: 18px;
+}
+
+.formulaire-operation-premium {
+    display: grid;
+    gap: 15px;
+}
+
+.groupe-champ-premium {
+    min-width: 0;
+    display: grid;
+    gap: 6px;
+}
+
+.groupe-champ-premium label {
+    color: #334155;
+    font-size: 10px;
+    font-weight: 900;
+}
+
+.groupe-champ-premium .champ,
+.groupe-champ-premium input,
+.groupe-champ-premium select,
+.groupe-champ-premium textarea {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 11px;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    outline: 0;
+    background: #fff;
+    color: var(--texte);
+    font-size: 10px;
+}
+
+.groupe-champ-premium textarea {
+    min-height: 105px;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+.groupe-champ-premium input:focus,
+.groupe-champ-premium select:focus,
+.groupe-champ-premium textarea:focus {
+    border-color: var(--bleu);
+    box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+}
+
+.groupe-champ-premium small {
+    color: var(--secondaire);
+    font-size: 8px;
+}
+
+.erreur-champ-premium {
+    padding: 6px 8px;
+    border-radius: 7px;
+    background: #fef2f2;
+    color: var(--rouge);
+    font-size: 8px;
+    font-weight: 700;
+}
+
+.bloc-erreurs-premium {
+    margin-bottom: 15px;
+    padding: 11px;
+    border: 1px solid #fecaca;
+    border-radius: 9px;
+    background: #fef2f2;
+    color: var(--rouge);
+    font-size: 9px;
+}
+
+.bloc-erreurs-premium p {
+    margin: 0 0 3px;
+}
+
+.actions-formulaire-premium {
+    padding-top: 14px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    border-top: 1px solid #eef2f7;
+}
+
+.titre-resume-transfert {
+    margin: 4px 0 14px;
+    font-size: 18px;
+}
+
+.chambre-actuelle-premium {
+    margin-bottom: 8px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    border-radius: 10px;
+    background: #0f172a;
+    color: #fff;
+}
+
+.chambre-actuelle-premium strong {
+    font-size: 20px;
+}
+
+.chambre-actuelle-premium span {
+    color: #cbd5e1;
+    font-size: 9px;
+}
+
+.ligne-resume-premium {
+    padding: 9px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    border-bottom: 1px solid #eef2f7;
+}
+
+.ligne-resume-premium:last-child {
+    border-bottom: 0;
+}
+
+.ligne-resume-premium span {
+    color: var(--secondaire);
+    font-size: 9px;
+}
+
+.ligne-resume-premium strong {
+    font-size: 10px;
+}
+
+.alerte-operation-premium {
+    border-left: 4px solid var(--orange);
+}
+
+.alerte-operation-premium strong {
+    font-size: 11px;
+}
+
+.alerte-operation-premium p {
+    margin: 5px 0 0;
+    color: var(--secondaire);
+    font-size: 9px;
+    line-height: 1.55;
+}
+
+.icone-hero-annee {
+    width: 72px;
+    height: 72px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 18px;
+    background: rgba(255,255,255,.12);
+    font-size: 29px;
+}
+
+.grille-dates-annee {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.badge-mode-premium {
+    padding: 7px 9px;
+    border-radius: 999px;
+    background: var(--vert-clair);
+    color: #166534;
+    font-size: 9px;
+    font-weight: 900;
+}
+
+.badge-mode-modification {
+    background: var(--bleu-clair);
+    color: #1e40af;
+}
+
+/* =========================================================
+   PAGINATION / EMPTY
+========================================================= */
+
+.pagination-premium,
+.pagination {
+    margin-top: 20px;
+    padding-top: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    border-top: 1px solid #eef2f7;
+}
+
+.informations-pagination-premium,
+.informations-pagination {
+    color: var(--secondaire);
+    font-size: 9px;
+}
+
+.liens-pagination-premium,
+.liens-pagination {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.bouton-page-premium,
+.bouton-pagination,
+.page-active-premium,
+.page-actuelle {
+    min-width: 34px;
+    height: 34px;
+    padding: 0 9px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--bordure);
+    border-radius: 8px;
+    background: #fff;
+    color: #475569;
+    font-size: 9px;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.page-active-premium,
+.page-actuelle {
+    border-color: var(--bleu);
+    background: var(--bleu);
+    color: #fff;
+}
+
+.etat-vide-premium,
+.etat-vide {
+    padding: 42px 18px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.etat-vide-premium > span,
+.icone-vide {
+    width: 54px;
+    height: 54px;
+    display: grid;
+    place-items: center;
+    border-radius: 15px;
+    background: var(--bleu-clair);
+    color: var(--bleu);
+    font-size: 24px;
+}
+
+.etat-vide-premium h3 {
+    margin: 10px 0 4px;
+}
+
+.etat-vide-premium p,
+.etat-vide p {
+    margin: 0 0 14px;
+    color: var(--secondaire);
+    font-size: 9px;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1150px) {
+    .statistiques-annees {
+        grid-template-columns: repeat(3, minmax(140px, 1fr));
+    }
+
+    .formulaire-filtres-transferts-premium,
+    .formulaire-filtres-transferts {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .filtre-recherche-large,
+    .filtre-recherche-transfert {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 930px) {
+    .entete-premium,
+    .entete {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .hero-premium,
+    .banniere-transferts,
+    .banniere-annees {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .grille-stats-transferts,
+    .statistiques-transferts {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grille-formulaire-transfert,
+    .grille-formulaire-annee {
+        grid-template-columns: 1fr;
+    }
+
+    .colonne-resume-transfert,
+    .colonne-aide-annee {
+        position: static;
+    }
+
+    .grille-annees {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 650px) {
+    .conteneur-premium,
+    .conteneur {
+        width: calc(100% - 22px);
+        padding-top: 18px;
+    }
+
+    .entete-premium,
+    .entete {
+        padding: 15px 16px;
+    }
+
+    .actions-entete-premium,
+    .actions-entete {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .actions-entete-premium .bouton-premium,
+    .actions-entete .bouton,
+    .actions-entete .lien-retour {
+        width: 100%;
+    }
+
+    .grille-stats-transferts,
+    .statistiques-transferts,
+    .statistiques-annees,
+    .formulaire-filtres-transferts-premium,
+    .formulaire-filtres-transferts,
+    .formulaire-filtres-annees,
+    .grille-meta-transfert-premium,
+    .grille-dates-annee,
+    .grille-statistiques-annee {
+        grid-template-columns: 1fr;
+    }
+
+    .filtre-recherche-large,
+    .filtre-recherche-transfert {
+        grid-column: auto;
+    }
+
+    .carte-premium,
+    .carte {
+        padding: 16px;
+    }
+
+    .entete-carte-premium,
+    .entete-section,
+    .entete-transfert-premium,
+    .entete-carte-annee,
+    .pagination-premium,
+    .pagination {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .trajet-transfert-premium {
+        grid-template-columns: 1fr;
+    }
+
+    .fleche-transfert-premium {
+        margin: 0 auto;
+        transform: rotate(90deg);
+    }
+
+    .actions-filtres-premium,
+    .actions-filtres-transferts,
+    .actions-filtres-annees,
+    .actions-formulaire-premium {
+        flex-direction: column-reverse;
+    }
+
+    .actions-filtres-premium .bouton-premium,
+    .actions-filtres-transferts .bouton,
+    .actions-filtres-annees .bouton,
+    .actions-formulaire-premium .bouton-premium {
+        width: 100%;
+    }
+}
+
+
+/* =========================================================
+   TRANSFERTS — INTÉGRATION LAYOUT GESTIONINTERNAT
+========================================================= */
+
+body.page-administration-premium {
+    overflow-x: hidden;
+}
+
+.page-administration-premium .app-shell {
+    min-height: 100vh;
+}
+
+.page-administration-premium .main-area {
+    min-width: 0;
+    min-height: 100vh;
+}
+
+.topbar-transferts {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+
+    min-height: 92px;
+
+    padding:
+        16px
+        clamp(20px, 3vw, 40px);
+
+    border-bottom: 1px solid #e2e8f0;
+
+    background:
+        rgba(255, 255, 255, 0.96);
+
+    box-shadow:
+        0 6px 22px
+        rgba(15, 23, 42, 0.045);
+
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.sur-titre-topbar-transferts {
+    display: block;
+    margin-bottom: 3px;
+
+    color: #2563eb;
+
+    font-size: 9px;
+    font-weight: 900;
+
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.topbar-transferts h1 {
+    margin: 0;
+
+    color: #0f172a;
+
+    font-size:
+        clamp(
+            23px,
+            2.3vw,
+            31px
+        );
+
+    font-weight: 850;
+    letter-spacing: -0.025em;
+}
+
+.topbar-transferts p {
+    margin: 5px 0 0;
+
+    color: #64748b;
+
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.actions-topbar-transferts {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.profil-topbar-transferts {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    min-width: 180px;
+
+    padding:
+        6px 10px
+        6px 7px;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+
+    background: #ffffff;
+}
+
+.avatar-topbar-transferts {
+    display: grid;
+
+    width: 38px;
+    height: 38px;
+
+    flex: 0 0 38px;
+
+    place-items: center;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #60a5fa
+        );
+
+    color: #ffffff;
+
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.profil-topbar-transferts strong,
+.profil-topbar-transferts span {
+    display: block;
+}
+
+.profil-topbar-transferts strong {
+    max-width: 155px;
+
+    overflow: hidden;
+
+    color: #0f172a;
+
+    font-size: 11px;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.profil-topbar-transferts span {
+    margin-top: 2px;
+
+    color: #64748b;
+
+    font-size: 9px;
+}
+
+.page-administration-premium
+.conteneur-premium {
+    width:
+        min(
+            1480px,
+            calc(100% - 36px)
+        );
+
+    margin: 0 auto;
+
+    padding:
+        24px 0
+        44px;
+}
+
+.page-administration-premium
+.carte-transfert-premium {
+    transition:
+        transform 0.18s ease,
+        border-color 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+.page-administration-premium
+.carte-transfert-premium:hover {
+    transform: translateY(-2px);
+
+    border-color: #bfdbfe;
+
+    box-shadow:
+        0 12px 26px
+        rgba(37, 99, 235, 0.07);
+}
+
+@media (max-width: 1100px) {
+
+    .topbar-transferts {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .actions-topbar-transferts {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 760px) {
+
+    .topbar-transferts {
+        position: static;
+        padding: 15px 14px;
+    }
+
+    .actions-topbar-transferts {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .actions-topbar-transferts .bouton-premium,
+    .profil-topbar-transferts {
+        width: 100%;
+    }
+
+    .page-administration-premium
+    .conteneur-premium {
+        width: calc(100% - 22px);
+        padding-top: 16px;
+    }
+}

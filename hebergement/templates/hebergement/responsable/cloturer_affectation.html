@@ -1,0 +1,269 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Clôturer une affectation — GestionInternat
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'hebergement/gestion_locaux.css' %}"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'dashboard/style.css' %}?v=11"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'hebergement/cloturer_affectation_premium.css' %}?v=1"
+    >
+</head>
+
+<body class="page-cloture-premium">
+
+<div class="app-shell">
+
+   {% include "dashboard/sidebar_responsable.html" %}
+
+    <div class="main-area">
+
+        <header class="topbar-operation-affectation">
+
+            <div>
+                <span class="sur-titre-operation-affectation">
+                    Espace responsable
+                </span>
+
+                <h1>Clôturer l'affectation</h1>
+
+                <p>
+                    Enregistrez officiellement la sortie
+                    de l'étudiant et libérez la place occupée.
+                </p>
+            </div>
+
+            <div class="actions-topbar-operation-affectation">
+
+                <a
+                    href="{% url 'hebergement:liste_affectations_responsable' %}"
+                    class="bouton-operation-topbar"
+                >
+                    ← Retour aux affectations
+                </a>
+
+                <div class="profil-operation-topbar">
+                    <div class="avatar-operation-topbar">
+                        {% if request.user.first_name %}
+                            {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
+                        {% else %}
+                            {{ request.user.username|first|upper }}
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <strong>
+                            {{ request.user.get_full_name|default:request.user.username }}
+                        </strong>
+
+                        <span>
+                            {% if request.user.is_superuser %}
+                                Super administrateur
+                            {% else %}
+                                {{ request.user.get_role_display }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+        </header>
+
+        <main class="conteneur-operation-affectation">
+
+            {% if messages %}
+                <section class="messages-operation-affectation">
+                    {% for message in messages %}
+                        <div class="message-operation-affectation {{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </section>
+            {% endif %}
+
+            <section class="hero-operation-affectation hero-cloture-affectation">
+                <div>
+                    <span>Gestion de l'hébergement</span>
+                    <h2>Sortie définitive de l'étudiant</h2>
+                    <p>
+                        Vérifiez les informations puis renseignez
+                        la date réelle et le motif de sortie.
+                    </p>
+                </div>
+
+                <div class="icone-hero-operation-affectation">
+                    🚪
+                </div>
+            </section>
+
+            <section class="carte-operation-affectation">
+
+                <div class="entete-carte-operation-affectation">
+                    <div>
+                        <span class="mini-label-operation">
+                            Affectation actuelle
+                        </span>
+                        <h2>Résumé du séjour</h2>
+                    </div>
+
+                    <span class="badge-operation badge-operation-active">
+                        Active
+                    </span>
+                </div>
+
+                <div class="resume-operation-affectation">
+
+                    <div class="information-operation">
+                        <span>Étudiant</span>
+                        <strong>
+                            {{ affectation.etudiant.utilisateur.get_full_name|default:affectation.etudiant.utilisateur.username }}
+                        </strong>
+                    </div>
+
+                    <div class="information-operation">
+                        <span>Matricule</span>
+                        <strong>
+                            {{ affectation.etudiant.matricule }}
+                        </strong>
+                    </div>
+
+                    <div class="information-operation">
+                        <span>Chambre actuelle</span>
+                        <strong>
+                            {{ affectation.chambre.batiment.code }}
+                            /
+                            Chambre {{ affectation.chambre.numero }}
+                        </strong>
+                    </div>
+
+                    <div class="information-operation">
+                        <span>Entrée réelle</span>
+                        <strong>
+                            {{ affectation.date_entree_reelle|date:"d/m/Y" }}
+                        </strong>
+                    </div>
+
+                    <div class="information-operation">
+                        <span>Sortie prévue</span>
+                        <strong>
+                            {{ affectation.date_sortie_prevue|date:"d/m/Y" }}
+                        </strong>
+                    </div>
+
+                    <div class="information-operation">
+                        <span>Année universitaire</span>
+                        <strong>
+                            {{ affectation.annee_universitaire.libelle }}
+                        </strong>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <section class="carte-operation-affectation">
+
+                <div class="entete-carte-operation-affectation">
+                    <div>
+                        <span class="mini-label-operation">
+                            Clôture
+                        </span>
+                        <h2>Informations de sortie</h2>
+                        <p>
+                            Ces informations seront enregistrées
+                            dans l'historique de l'affectation.
+                        </p>
+                    </div>
+                </div>
+
+                <form
+                    method="post"
+                    class="formulaire-operation-affectation"
+                >
+                    {% csrf_token %}
+
+                    <div class="champ-operation-affectation">
+                        <label for="date_sortie_reelle">
+                            Date de sortie réelle *
+                        </label>
+
+                        <input
+                            type="date"
+                            id="date_sortie_reelle"
+                            name="date_sortie_reelle"
+                            min="{{ affectation.date_entree_reelle|date:'Y-m-d' }}"
+                            max="{{ affectation.date_sortie_prevue|date:'Y-m-d' }}"
+                            required
+                        >
+                    </div>
+
+                    <div class="champ-operation-affectation">
+                        <label for="motif_sortie">
+                            Motif de sortie *
+                        </label>
+
+                        <textarea
+                            id="motif_sortie"
+                            name="motif_sortie"
+                            rows="5"
+                            placeholder="Exemple : fin de séjour, départ volontaire..."
+                            required
+                        ></textarea>
+                    </div>
+
+                    <div class="alerte-operation-affectation alerte-operation-danger">
+                        <strong>⚠️ Clôture définitive</strong>
+                        <p>
+                            L'affectation deviendra clôturée
+                            et la place sera libérée dans la chambre.
+                        </p>
+                    </div>
+
+                    <div class="actions-formulaire-operation">
+                        <a
+                            href="{% url 'hebergement:liste_affectations_responsable' %}"
+                            class="bouton-operation bouton-operation-secondaire"
+                        >
+                            Annuler
+                        </a>
+
+                        <button
+                            type="submit"
+                            class="bouton-operation bouton-operation-danger"
+                            onclick="return confirm('Confirmer définitivement la sortie de cet étudiant ?');"
+                        >
+                            🚪 Confirmer la sortie
+                        </button>
+                    </div>
+
+                </form>
+
+            </section>
+
+        </main>
+
+    </div>
+</div>
+
+</body>
+</html>

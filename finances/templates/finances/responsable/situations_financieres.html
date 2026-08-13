@@ -1,0 +1,343 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion financière — GestionInternat</title>
+
+    <link rel="stylesheet" href="{% static 'dashboard/style.css' %}?v=12">
+    <link rel="stylesheet" href="{% static 'finances/finances_premium.css' %}?v=1">
+    <link rel="stylesheet" href="{% static 'finances/finances_responsable_layout.css' %}?v=1">
+</head>
+
+<body class="finance-page">
+<div class="app-shell finance-shell">
+
+    {% include "dashboard/sidebar_responsable.html" %}
+
+    <div class="main-area finance-main">
+
+        <header class="finance-topbar">
+            <div class="finance-topbar-copy">
+                <span class="finance-eyebrow">Espace responsable</span>
+                <h1>Gestion financière</h1>
+                <p>Frais d’hébergement, règlements étudiants, soldes et échéances.</p>
+            </div>
+
+            <div class="finance-topbar-actions">
+                <a href="{% url 'finances:creer_frais' %}"
+                   class="finance-button finance-button-primary">
+                    + Créer des frais
+                </a>
+
+                <a href="{% url 'finances:liste_paiements_en_attente' %}"
+                   class="finance-button finance-button-light">
+                    Paiements en attente
+                </a>
+
+                <div class="finance-user-card">
+                    <div class="finance-user-avatar">
+                        {% if request.user.first_name %}
+                            {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
+                        {% else %}
+                            {{ request.user.username|first|upper }}
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <strong>{{ request.user.get_full_name|default:request.user.username }}</strong>
+                        <span>
+                            {% if request.user.is_superuser %}
+                                Super administrateur
+                            {% else %}
+                                {{ request.user.get_role_display }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="finance-content">
+
+            {% if messages %}
+                <section class="finance-messages">
+                    {% for message in messages %}
+                        <div class="finance-message {{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </section>
+            {% endif %}
+
+            <section class="finance-hero">
+                <div class="finance-hero-copy">
+                    <span class="finance-eyebrow finance-eyebrow-light">Finances</span>
+                    <h2>Vue consolidée des situations financières</h2>
+                    <p>
+                        Contrôlez les montants dus, les paiements validés,
+                        les soldes restants et les échéances des étudiants.
+                    </p>
+                </div>
+
+                <div class="finance-hero-count">
+                    <strong>{{ nombre_frais|default:0 }}</strong>
+                    <span>dossier(s)</span>
+                </div>
+            </section>
+
+            <section class="finance-kpi-grid">
+
+                <article class="finance-kpi-card">
+                    <div class="finance-kpi-icon">📂</div>
+                    <div>
+                        <span>Dossiers</span>
+                        <strong>{{ nombre_frais|default:0 }}</strong>
+                        <small>Situations financières</small>
+                    </div>
+                </article>
+
+                <article class="finance-kpi-card">
+                    <div class="finance-kpi-icon">💵</div>
+                    <div>
+                        <span>Total dû</span>
+                        <strong>{{ montant_total|default:"0.00"|floatformat:2 }} DH</strong>
+                        <small>Montant facturé</small>
+                    </div>
+                </article>
+
+                <article class="finance-kpi-card">
+                    <div class="finance-kpi-icon finance-kpi-green">✓</div>
+                    <div>
+                        <span>Payé</span>
+                        <strong class="finance-value-green">
+                            {{ montant_paye|default:"0.00"|floatformat:2 }} DH
+                        </strong>
+                        <small>Paiements validés</small>
+                    </div>
+                </article>
+
+                <article class="finance-kpi-card">
+                    <div class="finance-kpi-icon finance-kpi-orange">⌛</div>
+                    <div>
+                        <span>Restant</span>
+                        <strong class="finance-value-orange">
+                            {{ montant_restant|default:"0.00"|floatformat:2 }} DH
+                        </strong>
+                        <small>Solde global</small>
+                    </div>
+                </article>
+
+                <article class="finance-kpi-card">
+                    <div class="finance-kpi-icon finance-kpi-green">●</div>
+                    <div>
+                        <span>Soldés</span>
+                        <strong>{{ nombre_dossiers_soldes|default:0 }}</strong>
+                        <small>Dossiers réglés</small>
+                    </div>
+                </article>
+
+                <article class="finance-kpi-card">
+                    <div class="finance-kpi-icon finance-kpi-red">!</div>
+                    <div>
+                        <span>En retard</span>
+                        <strong class="finance-value-red">
+                            {{ nombre_dossiers_en_retard|default:0 }}
+                        </strong>
+                        <small>Échéances dépassées</small>
+                    </div>
+                </article>
+
+            </section>
+
+            <section class="finance-panel">
+                <div class="finance-panel-heading">
+                    <div>
+                        <span class="finance-eyebrow">Recherche</span>
+                        <h2>Filtrer les dossiers</h2>
+                        <p>
+                            Recherchez un étudiant et filtrez selon l’année
+                            universitaire ou le statut financier.
+                        </p>
+                    </div>
+
+                    <span class="finance-result-pill">
+                        {{ nombre_frais|default:0 }} résultat(s)
+                    </span>
+                </div>
+
+                <form method="get" class="finance-filters">
+
+                    <div class="finance-field finance-field-search">
+                        <label for="recherche">Étudiant</label>
+                        <input
+                            id="recherche"
+                            name="recherche"
+                            type="search"
+                            value="{{ recherche }}"
+                            placeholder="Nom, matricule ou CNE"
+                        >
+                    </div>
+
+                    <div class="finance-field">
+                        <label for="annee">Année universitaire</label>
+                        <select id="annee" name="annee">
+                            <option value="">Toutes</option>
+                            {% for annee in annees %}
+                                <option
+                                    value="{{ annee.annee_universitaire_id }}"
+                                    {% if annee_selectionnee == annee.annee_universitaire_id|stringformat:"s" %}selected{% endif %}
+                                >
+                                    {{ annee.annee_universitaire__libelle }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="finance-field">
+                        <label for="statut">Statut</label>
+                        <select id="statut" name="statut">
+                            <option value="">Tous</option>
+                            <option value="NON_PAYE" {% if statut_selectionne == "NON_PAYE" %}selected{% endif %}>Non payé</option>
+                            <option value="PARTIEL" {% if statut_selectionne == "PARTIEL" %}selected{% endif %}>Partiel</option>
+                            <option value="PAYE" {% if statut_selectionne == "PAYE" %}selected{% endif %}>Payé</option>
+                            <option value="RETARD" {% if statut_selectionne == "RETARD" %}selected{% endif %}>En retard</option>
+                        </select>
+                    </div>
+
+                    <div class="finance-filter-actions">
+                        <button type="submit"
+                                class="finance-button finance-button-primary">
+                            Filtrer
+                        </button>
+
+                        <a href="{% url 'finances:liste_frais' %}"
+                           class="finance-button finance-button-light">
+                            Réinitialiser
+                        </a>
+                    </div>
+                </form>
+            </section>
+
+            <div class="finance-section-heading">
+                <span class="finance-eyebrow">Situations financières</span>
+                <h2>Dossiers étudiants</h2>
+                <p>
+                    Seuls les paiements validés sont intégrés au montant payé.
+                </p>
+            </div>
+
+            {% if frais %}
+                <section class="finance-dossiers-grid">
+
+                    {% for dossier in frais %}
+                        <article class="finance-dossier-card">
+
+                            <div class="finance-dossier-header">
+                                <div class="finance-student">
+                                    <div class="finance-student-avatar">
+                                        {{ dossier.etudiant.utilisateur.first_name|first|default:"E" }}
+                                    </div>
+
+                                    <div>
+                                        <h3>
+                                            {{ dossier.etudiant.utilisateur.get_full_name|default:dossier.etudiant.utilisateur.username }}
+                                        </h3>
+                                        <p>
+                                            {{ dossier.etudiant.matricule }}
+                                            ·
+                                            {{ dossier.annee_universitaire.libelle }}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <span class="
+                                    finance-status
+                                    {% if dossier.statut_financier == 'Payé' %}
+                                        finance-status-paid
+                                    {% elif 'retard' in dossier.statut_financier|lower %}
+                                        finance-status-late
+                                    {% elif 'Partiellement' in dossier.statut_financier %}
+                                        finance-status-partial
+                                    {% else %}
+                                        finance-status-neutral
+                                    {% endif %}
+                                ">
+                                    {{ dossier.statut_financier }}
+                                </span>
+                            </div>
+
+                            <div class="finance-balance-box">
+                                <span>Montant restant</span>
+                                <strong>
+                                    {{ dossier.montant_restant|floatformat:2 }} DH
+                                </strong>
+                            </div>
+
+                            <div class="finance-dossier-meta">
+                                <div>
+                                    <span>Total dû</span>
+                                    <strong>
+                                        {{ dossier.montant_total|floatformat:2 }} DH
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Payé</span>
+                                    <strong class="finance-value-green">
+                                        {{ dossier.montant_paye|floatformat:2 }} DH
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Échéance</span>
+                                    <strong>
+                                        {{ dossier.date_echeance|date:"d/m/Y" }}
+                                    </strong>
+                                </div>
+                            </div>
+
+                            <div class="finance-card-actions">
+                                <a href="{% url 'finances:detail_frais' dossier.pk %}"
+                                   class="finance-button finance-button-light">
+                                    Consulter
+                                </a>
+
+                                <a href="{% url 'finances:modifier_frais' dossier.pk %}"
+                                   class="finance-button finance-button-primary">
+                                    Modifier
+                                </a>
+                            </div>
+                        </article>
+                    {% endfor %}
+
+                </section>
+
+            {% else %}
+
+                <section class="finance-empty">
+                    <div class="finance-empty-icon">💰</div>
+                    <h3>Aucun dossier financier</h3>
+                    <p>
+                        Créez des frais d’hébergement
+                        ou modifiez les filtres de recherche.
+                    </p>
+
+                    <a href="{% url 'finances:creer_frais' %}"
+                       class="finance-button finance-button-primary">
+                        + Créer des frais
+                    </a>
+                </section>
+
+            {% endif %}
+
+        </main>
+
+        <footer class="finance-footer">
+            Gestion de l’internat universitaire — {% now "Y" %}
+        </footer>
+    </div>
+</div>
+</body>
+</html>

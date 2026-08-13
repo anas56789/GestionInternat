@@ -1,0 +1,931 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Gestion des chambres — Gestion de l'internat
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'dashboard/style.css' %}?v=11"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'hebergement/gestion_locaux_premium.css' %}?v=3"
+    >
+</head>
+
+<body>
+
+<div class="app-shell">
+
+   {% include "dashboard/sidebar_responsable.html" %}
+
+    <div class="main-area">
+
+        <header class="topbar-locaux">
+
+            <div>
+                <span class="sur-titre-topbar-locaux">
+                    Espace responsable
+                </span>
+
+                <h1>Gestion des chambres</h1>
+
+                <p>
+                    Capacités, occupation et disponibilité
+                    des chambres de l'internat.
+                </p>
+            </div>
+
+            <div class="actions-topbar-locaux">
+
+                <a
+                    href="{% url 'hebergement:liste_batiments' %}"
+                    class="bouton bouton-secondaire"
+                >
+                    Bâtiments
+                </a>
+
+                <a
+                    href="{% url 'hebergement:creer_chambre' %}"
+                    class="bouton"
+                >
+                    + Ajouter une chambre
+                </a>
+
+                <div class="profil-topbar-locaux">
+                    <div class="avatar-topbar-locaux">
+                        {% if request.user.first_name %}
+                            {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
+                        {% else %}
+                            {{ request.user.username|first|upper }}
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <strong>
+                            {{ request.user.get_full_name|default:request.user.username }}
+                        </strong>
+
+                        <span>
+                            {% if request.user.is_superuser %}
+                                Super administrateur
+                            {% else %}
+                                {{ request.user.get_role_display }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+        </header>
+
+
+    <!-- =====================================================
+         CONTENU PRINCIPAL
+    ====================================================== -->
+
+    <main class="conteneur">
+
+        <!-- Messages Django -->
+
+        {% if messages %}
+            <section class="messages">
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </section>
+        {% endif %}
+
+        <!-- =================================================
+             BANNIÈRE
+        ================================================== -->
+
+        <section class="banniere-chambres">
+            <div>
+                <span class="petit-titre">
+                    Gestion de l'hébergement
+                </span>
+
+                <h2>
+                    Chambres et capacités d'accueil
+                </h2>
+
+                <p>
+                    Consultez l'état des chambres, leur capacité,
+                    leur taux d'occupation et les places encore
+                    disponibles.
+                </p>
+            </div>
+
+            <div class="compteur-banniere">
+                <strong>
+                    {{ nombre_chambres|default:0 }}
+                </strong>
+
+                <span>
+                    résultat(s)
+                </span>
+            </div>
+        </section>
+
+        <!-- =================================================
+             STATISTIQUES DES CHAMBRES
+        ================================================== -->
+
+        <section class="statistiques-chambres">
+            <article class="statistique-chambre">
+                <div class="icone-statistique">
+                    🚪
+                </div>
+
+                <div>
+                    <span>Total des chambres</span>
+
+                    <strong>
+                        {{ nombre_total_global|default:0 }}
+                    </strong>
+                </div>
+            </article>
+
+            <article class="statistique-chambre">
+                <div class="icone-statistique">
+                    ✅
+                </div>
+
+                <div>
+                    <span>Chambres actives</span>
+
+                    <strong>
+                        {{ nombre_chambres_actives|default:0 }}
+                    </strong>
+                </div>
+            </article>
+
+            <article class="statistique-chambre">
+                <div class="icone-statistique">
+                    ⛔
+                </div>
+
+                <div>
+                    <span>Chambres inactives</span>
+
+                    <strong>
+                        {{ nombre_chambres_inactives|default:0 }}
+                    </strong>
+                </div>
+            </article>
+
+            <article class="statistique-chambre">
+                <div class="icone-statistique">
+                    🟢
+                </div>
+
+                <div>
+                    <span>Disponibles</span>
+
+                    <strong>
+                        {{ nombre_chambres_disponibles|default:0 }}
+                    </strong>
+                </div>
+            </article>
+
+            <article class="statistique-chambre">
+                <div class="icone-statistique">
+                    🔴
+                </div>
+
+                <div>
+                    <span>Complètes</span>
+
+                    <strong>
+                        {{ nombre_chambres_completes|default:0 }}
+                    </strong>
+                </div>
+            </article>
+
+            <article class="statistique-chambre">
+                <div class="icone-statistique">
+                    🛠️
+                </div>
+
+                <div>
+                    <span>En maintenance</span>
+
+                    <strong>
+                        {{ nombre_chambres_maintenance|default:0 }}
+                    </strong>
+                </div>
+            </article>
+
+            <article class="statistique-chambre">
+                <div class="icone-statistique">
+                    🛏️
+                </div>
+
+                <div>
+                    <span>Capacité totale</span>
+
+                    <strong>
+                        {{ capacite_totale|default:0 }}
+                    </strong>
+                </div>
+            </article>
+
+            <article class="statistique-chambre">
+                <div class="icone-statistique">
+                    👤
+                </div>
+
+                <div>
+                    <span>Places occupées</span>
+
+                    <strong>
+                        {{ places_occupees|default:0 }}
+                    </strong>
+                </div>
+            </article>
+
+            <article class="statistique-chambre">
+                <div class="icone-statistique">
+                    ➕
+                </div>
+
+                <div>
+                    <span>Places disponibles</span>
+
+                    <strong>
+                        {{ places_disponibles|default:0 }}
+                    </strong>
+                </div>
+            </article>
+
+            <article class="statistique-chambre">
+                <div class="icone-statistique">
+                    📊
+                </div>
+
+                <div>
+                    <span>Taux d'occupation</span>
+
+                    <strong>
+                        {{ taux_occupation|default:0 }} %
+                    </strong>
+                </div>
+            </article>
+        </section>
+
+        <!-- =================================================
+             FILTRES
+        ================================================== -->
+
+        <section class="carte">
+            <div class="entete-section">
+                <div>
+                    <h2>Recherche et filtrage</h2>
+
+                    <p>
+                        Combinez plusieurs critères pour retrouver
+                        rapidement les chambres recherchées.
+                    </p>
+                </div>
+
+                <span class="badge-resultats">
+                    {{ nombre_chambres|default:0 }}
+                    résultat(s)
+                </span>
+            </div>
+
+            <form
+                method="get"
+                class="formulaire-filtres-chambres"
+            >
+                <!-- Recherche -->
+
+                <div class="groupe-filtre filtre-recherche-chambre">
+                    <label for="recherche">
+                        Recherche
+                    </label>
+
+                    <input
+                        type="search"
+                        id="recherche"
+                        name="recherche"
+                        value="{{ recherche }}"
+                        placeholder="Numéro, code ou nom du bâtiment..."
+                    >
+                </div>
+
+                <!-- Bâtiment -->
+
+                <div class="groupe-filtre">
+                    <label for="batiment">
+                        Bâtiment
+                    </label>
+
+                    <select
+                        id="batiment"
+                        name="batiment"
+                    >
+                        <option value="">
+                            Tous les bâtiments
+                        </option>
+
+                        {% for batiment in batiments %}
+                            <option
+                                value="{{ batiment.pk }}"
+                                {% if batiment_selectionne == batiment.pk|stringformat:"s" %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ batiment.code }}
+                                —
+                                {{ batiment.nom }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- État -->
+
+                <div class="groupe-filtre">
+                    <label for="etat">
+                        État
+                    </label>
+
+                    <select
+                        id="etat"
+                        name="etat"
+                    >
+                        <option value="">
+                            Tous les états
+                        </option>
+
+                        {% for valeur, libelle in choix_etats %}
+                            <option
+                                value="{{ valeur }}"
+                                {% if etat_selectionne == valeur %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ libelle }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Type de chambre -->
+
+                <div class="groupe-filtre">
+                    <label for="type_chambre">
+                        Type de chambre
+                    </label>
+
+                    <select
+                        id="type_chambre"
+                        name="type_chambre"
+                    >
+                        <option value="">
+                            Tous les types
+                        </option>
+
+                        {% for valeur, libelle in choix_types %}
+                            <option
+                                value="{{ valeur }}"
+                                {% if type_selectionne == valeur %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ libelle }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Étage -->
+
+                <div class="groupe-filtre">
+                    <label for="etage">
+                        Étage
+                    </label>
+
+                    <select
+                        id="etage"
+                        name="etage"
+                    >
+                        <option value="">
+                            Tous les étages
+                        </option>
+
+                        {% for etage in etages %}
+                            <option
+                                value="{{ etage }}"
+                                {% if etage_selectionne == etage|stringformat:"s" %}
+                                    selected
+                                {% endif %}
+                            >
+                                {% if etage == 0 %}
+                                    Rez-de-chaussée
+                                {% else %}
+                                    Étage {{ etage }}
+                                {% endif %}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Activation -->
+
+                <div class="groupe-filtre">
+                    <label for="activation">
+                        Activation
+                    </label>
+
+                    <select
+                        id="activation"
+                        name="activation"
+                    >
+                        <option value="">
+                            Toutes
+                        </option>
+
+                        <option
+                            value="ACTIVE"
+                            {% if activation_selectionnee == "ACTIVE" %}
+                                selected
+                            {% endif %}
+                        >
+                            Chambres actives
+                        </option>
+
+                        <option
+                            value="INACTIVE"
+                            {% if activation_selectionnee == "INACTIVE" %}
+                                selected
+                            {% endif %}
+                        >
+                            Chambres inactives
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Disponibilité -->
+
+                <div class="groupe-filtre">
+                    <label for="disponibilite">
+                        Disponibilité
+                    </label>
+
+                    <select
+                        id="disponibilite"
+                        name="disponibilite"
+                    >
+                        <option value="">
+                            Toutes
+                        </option>
+
+                        <option
+                            value="DISPONIBLE"
+                            {% if disponibilite_selectionnee == "DISPONIBLE" %}
+                                selected
+                            {% endif %}
+                        >
+                            Avec place disponible
+                        </option>
+
+                        <option
+                            value="COMPLETE"
+                            {% if disponibilite_selectionnee == "COMPLETE" %}
+                                selected
+                            {% endif %}
+                        >
+                            Chambres complètes
+                        </option>
+
+                        <option
+                            value="VIDE"
+                            {% if disponibilite_selectionnee == "VIDE" %}
+                                selected
+                            {% endif %}
+                        >
+                            Chambres vides
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Actions -->
+
+                <div class="actions-filtres-chambres">
+                    <button
+                        type="submit"
+                        class="bouton"
+                    >
+                        Appliquer les filtres
+                    </button>
+
+                    <a
+                        href="{% url 'hebergement:liste_chambres' %}"
+                        class="bouton bouton-secondaire"
+                    >
+                        Réinitialiser
+                    </a>
+                </div>
+            </form>
+        </section>
+
+        <!-- =================================================
+             LISTE DES CHAMBRES
+        ================================================== -->
+
+        <section class="carte">
+            <div class="entete-section">
+                <div>
+                    <h2>Liste des chambres</h2>
+
+                    <p>
+                        {{ nombre_chambres|default:0 }}
+                        chambre(s) correspondant aux critères.
+                    </p>
+                </div>
+
+                <a
+                    href="{% url 'hebergement:creer_chambre' %}"
+                    class="bouton"
+                >
+                    Ajouter une chambre
+                </a>
+            </div>
+
+            <div class="tableau-responsive">
+                <table class="tableau-chambres">
+                    <thead>
+                        <tr>
+                            <th>Bâtiment</th>
+                            <th>Chambre</th>
+                            <th>Étage</th>
+                            <th>Type</th>
+                            <th>Capacité</th>
+                            <th>Occupation</th>
+                            <th>Progression</th>
+                            <th>Places libres</th>
+                            <th>État</th>
+                            <th>Activation</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for chambre in chambres %}
+                            <tr>
+                                <!-- Bâtiment -->
+
+                                <td>
+                                    <div class="batiment-cellule">
+                                        <strong>
+                                            {{ chambre.batiment.code }}
+                                        </strong>
+
+                                        <small>
+                                            {{ chambre.batiment.nom }}
+                                        </small>
+                                    </div>
+                                </td>
+
+                                <!-- Numéro -->
+
+                                <td>
+                                    <strong class="numero-chambre">
+                                        Chambre {{ chambre.numero }}
+                                    </strong>
+                                </td>
+
+                                <!-- Étage -->
+
+                                <td>
+                                    {% if chambre.etage == 0 %}
+                                        Rez-de-chaussée
+                                    {% else %}
+                                        Étage {{ chambre.etage }}
+                                    {% endif %}
+                                </td>
+
+                                <!-- Type -->
+
+                                <td>
+                                    {{ chambre.get_type_chambre_display }}
+                                </td>
+
+                                <!-- Capacité -->
+
+                                <td>
+                                    {{ chambre.capacite }}
+                                    place(s)
+                                </td>
+
+                                <!-- Occupation -->
+
+                                <td>
+                                    <strong>
+                                        {{ chambre.places_occupees_calculees }}
+                                        /
+                                        {{ chambre.capacite }}
+                                    </strong>
+                                </td>
+
+                                <!-- Barre d'occupation -->
+
+                                <td>
+                                    <div class="bloc-progression">
+                                        <div class="barre-occupation">
+                                            <div
+                                                class="progression-occupation
+                                                {% if chambre.taux_occupation_calcule >= 100 %}
+                                                    progression-complete
+                                                {% elif chambre.taux_occupation_calcule >= 70 %}
+                                                    progression-elevee
+                                                {% else %}
+                                                    progression-normale
+                                                {% endif %}"
+                                                style="width: {{ chambre.taux_occupation_calcule }}%;"
+                                            ></div>
+                                        </div>
+
+                                        <small>
+                                            {{ chambre.taux_occupation_calcule }} %
+                                        </small>
+                                    </div>
+                                </td>
+
+                                <!-- Places libres -->
+
+                                <td>
+                                    {% if chambre.places_disponibles_calculees > 0 %}
+                                        <span class="badge-chambre badge-disponible">
+                                            {{ chambre.places_disponibles_calculees }}
+                                            libre(s)
+                                        </span>
+                                    {% else %}
+                                        <span class="badge-chambre badge-complete">
+                                            Complète
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <!-- État -->
+
+                                <td>
+                                    {% if chambre.etat == "DISPONIBLE" %}
+                                        <span class="badge-chambre badge-disponible">
+                                            {{ chambre.get_etat_display }}
+                                        </span>
+
+                                    {% elif chambre.etat == "PARTIELLE" %}
+                                        <span class="badge-chambre badge-partielle">
+                                            {{ chambre.get_etat_display }}
+                                        </span>
+
+                                    {% elif chambre.etat == "COMPLETE" %}
+                                        <span class="badge-chambre badge-complete">
+                                            {{ chambre.get_etat_display }}
+                                        </span>
+
+                                    {% elif chambre.etat == "MAINTENANCE" %}
+                                        <span class="badge-chambre badge-maintenance">
+                                            {{ chambre.get_etat_display }}
+                                        </span>
+
+                                    {% elif chambre.etat == "HORS_SERVICE" %}
+                                        <span class="badge-chambre badge-hors-service">
+                                            {{ chambre.get_etat_display }}
+                                        </span>
+
+                                    {% else %}
+                                        <span class="badge-chambre">
+                                            {{ chambre.get_etat_display }}
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <!-- Activation -->
+
+                                <td>
+                                    {% if chambre.est_active %}
+                                        <span class="badge-chambre badge-disponible">
+                                            Active
+                                        </span>
+                                    {% else %}
+                                        <span class="badge-chambre badge-hors-service">
+                                            Inactive
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <!-- Actions -->
+
+                                <td>
+                                    <div class="actions-tableau">
+                                        <a
+                                            href="{% url 'hebergement:modifier_chambre' chambre.pk %}"
+                                            class="bouton bouton-petit"
+                                        >
+                                            Modifier
+                                        </a>
+
+                                        {% if chambre.etat != "MAINTENANCE" %}
+                                            <form
+                                                method="post"
+                                                action="{% url 'hebergement:changer_etat_chambre' chambre.pk %}"
+                                            >
+                                                {% csrf_token %}
+
+                                                <input
+                                                    type="hidden"
+                                                    name="etat"
+                                                    value="MAINTENANCE"
+                                                >
+
+                                                <button
+                                                    type="submit"
+                                                    class="bouton bouton-attente bouton-petit"
+                                                    onclick="return confirm('Mettre cette chambre en maintenance ?');"
+                                                >
+                                                    Maintenance
+                                                </button>
+                                            </form>
+                                        {% endif %}
+
+                                        {% if chambre.etat != "HORS_SERVICE" %}
+                                            <form
+                                                method="post"
+                                                action="{% url 'hebergement:changer_etat_chambre' chambre.pk %}"
+                                            >
+                                                {% csrf_token %}
+
+                                                <input
+                                                    type="hidden"
+                                                    name="etat"
+                                                    value="HORS_SERVICE"
+                                                >
+
+                                                <button
+                                                    type="submit"
+                                                    class="bouton bouton-danger bouton-petit"
+                                                    onclick="return confirm('Déclarer cette chambre hors service ?');"
+                                                >
+                                                    Hors service
+                                                </button>
+                                            </form>
+                                        {% endif %}
+
+                                        {% if chambre.etat == "MAINTENANCE" or chambre.etat == "HORS_SERVICE" %}
+                                            <form
+                                                method="post"
+                                                action="{% url 'hebergement:changer_etat_chambre' chambre.pk %}"
+                                            >
+                                                {% csrf_token %}
+
+                                                <input
+                                                    type="hidden"
+                                                    name="etat"
+                                                    value="DISPONIBLE"
+                                                >
+
+                                                <button
+                                                    type="submit"
+                                                    class="bouton bouton-succes bouton-petit"
+                                                    onclick="return confirm('Réactiver cette chambre ?');"
+                                                >
+                                                    Réactiver
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+
+                        {% empty %}
+                            <tr>
+                                <td
+                                    colspan="11"
+                                    class="aucune-donnee"
+                                >
+                                    <div class="etat-vide">
+                                        <span class="icone-vide">
+                                            🔍
+                                        </span>
+
+                                        <strong>
+                                            Aucune chambre trouvée
+                                        </strong>
+
+                                        <p>
+                                            Aucune chambre ne correspond
+                                            aux critères sélectionnés.
+                                        </p>
+
+                                        <a
+                                            href="{% url 'hebergement:liste_chambres' %}"
+                                            class="bouton bouton-secondaire"
+                                        >
+                                            Réinitialiser les filtres
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- =============================================
+                 PAGINATION
+            ============================================== -->
+
+            {% if page_obj.paginator.num_pages > 1 %}
+                <nav class="pagination">
+                    <div class="informations-pagination">
+                        Page
+                        {{ page_obj.number }}
+                        sur
+                        {{ page_obj.paginator.num_pages }}
+
+                        —
+
+                        {{ page_obj.paginator.count }}
+                        résultat(s)
+                    </div>
+
+                    <div class="liens-pagination">
+                        {% if page_obj.has_previous %}
+                            <a
+                                href="?page=1{% if chaine_filtres %}&{{ chaine_filtres }}{% endif %}"
+                                class="bouton-pagination"
+                            >
+                                Première
+                            </a>
+
+                            <a
+                                href="?page={{ page_obj.previous_page_number }}{% if chaine_filtres %}&{{ chaine_filtres }}{% endif %}"
+                                class="bouton-pagination"
+                            >
+                                Précédente
+                            </a>
+                        {% endif %}
+
+                        {% for numero_page in page_obj.paginator.page_range %}
+                            {% if numero_page == page_obj.number %}
+                                <span class="page-actuelle">
+                                    {{ numero_page }}
+                                </span>
+
+                            {% elif numero_page >= page_obj.number|add:"-2" and numero_page <= page_obj.number|add:"2" %}
+                                <a
+                                    href="?page={{ numero_page }}{% if chaine_filtres %}&{{ chaine_filtres }}{% endif %}"
+                                    class="bouton-pagination pagination-numerique"
+                                >
+                                    {{ numero_page }}
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                            <a
+                                href="?page={{ page_obj.next_page_number }}{% if chaine_filtres %}&{{ chaine_filtres }}{% endif %}"
+                                class="bouton-pagination"
+                            >
+                                Suivante
+                            </a>
+
+                            <a
+                                href="?page={{ page_obj.paginator.num_pages }}{% if chaine_filtres %}&{{ chaine_filtres }}{% endif %}"
+                                class="bouton-pagination"
+                            >
+                                Dernière
+                            </a>
+                        {% endif %}
+                    </div>
+                </nav>
+            {% endif %}
+        </section>
+    </main>
+
+    
+    </div>
+</div>
+
+</body>
+</html>

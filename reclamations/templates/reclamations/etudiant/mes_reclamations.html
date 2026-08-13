@@ -1,0 +1,309 @@
+{% extends "dashboard/base_etudiant.html" %}
+{% load static %}
+
+{% block title %}
+Mes réclamations — GestionInternat
+{% endblock %}
+
+{% block titre_page %}
+Mes réclamations
+{% endblock %}
+
+{% block sous_titre_page %}
+Déposez une réclamation et suivez son traitement par l’administration.
+{% endblock %}
+
+{% block css_page %}
+<link
+    rel="stylesheet"
+    href="{% static 'reclamations/reclamations_etudiant.css' %}?v=2"
+>
+{% endblock %}
+
+{% block contenu_etudiant %}
+
+<div class="actions-page-etudiant">
+    <a
+        href="{% url 'reclamations:creer_reclamation' %}"
+        class="bouton bouton-principal"
+    >
+        + Nouvelle réclamation
+    </a>
+</div>
+
+<div class="conteneur conteneur-reclamations-layout">
+<section class="banniere-reclamations">
+            <div>
+                <span class="sur-titre">
+                    Assistance et suivi
+                </span>
+
+                <h2>Historique de mes réclamations</h2>
+
+                <p>
+                    Consultez les réponses administratives,
+                    les changements de statut et les chambres concernées.
+                </p>
+            </div>
+
+            <div class="compteur-banniere">
+                <strong>
+                    {{ nombre_total|default:0 }}
+                </strong>
+
+                <span>
+                    réclamation(s)
+                </span>
+            </div>
+        </section>
+
+        <section class="grille-statistiques">
+            <article class="statistique">
+                <div class="icone-statistique" aria-hidden="true">
+                    📚
+                </div>
+
+                <div>
+                    <span>Total</span>
+
+                    <strong>
+                        {{ nombre_total|default:0 }}
+                    </strong>
+                </div>
+            </article>
+
+            <article class="statistique">
+                <div class="icone-statistique" aria-hidden="true">
+                    🆕
+                </div>
+
+                <div>
+                    <span>Nouvelles</span>
+
+                    <strong>
+                        {{ nombre_nouvelles|default:0 }}
+                    </strong>
+                </div>
+            </article>
+
+            <article class="statistique">
+                <div class="icone-statistique" aria-hidden="true">
+                    🔧
+                </div>
+
+                <div>
+                    <span>En cours</span>
+
+                    <strong class="valeur-information">
+                        {{ nombre_en_cours|default:0 }}
+                    </strong>
+                </div>
+            </article>
+
+            <article class="statistique">
+    <div class="icone-statistique" aria-hidden="true">
+        ✅
+    </div>
+
+    <div>
+        <span>Résolues</span>
+
+        <strong class="valeur-succes">
+            {{ nombre_resolues|default:0 }}
+        </strong>
+    </div>
+</article>
+
+            <article class="statistique">
+    <div class="icone-statistique" aria-hidden="true">
+        ❌
+    </div>
+
+    <div>
+        <span>Rejetées</span>
+
+        <strong class="valeur-danger">
+            {{ nombre_rejetees|default:0 }}
+        </strong>
+    </div>
+</article>
+        </section>
+
+        <section class="carte-principale">
+            <div class="entete-section">
+                <div>
+                    <span class="petit-titre">
+                        Dossiers enregistrés
+                    </span>
+
+                    <h2>Suivi de mes demandes</h2>
+
+                    <p>
+                        Ouvrez une réclamation pour consulter
+                        son traitement complet.
+                    </p>
+                </div>
+
+                <a
+                    href="{% url 'reclamations:creer_reclamation' %}"
+                    class="bouton bouton-principal"
+                >
+                    Déposer une réclamation
+                </a>
+            </div>
+
+            {% if reclamations %}
+                <div class="grille-reclamations">
+                    {% for reclamation in reclamations %}
+                        <article class="carte-reclamation">
+                            <div
+                                class="
+                                    barre-statut
+                                    statut-{{ reclamation.statut|lower }}
+                                "
+                            ></div>
+
+                            <div class="entete-reclamation">
+                                <div>
+                                    <span class="categorie-reclamation">
+                                        {{ reclamation.get_categorie_display }}
+                                    </span>
+
+                                    <h3>
+                                        {{ reclamation.titre }}
+                                    </h3>
+
+                                    <small>
+                                        Créée le
+                                        {{ reclamation.date_creation|date:"d/m/Y à H:i" }}
+                                    </small>
+                                </div>
+
+                                <span
+                                    class="
+                                        badge-statut
+                                        statut-{{ reclamation.statut|lower }}
+                                    "
+                                >
+                                    {{ reclamation.get_statut_display }}
+                                </span>
+                            </div>
+
+                            <p class="description-reclamation">
+                                {{ reclamation.description|truncatechars:190 }}
+                            </p>
+
+                            <div class="metadonnees-reclamation">
+                                <div class="information">
+                                    <span>Priorité</span>
+
+                                    <strong
+                                        class="
+                                            priorite
+                                            priorite-{{ reclamation.priorite|lower }}
+                                        "
+                                    >
+                                        {{ reclamation.get_priorite_display }}
+                                    </strong>
+                                </div>
+
+                                <div class="information">
+                                    <span>Chambre</span>
+
+                                    <strong>
+                                        {% if reclamation.chambre %}
+                                            {{ reclamation.chambre.batiment.code }}
+                                            /
+                                            {{ reclamation.chambre.numero }}
+                                        {% else %}
+                                            Non associée
+                                        {% endif %}
+                                    </strong>
+                                </div>
+
+                                <div class="information">
+                                    <span>Traitée par</span>
+
+                                    <strong>
+                                        {% if reclamation.traitee_par %}
+                                            {{ reclamation.traitee_par.get_full_name|default:reclamation.traitee_par.username }}
+                                        {% else %}
+                                            Non attribuée
+                                        {% endif %}
+                                    </strong>
+                                </div>
+
+                                <div class="information">
+                                    <span>Dernière mise à jour</span>
+
+                                    <strong>
+                                        {{ reclamation.date_modification|date:"d/m/Y à H:i"|default:"Non renseignée" }}
+                                    </strong>
+                                </div>
+                            </div>
+
+                            {% if reclamation.reponse %}
+                                <div class="apercu-reponse">
+                                    <strong>Réponse administrative</strong>
+
+                                    <p>
+                                        {{ reclamation.reponse|truncatechars:150 }}
+                                    </p>
+                                </div>
+                            {% elif reclamation.motif_rejet %}
+                                <div class="apercu-rejet">
+                                    <strong>Motif du rejet</strong>
+
+                                    <p>
+                                        {{ reclamation.motif_rejet|truncatechars:150 }}
+                                    </p>
+                                </div>
+                            {% endif %}
+
+                            <div class="actions-reclamation">
+                                <a
+                                    href="{% url 'reclamations:detail_reclamation' reclamation.pk %}"
+                                    class="bouton bouton-principal bouton-petit"
+                                >
+                                    Consulter le détail
+                                </a>
+
+                                {% if reclamation.piece_jointe %}
+                                    <a
+                                        href="{{ reclamation.piece_jointe.url }}"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="bouton bouton-clair bouton-petit"
+                                    >
+                                        Voir la pièce jointe
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="etat-vide">
+                    <div class="icone-vide" aria-hidden="true">
+                        📣
+                    </div>
+
+                    <h3>Aucune réclamation enregistrée</h3>
+
+                    <p>
+                        Vous n’avez pas encore transmis de réclamation
+                        à l’administration.
+                    </p>
+
+                    <a
+                        href="{% url 'reclamations:creer_reclamation' %}"
+                        class="bouton bouton-principal"
+                    >
+                        Déposer ma première réclamation
+                    </a>
+                </div>
+            {% endif %}
+        </section>
+</div>
+
+{% endblock %}

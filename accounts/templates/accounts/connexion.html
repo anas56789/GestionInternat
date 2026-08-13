@@ -1,0 +1,144 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Connexion — GestionInternat</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'accounts/connexion.css' %}"
+    >
+</head>
+
+<body>
+
+    <main class="page-connexion">
+
+        <section class="carte-connexion">
+
+            <!-- Logo -->
+            <div class="logo-container">
+                <img
+                    src="{% static 'accounts/images/logo-gestioninternat.png' %}"
+                    alt="GestionInternat"
+                    class="auth-logo"
+                >
+            </div>
+
+            <!-- En-tête -->
+            <div class="entete-connexion">
+
+                <h1>Connexion</h1>
+
+                <p>
+                    Connectez-vous pour accéder à votre espace.
+                </p>
+
+            </div>
+
+
+            <!-- Formulaire -->
+            <form
+                method="post"
+                class="formulaire-connexion"
+            >
+
+                {% csrf_token %}
+
+
+                <!-- Messages Django -->
+                {% if messages %}
+
+                    {% for message in messages %}
+
+                        <div class="message-erreur">
+                            {{ message }}
+                        </div>
+
+                    {% endfor %}
+
+                {% endif %}
+
+
+                <!-- Nom utilisateur -->
+                <div class="groupe-champ">
+
+                    <label for="username">
+                        Nom d'utilisateur
+                    </label>
+
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        value="{{ request.POST.username|default:'' }}"
+                        placeholder="Saisissez votre nom d'utilisateur"
+                        autocomplete="username"
+                        required
+                        autofocus
+                    >
+
+                </div>
+
+
+                <!-- Mot de passe -->
+                <div class="groupe-champ">
+
+                    <label for="password">
+                        Mot de passe
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Saisissez votre mot de passe"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Bouton -->
+                <button
+                    type="submit"
+                    class="bouton-connexion"
+                >
+                    <span>Se connecter</span>
+                    <span class="fleche">→</span>
+                </button>
+
+            </form>
+
+            <div class="zone-inscription-connexion">
+    <span>
+        Vous n'avez pas encore de compte ?
+    </span>
+
+    <a href="{% url 'accounts:inscription' %}">
+        Créer un compte étudiant
+    </a>
+</div>
+
+            <!-- Aide -->
+            <p class="aide">
+                En cas de problème, contactez l'administration.
+            </p>
+
+        </section>
+
+    </main>
+
+</body>
+
+</html>

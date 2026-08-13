@@ -1,0 +1,140 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {% block title %}
+            Espace étudiant — GestionInternat
+        {% endblock %}
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'dashboard/style.css' %}?v=12"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'dashboard/base_etudiant.css' %}?v=1"
+    >
+
+    {% block css_page %}
+    {% endblock %}
+</head>
+
+<body class="page-etudiant-layout">
+
+<div class="app-shell student-app-shell">
+
+    {% include "dashboard/sidebar_etudiant.html" %}
+
+    <div class="main-area student-main-area">
+
+        <header class="topbar-etudiant-commune">
+
+            <div class="topbar-etudiant-gauche">
+                <span class="topbar-sur-titre">
+                    Portail étudiant
+                </span>
+
+                <h1>
+                    {% block titre_page %}
+                        Gestion de l’internat
+                    {% endblock %}
+                </h1>
+
+                <p>
+                    {% block sous_titre_page %}
+                        Suivez vos démarches et votre situation
+                        au sein de l’internat universitaire.
+                    {% endblock %}
+                </p>
+            </div>
+
+            <div class="topbar-etudiant-droite">
+
+                <div class="profil-topbar-etudiant">
+
+                    <div class="avatar-topbar-etudiant">
+                        {% if request.user.first_name %}
+                            {{ request.user.first_name|first|upper }}
+                            {% if request.user.last_name %}
+                                {{ request.user.last_name|first|upper }}
+                            {% endif %}
+                        {% else %}
+                            {{ request.user.username|first|upper }}
+                        {% endif %}
+                    </div>
+
+                    <div class="identite-topbar-etudiant">
+                        <strong>
+                            {{ request.user.get_full_name|default:request.user.username }}
+                        </strong>
+                        <span>Étudiant</span>
+                    </div>
+
+                </div>
+
+                <a
+                    href="{% url 'notifications:mes_notifications' %}"
+                    class="bouton-topbar-etudiant bouton-topbar-notifications"
+                    title="Mes notifications"
+                >
+                    <span aria-hidden="true">🔔</span>
+
+                    {% if nombre_notifications_non_lues %}
+                        <strong class="compteur-topbar-etudiant">
+                            {{ nombre_notifications_non_lues }}
+                        </strong>
+                    {% endif %}
+                </a>
+
+                <a
+                    href="{% url 'accounts:deconnexion' %}"
+                    class="bouton-topbar-etudiant bouton-topbar-deconnexion"
+                >
+                    <span aria-hidden="true">↪</span>
+                    <span>Déconnexion</span>
+                </a>
+
+            </div>
+
+        </header>
+
+        {% if messages %}
+            <section class="messages-layout-etudiant">
+                {% for message in messages %}
+                    <div class="message-layout-etudiant {{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </section>
+        {% endif %}
+
+        <main class="contenu-layout-etudiant">
+            {% block contenu_etudiant %}
+            {% endblock %}
+        </main>
+
+        <footer class="footer-layout-etudiant">
+            <span>Gestion de l’internat universitaire</span>
+            <span>—</span>
+            <span>{% now "Y" %}</span>
+        </footer>
+
+    </div>
+</div>
+
+{% block javascript_page %}
+{% endblock %}
+
+</body>
+</html>

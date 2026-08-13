@@ -1,0 +1,594 @@
+{% extends "dashboard/base_etudiant.html" %}
+{% load static %}
+
+{% block title %}
+Mon hébergement — GestionInternat
+{% endblock %}
+
+{% block titre_page %}
+Mon hébergement
+{% endblock %}
+
+{% block sous_titre_page %}
+Consultez votre chambre actuelle, les informations de votre bâtiment
+et l’historique de vos affectations.
+{% endblock %}
+
+{% block css_page %}
+<link
+    rel="stylesheet"
+    href="{% static 'hebergement/mon_hebergement.css' %}?v=1"
+>
+{% endblock %}
+
+{% block contenu_etudiant %}
+
+<div class="hebergement-etudiant-page">
+
+    {% if affectation_actuelle %}
+
+        <!-- =====================================================
+             HERO
+        ====================================================== -->
+
+        <section class="hero-hebergement-etudiant">
+
+            <div class="hero-hebergement-contenu">
+
+                <span class="mini-label-hebergement">
+                    Hébergement actuel
+                </span>
+
+                <h2>
+                    {{ affectation_actuelle.chambre.batiment.code }}
+                    /
+                    Chambre {{ affectation_actuelle.chambre.numero }}
+                </h2>
+
+                <p>
+                    Votre affectation pour l’année universitaire
+                    <strong>
+                        {{ affectation_actuelle.annee_universitaire.libelle }}
+                    </strong>
+                    est actuellement
+                    <strong>
+                        {{ affectation_actuelle.get_statut_display|lower }}
+                    </strong>.
+                </p>
+
+                <div class="hero-hebergement-actions">
+
+                    <a
+                        href="{% url 'hebergement:mes_demandes' %}"
+                        class="bouton-hebergement bouton-hebergement-clair"
+                    >
+                        Voir mes demandes
+                    </a>
+
+                    <a
+                        href="{% url 'reclamations:creer_reclamation' %}"
+                        class="bouton-hebergement bouton-hebergement-principal"
+                    >
+                        Signaler un problème
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="hero-hebergement-chambre">
+
+                <span>
+                    Chambre
+                </span>
+
+                <strong>
+                    {{ affectation_actuelle.chambre.numero }}
+                </strong>
+
+                <small>
+                    {{ affectation_actuelle.chambre.batiment.code }}
+                    —
+                    étage {{ affectation_actuelle.chambre.etage }}
+                </small>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             STATISTIQUES
+        ====================================================== -->
+
+        <section class="grille-stats-hebergement">
+
+            <article class="stat-hebergement">
+                <span class="icone-stat-hebergement">🏢</span>
+
+                <div>
+                    <span>Bâtiment</span>
+
+                    <strong>
+                        {{ affectation_actuelle.chambre.batiment.code }}
+                    </strong>
+
+                    <small>
+                        {{ affectation_actuelle.chambre.batiment.nom }}
+                    </small>
+                </div>
+            </article>
+
+
+            <article class="stat-hebergement">
+                <span class="icone-stat-hebergement">🚪</span>
+
+                <div>
+                    <span>Chambre</span>
+
+                    <strong>
+                        {{ affectation_actuelle.chambre.numero }}
+                    </strong>
+
+                    <small>
+                        {{ affectation_actuelle.chambre.get_type_chambre_display }}
+                    </small>
+                </div>
+            </article>
+
+
+            <article class="stat-hebergement">
+                <span class="icone-stat-hebergement">👥</span>
+
+                <div>
+                    <span>Capacité</span>
+
+                    <strong>
+                        {{ affectation_actuelle.chambre.capacite }}
+                    </strong>
+
+                    <small>
+                        place(s)
+                    </small>
+                </div>
+            </article>
+
+
+            <article class="stat-hebergement">
+                <span class="icone-stat-hebergement">📅</span>
+
+                <div>
+                    <span>Année</span>
+
+                    <strong>
+                        {{ affectation_actuelle.annee_universitaire.libelle }}
+                    </strong>
+
+                    <small>
+                        {{ affectation_actuelle.annee_universitaire.get_statut_display }}
+                    </small>
+                </div>
+            </article>
+
+        </section>
+
+
+        <!-- =====================================================
+             INFORMATIONS PRINCIPALES
+        ====================================================== -->
+
+        <section class="grille-hebergement-principale">
+
+            <article class="carte-hebergement">
+
+                <div class="entete-carte-hebergement">
+
+                    <div>
+                        <span class="mini-label-hebergement">
+                            Chambre
+                        </span>
+
+                        <h3>
+                            Informations de l’hébergement
+                        </h3>
+                    </div>
+
+                    <span class="
+                        badge-hebergement
+                        badge-hebergement-{{ affectation_actuelle.statut|lower }}
+                    ">
+                        {{ affectation_actuelle.get_statut_display }}
+                    </span>
+
+                </div>
+
+
+                <div class="grille-infos-hebergement">
+
+                    <div class="info-hebergement">
+                        <span>Bâtiment</span>
+
+                        <strong>
+                            {{ affectation_actuelle.chambre.batiment.code }}
+                            —
+                            {{ affectation_actuelle.chambre.batiment.nom }}
+                        </strong>
+                    </div>
+
+
+                    <div class="info-hebergement">
+                        <span>Chambre</span>
+
+                        <strong>
+                            {{ affectation_actuelle.chambre.numero }}
+                        </strong>
+                    </div>
+
+
+                    <div class="info-hebergement">
+                        <span>Étage</span>
+
+                        <strong>
+                            {{ affectation_actuelle.chambre.etage }}
+                        </strong>
+                    </div>
+
+
+                    <div class="info-hebergement">
+                        <span>Type</span>
+
+                        <strong>
+                            {{ affectation_actuelle.chambre.get_type_chambre_display }}
+                        </strong>
+                    </div>
+
+
+                    <div class="info-hebergement">
+                        <span>Capacité</span>
+
+                        <strong>
+                            {{ affectation_actuelle.chambre.capacite }}
+                            place(s)
+                        </strong>
+                    </div>
+
+
+                    <div class="info-hebergement">
+                        <span>État de la chambre</span>
+
+                        <strong>
+                            {{ affectation_actuelle.chambre.get_etat_display }}
+                        </strong>
+                    </div>
+
+                </div>
+
+            </article>
+
+
+            <article class="carte-hebergement">
+
+                <div class="entete-carte-hebergement">
+
+                    <div>
+                        <span class="mini-label-hebergement">
+                            Séjour
+                        </span>
+
+                        <h3>
+                            Dates de l’affectation
+                        </h3>
+                    </div>
+
+                </div>
+
+
+                <div class="timeline-hebergement">
+
+                    <div class="etape-hebergement etape-hebergement-faite">
+
+                        <span class="point-timeline"></span>
+
+                        <div>
+                            <span>
+                                Entrée prévue
+                            </span>
+
+                            <strong>
+                                {{ affectation_actuelle.date_entree_prevue|date:"d/m/Y" }}
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="
+                        etape-hebergement
+                        {% if affectation_actuelle.date_entree_reelle %}
+                            etape-hebergement-faite
+                        {% endif %}
+                    ">
+
+                        <span class="point-timeline"></span>
+
+                        <div>
+                            <span>
+                                Entrée réelle
+                            </span>
+
+                            <strong>
+                                {% if affectation_actuelle.date_entree_reelle %}
+                                    {{ affectation_actuelle.date_entree_reelle|date:"d/m/Y" }}
+                                {% else %}
+                                    En attente
+                                {% endif %}
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="
+                        etape-hebergement
+                        {% if affectation_actuelle.date_sortie_reelle %}
+                            etape-hebergement-faite
+                        {% endif %}
+                    ">
+
+                        <span class="point-timeline"></span>
+
+                        <div>
+                            <span>
+                                Sortie prévue
+                            </span>
+
+                            <strong>
+                                {{ affectation_actuelle.date_sortie_prevue|date:"d/m/Y" }}
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="
+                        etape-hebergement
+                        {% if affectation_actuelle.date_sortie_reelle %}
+                            etape-hebergement-faite
+                        {% endif %}
+                    ">
+
+                        <span class="point-timeline"></span>
+
+                        <div>
+                            <span>
+                                Sortie réelle
+                            </span>
+
+                            <strong>
+                                {% if affectation_actuelle.date_sortie_reelle %}
+                                    {{ affectation_actuelle.date_sortie_reelle|date:"d/m/Y" }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+        </section>
+
+
+        <!-- =====================================================
+             DEMANDE ASSOCIÉE
+        ====================================================== -->
+
+        <section class="carte-hebergement carte-demande-associee">
+
+            <div class="entete-carte-hebergement">
+
+                <div>
+                    <span class="mini-label-hebergement">
+                        Dossier
+                    </span>
+
+                    <h3>
+                        Demande d’hébergement associée
+                    </h3>
+                </div>
+
+                <a
+                    href="{% url 'hebergement:detail_demande' affectation_actuelle.demande_hebergement.pk %}"
+                    class="lien-hebergement"
+                >
+                    Consulter le dossier →
+                </a>
+
+            </div>
+
+
+            <div class="resume-demande-hebergement">
+
+                <div>
+                    <span>Année universitaire</span>
+
+                    <strong>
+                        {{ affectation_actuelle.demande_hebergement.annee_universitaire.libelle }}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>Statut de la demande</span>
+
+                    <strong>
+                        {{ affectation_actuelle.demande_hebergement.get_statut_display }}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>Date de soumission</span>
+
+                    <strong>
+                        {{ affectation_actuelle.demande_hebergement.date_soumission|date:"d/m/Y"|default:"—" }}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>Date de décision</span>
+
+                    <strong>
+                        {{ affectation_actuelle.demande_hebergement.date_decision|date:"d/m/Y"|default:"—" }}
+                    </strong>
+                </div>
+
+            </div>
+
+        </section>
+
+
+    {% else %}
+
+        <!-- =====================================================
+             AUCUNE AFFECTATION
+        ====================================================== -->
+
+        <section class="etat-vide-hebergement">
+
+            <div class="icone-vide-hebergement">
+                🛏️
+            </div>
+
+            <span class="mini-label-hebergement">
+                Hébergement
+            </span>
+
+            <h2>
+                Aucune affectation en cours
+            </h2>
+
+            <p>
+                Vous ne disposez actuellement d’aucune affectation
+                prévue ou active. Consultez vos demandes pour suivre
+                l’avancement de votre dossier.
+            </p>
+
+            <a
+                href="{% url 'hebergement:mes_demandes' %}"
+                class="bouton-hebergement bouton-hebergement-principal"
+            >
+                Consulter mes demandes
+            </a>
+
+        </section>
+
+    {% endif %}
+
+
+    <!-- =========================================================
+         HISTORIQUE
+    ========================================================== -->
+
+    <section class="carte-hebergement historique-hebergement">
+
+        <div class="entete-carte-hebergement">
+
+            <div>
+                <span class="mini-label-hebergement">
+                    Historique
+                </span>
+
+                <h3>
+                    Mes anciennes affectations
+                </h3>
+
+                <p>
+                    Retrouvez les hébergements clôturés ou annulés.
+                </p>
+            </div>
+
+            <span class="compteur-historique">
+                {{ historique_affectations|length }}
+            </span>
+
+        </div>
+
+
+        {% if historique_affectations %}
+
+            <div class="tableau-hebergement-responsive">
+
+                <table class="tableau-hebergement">
+
+                    <thead>
+                        <tr>
+                            <th>Année</th>
+                            <th>Bâtiment</th>
+                            <th>Chambre</th>
+                            <th>Entrée</th>
+                            <th>Sortie</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for affectation in historique_affectations %}
+
+                            <tr>
+
+                                <td>
+                                    {{ affectation.annee_universitaire.libelle }}
+                                </td>
+
+                                <td>
+                                    {{ affectation.chambre.batiment.code }}
+                                </td>
+
+                                <td>
+                                    {{ affectation.chambre.numero }}
+                                </td>
+
+                                <td>
+                                    {{ affectation.date_entree_reelle|date:"d/m/Y"|default:affectation.date_entree_prevue|date:"d/m/Y" }}
+                                </td>
+
+                                <td>
+                                    {{ affectation.date_sortie_reelle|date:"d/m/Y"|default:affectation.date_sortie_prevue|date:"d/m/Y" }}
+                                </td>
+
+                                <td>
+                                    <span class="
+                                        badge-hebergement
+                                        badge-hebergement-{{ affectation.statut|lower }}
+                                    ">
+                                        {{ affectation.get_statut_display }}
+                                    </span>
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="historique-vide">
+                Aucun ancien hébergement enregistré.
+            </div>
+
+        {% endif %}
+
+    </section>
+
+</div>
+
+{% endblock %}

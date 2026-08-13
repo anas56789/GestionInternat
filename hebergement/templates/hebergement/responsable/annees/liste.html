@@ -1,0 +1,645 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Années universitaires — Internat universitaire
+    </title>
+
+    <link rel="stylesheet" href="{% static 'dashboard/style.css' %}?v=11">
+    
+    <link rel="stylesheet" href="{% static 'hebergement/transferts_annees_premium.css' %}?v=3">
+
+    <link
+    rel="stylesheet"
+    href="{% static 'hebergement/annees_polish.css' %}?v=1"
+>
+</head>
+
+<body>
+    
+<div class="app-shell">
+   {% include "dashboard/sidebar_responsable.html" %}
+
+    <div class="main-area">
+
+        <header class="topbar-annees">
+            <div>
+                <span class="sur-titre-topbar-annees">Espace responsable</span>
+                <h1>Années universitaires</h1>
+                <p>Gestion des périodes de fonctionnement, demandes et affectations de l'internat.</p>
+            </div>
+            <div class="actions-topbar-annees">
+                <a href="{% url 'hebergement:creer_annee_universitaire' %}"
+                   class="bouton-premium bouton-premium-principal">
+                    + Ajouter une année
+                </a>
+
+                <div class="profil-topbar-annees">
+                    <div class="avatar-topbar-annees">
+                        {% if request.user.first_name %}
+                            {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
+                        {% else %}
+                            {{ request.user.username|first|upper }}
+                        {% endif %}
+                    </div>
+                    <div>
+                        <strong>{{ request.user.get_full_name|default:request.user.username }}</strong>
+                        <span>{% if request.user.is_superuser %}Super administrateur{% else %}{{ request.user.get_role_display }}{% endif %}</span>
+                    </div>
+                </div>
+
+            </div>
+        </header>
+
+
+    <main class="conteneur">
+
+        {% if messages %}
+            <section class="messages">
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </section>
+        {% endif %}
+
+        <!-- BANNIÈRE -->
+
+        <section class="banniere-annees">
+            <div>
+                <span class="petit-titre">
+                    Organisation universitaire
+                </span>
+
+                <h2>
+                    Périodes de gestion de l’internat
+                </h2>
+
+                <p>
+                    Créez, activez et clôturez les années
+                    universitaires tout en suivant leurs demandes
+                    d’hébergement et leurs affectations.
+                </p>
+            </div>
+
+            <div class="compteur-banniere">
+                <strong>
+                    {{ nombre_annees|default:0 }}
+                </strong>
+
+                <span>
+                    résultat(s)
+                </span>
+            </div>
+        </section>
+
+        <!-- ANNÉE ACTIVE -->
+
+        {% if annee_active %}
+            <section class="carte-annee-active">
+                <div class="icone-annee-active">
+                    📅
+                </div>
+
+                <div class="contenu-annee-active">
+                    <span>
+                        Année universitaire actuellement active
+                    </span>
+
+                    <strong>
+                        {{ annee_active.libelle }}
+                    </strong>
+
+                    <small>
+                        Du
+                        {{ annee_active.date_debut|date:"d/m/Y" }}
+                        au
+                        {{ annee_active.date_fin|date:"d/m/Y" }}
+                    </small>
+                </div>
+
+                <span class="badge-annee badge-annee-active">
+                    Active
+                </span>
+            </section>
+        {% else %}
+            <section class="alerte-aucune-annee-active">
+                <strong>
+                    Aucune année universitaire active
+                </strong>
+
+                <span>
+                    Activez une année planifiée pour permettre
+                    la gestion courante de l’internat.
+                </span>
+            </section>
+        {% endif %}
+
+        <!-- STATISTIQUES -->
+
+        <section class="statistiques-annees">
+            <article class="statistique-annee">
+                <div class="icone-statistique">📚</div>
+
+                <div>
+                    <span>Total des années</span>
+
+                    <strong>
+                        {{ nombre_total_global|default:0 }}
+                    </strong>
+                </div>
+            </article>
+
+            <article class="statistique-annee">
+                <div class="icone-statistique">🗓️</div>
+
+                <div>
+                    <span>Planifiées</span>
+
+                    <strong>
+                        {{ nombre_planifiees|default:0 }}
+                    </strong>
+                </div>
+            </article>
+
+            <article class="statistique-annee">
+                <div class="icone-statistique">✅</div>
+
+                <div>
+                    <span>Actives</span>
+
+                    <strong>
+                        {{ nombre_actives|default:0 }}
+                    </strong>
+                </div>
+            </article>
+
+            <article class="statistique-annee">
+                <div class="icone-statistique">🏁</div>
+
+                <div>
+                    <span>Clôturées</span>
+
+                    <strong>
+                        {{ nombre_cloturees|default:0 }}
+                    </strong>
+                </div>
+            </article>
+
+            <article class="statistique-annee">
+                <div class="icone-statistique">📄</div>
+
+                <div>
+                    <span>Total des demandes</span>
+
+                    <strong>
+                        {{ total_demandes|default:0 }}
+                    </strong>
+                </div>
+            </article>
+
+            <article class="statistique-annee">
+                <div class="icone-statistique">🛏️</div>
+
+                <div>
+                    <span>Total des affectations</span>
+
+                    <strong>
+                        {{ total_affectations|default:0 }}
+                    </strong>
+                </div>
+            </article>
+        </section>
+
+        <!-- FILTRES -->
+
+        <section class="carte">
+            <div class="entete-section">
+                <div>
+                    <h2>Recherche et filtrage</h2>
+
+                    <p>
+                        Recherchez une année universitaire
+                        ou filtrez-la selon son statut.
+                    </p>
+                </div>
+
+                <span class="badge-resultats">
+                    {{ nombre_annees|default:0 }}
+                    résultat(s)
+                </span>
+            </div>
+
+            <form
+                method="get"
+                class="formulaire-filtres-annees"
+            >
+                <div class="groupe-filtre filtre-recherche-annee">
+                    <label for="recherche">
+                        Recherche
+                    </label>
+
+                    <input
+                        type="search"
+                        id="recherche"
+                        name="recherche"
+                        value="{{ recherche }}"
+                        placeholder="Exemple : 2026-2027"
+                    >
+                </div>
+
+                <div class="groupe-filtre">
+                    <label for="statut">
+                        Statut
+                    </label>
+
+                    <select
+                        id="statut"
+                        name="statut"
+                    >
+                        <option value="">
+                            Tous les statuts
+                        </option>
+
+                        {% for valeur, libelle in choix_statuts %}
+                            <option
+                                value="{{ valeur }}"
+                                {% if statut_selectionne == valeur %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ libelle }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="actions-filtres-annees">
+                    <button
+                        type="submit"
+                        class="bouton"
+                    >
+                        Appliquer les filtres
+                    </button>
+
+                    <a
+                        href="{% url 'hebergement:liste_annees_universitaires' %}"
+                        class="bouton bouton-secondaire"
+                    >
+                        Réinitialiser
+                    </a>
+                </div>
+            </form>
+        </section>
+
+        <!-- LISTE -->
+
+        <section class="carte">
+            <div class="entete-section">
+                <div>
+                    <h2>Liste des années universitaires</h2>
+
+                    <p>
+                        {{ nombre_annees|default:0 }}
+                        année(s) correspondant aux critères.
+                    </p>
+                </div>
+
+                <a
+                    href="{% url 'hebergement:creer_annee_universitaire' %}"
+                    class="bouton"
+                >
+                    Ajouter une année
+                </a>
+            </div>
+
+            <div class="grille-annees">
+                {% for annee in annees %}
+                    <article class="carte-annee">
+
+                        <div class="entete-carte-annee">
+                            <div>
+                                <span class="libelle-annee">
+                                    {{ annee.libelle }}
+                                </span>
+
+                                <small>
+                                    {{ annee.duree_jours_calculee }}
+                                    jour(s)
+                                </small>
+                            </div>
+
+                            {% if annee.statut == "PLANIFIEE" %}
+                                <span class="badge-annee badge-annee-planifiee">
+                                    {{ annee.get_statut_display }}
+                                </span>
+
+                            {% elif annee.statut == "ACTIVE" %}
+                                <span class="badge-annee badge-annee-active">
+                                    {{ annee.get_statut_display }}
+                                </span>
+
+                            {% elif annee.statut == "CLOTUREE" %}
+                                <span class="badge-annee badge-annee-cloturee">
+                                    {{ annee.get_statut_display }}
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        <!-- Situation temporelle -->
+
+                        <div class="situation-annee">
+                            {% if annee.situation_temporelle == "A_VENIR" %}
+                                <span class="situation-a-venir">
+                                    À venir
+                                </span>
+
+                            {% elif annee.situation_temporelle == "EN_COURS" %}
+                                <span class="situation-en-cours">
+                                    Période en cours
+                                </span>
+
+                            {% elif annee.situation_temporelle == "TERMINEE" %}
+                                <span class="situation-terminee">
+                                    Période terminée
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        <!-- Dates -->
+
+                        <div class="periode-annee">
+                            <div>
+                                <span>Date de début</span>
+
+                                <strong>
+                                    {{ annee.date_debut|date:"d/m/Y" }}
+                                </strong>
+                            </div>
+
+                            <div class="fleche-periode">
+                                →
+                            </div>
+
+                            <div>
+                                <span>Date de fin</span>
+
+                                <strong>
+                                    {{ annee.date_fin|date:"d/m/Y" }}
+                                </strong>
+                            </div>
+                        </div>
+
+                        <!-- Demandes -->
+
+                        <div class="bloc-statistiques-annee">
+                            <h3>Demandes d’hébergement</h3>
+
+                            <div class="grille-statistiques-annee">
+                                <div>
+                                    <span>Total</span>
+
+                                    <strong>
+                                        {{ annee.nombre_demandes_calcule }}
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Acceptées</span>
+
+                                    <strong class="valeur-succes">
+                                        {{ annee.nombre_demandes_acceptees_calcule }}
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Refusées</span>
+
+                                    <strong class="valeur-danger">
+                                        {{ annee.nombre_demandes_refusees_calcule }}
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>En attente</span>
+
+                                    <strong class="valeur-attente">
+                                        {{ annee.nombre_demandes_en_attente_calcule }}
+                                    </strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Affectations -->
+
+                        <div class="bloc-statistiques-annee">
+                            <h3>Affectations</h3>
+
+                            <div class="grille-statistiques-annee">
+                                <div>
+                                    <span>Total</span>
+
+                                    <strong>
+                                        {{ annee.nombre_affectations_calcule }}
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Prévues</span>
+
+                                    <strong>
+                                        {{ annee.nombre_affectations_prevues_calcule }}
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Actives</span>
+
+                                    <strong class="valeur-succes">
+                                        {{ annee.nombre_affectations_actives_calcule }}
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Clôturées</span>
+
+                                    <strong>
+                                        {{ annee.nombre_affectations_cloturees_calcule }}
+                                    </strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        {% if annee.nombre_affectations_ouvertes_calcule > 0 %}
+                            <div class="alerte-affectations-ouvertes">
+                                <strong>
+                                    {{ annee.nombre_affectations_ouvertes_calcule }}
+                                </strong>
+
+                                affectation(s) encore prévue(s)
+                                ou active(s).
+                            </div>
+                        {% endif %}
+
+                        <!-- Création -->
+
+                        <div class="meta-annee">
+                            Créée le
+                            {{ annee.date_creation|date:"d/m/Y à H:i" }}
+                        </div>
+
+                        <!-- Actions -->
+
+                        <div class="actions-carte-annee">
+                            <a
+                                href="{% url 'hebergement:modifier_annee_universitaire' annee.pk %}"
+                                class="bouton bouton-secondaire bouton-petit"
+                            >
+                                Modifier
+                            </a>
+
+                            {% if annee.statut == "PLANIFIEE" %}
+                                <form
+                                    method="post"
+                                    action="{% url 'hebergement:activer_annee_universitaire' annee.pk %}"
+                                    onsubmit="return confirm('Activer cette année universitaire ? L’année actuellement active sera désactivée ou remplacée selon les règles du système.');"
+                                >
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="bouton bouton-succes bouton-petit"
+                                    >
+                                        Activer
+                                    </button>
+                                </form>
+                            {% endif %}
+
+                            {% if annee.statut == "ACTIVE" %}
+                                <form
+                                    method="post"
+                                    action="{% url 'hebergement:cloturer_annee_universitaire' annee.pk %}"
+                                    onsubmit="return confirm('Confirmer la clôture de cette année universitaire ? Cette opération exige que toutes les affectations prévues ou actives soient clôturées.');"
+                                >
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="bouton bouton-danger bouton-petit"
+                                    >
+                                        Clôturer
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </article>
+
+                {% empty %}
+                    <div class="etat-vide etat-vide-annees">
+                        <span class="icone-vide">
+                            📅
+                        </span>
+
+                        <strong>
+                            Aucune année universitaire trouvée
+                        </strong>
+
+                        <p>
+                            Aucune année ne correspond
+                            aux critères sélectionnés.
+                        </p>
+
+                        <a
+                            href="{% url 'hebergement:liste_annees_universitaires' %}"
+                            class="bouton bouton-secondaire"
+                        >
+                            Réinitialiser les filtres
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- PAGINATION -->
+
+            {% if page_obj.paginator.num_pages > 1 %}
+                <nav class="pagination">
+                    <div class="informations-pagination">
+                        Page
+                        {{ page_obj.number }}
+                        sur
+                        {{ page_obj.paginator.num_pages }}
+
+                        —
+
+                        {{ page_obj.paginator.count }}
+                        résultat(s)
+                    </div>
+
+                    <div class="liens-pagination">
+                        {% if page_obj.has_previous %}
+                            <a
+                                href="?page=1{% if chaine_filtres %}&{{ chaine_filtres }}{% endif %}"
+                                class="bouton-pagination"
+                            >
+                                Première
+                            </a>
+
+                            <a
+                                href="?page={{ page_obj.previous_page_number }}{% if chaine_filtres %}&{{ chaine_filtres }}{% endif %}"
+                                class="bouton-pagination"
+                            >
+                                Précédente
+                            </a>
+                        {% endif %}
+
+                        {% for numero_page in page_obj.paginator.page_range %}
+                            {% if numero_page == page_obj.number %}
+                                <span class="page-actuelle">
+                                    {{ numero_page }}
+                                </span>
+
+                            {% elif numero_page >= page_obj.number|add:"-2" and numero_page <= page_obj.number|add:"2" %}
+                                <a
+                                    href="?page={{ numero_page }}{% if chaine_filtres %}&{{ chaine_filtres }}{% endif %}"
+                                    class="bouton-pagination pagination-numerique"
+                                >
+                                    {{ numero_page }}
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                            <a
+                                href="?page={{ page_obj.next_page_number }}{% if chaine_filtres %}&{{ chaine_filtres }}{% endif %}"
+                                class="bouton-pagination"
+                            >
+                                Suivante
+                            </a>
+
+                            <a
+                                href="?page={{ page_obj.paginator.num_pages }}{% if chaine_filtres %}&{{ chaine_filtres }}{% endif %}"
+                                class="bouton-pagination"
+                            >
+                                Dernière
+                            </a>
+                        {% endif %}
+                    </div>
+                </nav>
+            {% endif %}
+        </section>
+    </main>
+
+    </div>
+</div>
+</body>
+</html>

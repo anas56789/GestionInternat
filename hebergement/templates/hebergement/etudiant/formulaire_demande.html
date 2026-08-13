@@ -1,0 +1,673 @@
+{% extends "dashboard/base_etudiant.html" %}
+{% load static %}
+
+{% block title %}
+{% if demande %}
+Modifier ma demande — GestionInternat
+{% else %}
+Déposer une demande — GestionInternat
+{% endif %}
+{% endblock %}
+
+{% block titre_page %}
+{% if demande %}
+Modifier ma demande d’hébergement
+{% else %}
+Déposer une demande d’hébergement
+{% endif %}
+{% endblock %}
+
+{% block sous_titre_page %}
+{% if demande %}
+Mettez à jour les informations et les pièces de votre dossier.
+{% else %}
+Renseignez votre situation et joignez les justificatifs nécessaires à l’étude de votre dossier.
+{% endif %}
+{% endblock %}
+
+{% block css_page %}
+<link
+    rel="stylesheet"
+    href="{% static 'hebergement/formulaire_demande.css' %}?v=2"
+>
+{% endblock %}
+
+{% block contenu_etudiant %}
+
+<div class="actions-page-etudiant">
+
+    <a
+        href="{% url 'hebergement:mes_demandes' %}"
+        class="bouton bouton-secondaire"
+    >
+        ← Retour à mes demandes
+    </a>
+
+    <a
+        href="{% url 'accounts:espace_etudiant' %}"
+        class="bouton bouton-secondaire"
+    >
+        Tableau de bord
+    </a>
+
+</div>
+
+<div class="conteneur conteneur-page-etudiant">
+<!-- BANNIÈRE -->
+
+        <section class="banniere-formulaire-demande">
+            <div>
+                <span class="petit-titre">
+                    Espace étudiant
+                </span>
+
+                <h2>
+                    {% if demande %}
+                        Mettre à jour ma demande
+                    {% else %}
+                        Déposer une demande d'hébergement
+                    {% endif %}
+                </h2>
+
+                <p>
+                    Renseignez votre situation et ajoutez les
+                    justificatifs nécessaires à l'étude du dossier.
+                </p>
+            </div>
+
+            <div class="icone-formulaire-demande">
+                🏠
+            </div>
+        </section>
+
+        {% if demande %}
+            <section class="resume-demande-modification">
+                <div>
+                    <span>Année universitaire</span>
+
+                    <strong>
+                        {{ demande.annee_universitaire }}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>Statut actuel</span>
+
+                    <strong>
+                        {{ demande.get_statut_display }}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>Créée le</span>
+
+                    <strong>
+                        {{ demande.date_creation|date:"d/m/Y à H:i" }}
+                    </strong>
+                </div>
+            </section>
+
+            {% if demande.statut == "INCOMPLETE" %}
+                <section class="alerte-demande-incomplete">
+                    <strong>
+                        Cette demande a été déclarée incomplète.
+                    </strong>
+
+                    <p>
+                        Corrigez les informations ou les documents
+                        demandés, puis soumettez de nouveau le dossier.
+                    </p>
+
+                    {% if demande.motif_decision %}
+                        <div>
+                            <span>Observation de l'administration :</span>
+
+                            <strong>
+                                {{ demande.motif_decision }}
+                            </strong>
+                        </div>
+                    {% endif %}
+                </section>
+            {% endif %}
+        {% endif %}
+
+        <section class="carte">
+            <div class="entete-carte">
+                <div>
+                    <h2>
+                        {% if demande %}
+                            Modifier ma demande
+                        {% else %}
+                            Informations de la demande
+                        {% endif %}
+                    </h2>
+
+                    <p>
+                        Les champs marqués d’un astérisque sont
+                        obligatoires.
+                    </p>
+                </div>
+
+                {% if demande %}
+                    <span
+                        class="badge badge-{{ demande.statut|lower }}"
+                    >
+                        {{ demande.get_statut_display }}
+                    </span>
+                {% else %}
+                    <span class="badge badge-brouillon">
+                        Nouvelle demande
+                    </span>
+                {% endif %}
+            </div>
+
+            <form
+                method="post"
+                enctype="multipart/form-data"
+                novalidate
+                id="formulaire-demande"
+            >
+                {% csrf_token %}
+
+                <!-- ERREURS GÉNÉRALES -->
+
+                {% if formulaire.non_field_errors %}
+                    <div class="message error">
+                        <strong>
+                            Erreur dans la demande
+                        </strong>
+
+                        <ul>
+                            {% for erreur in formulaire.non_field_errors %}
+                                <li>{{ erreur }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                {% if formulaire.errors %}
+                    <div class="message error">
+                        <strong>
+                            La demande n'a pas pu être enregistrée.
+                        </strong>
+
+                        <p>
+                            Corrigez les champs signalés ci-dessous.
+                        </p>
+                    </div>
+                {% endif %}
+
+                {% if justificatifs_formset.non_form_errors %}
+                    <div class="message error">
+                        <strong>
+                            Erreur dans les justificatifs
+                        </strong>
+
+                        <ul>
+                            {% for erreur in justificatifs_formset.non_form_errors %}
+                                <li>{{ erreur }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                <!-- INFORMATIONS DE LA DEMANDE -->
+
+                <section class="section-formulaire">
+                    <div class="entete-section-formulaire">
+                        <div class="numero-etape">
+                            1
+                        </div>
+
+                        <div>
+                            <h3>Informations de la demande</h3>
+
+                            <p class="description-section">
+                                Indiquez l'année universitaire,
+                                la distance, le motif et votre
+                                situation sociale.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="grille-formulaire">
+                        {% for champ in formulaire %}
+                            <div
+                                class="
+                                    groupe-champ
+
+                                    {% if champ.name == 'motif' %}
+                                        groupe-champ-large
+                                    {% elif champ.name == 'situation_sociale' %}
+                                        groupe-champ-large
+                                    {% elif champ.name == 'commentaire' %}
+                                        groupe-champ-large
+                                    {% endif %}
+
+                                    {% if champ.errors %}
+                                        groupe-champ-invalide
+                                    {% endif %}
+                                "
+                            >
+                                <label for="{{ champ.id_for_label }}">
+                                    {{ champ.label }}
+
+                                    {% if champ.field.required %}
+                                        <span class="obligatoire">
+                                            *
+                                        </span>
+                                    {% endif %}
+                                </label>
+
+                                {{ champ }}
+
+                                {% if champ.help_text %}
+                                    <small class="aide">
+                                        {{ champ.help_text|safe }}
+                                    </small>
+                                {% endif %}
+
+                                {% if champ.errors %}
+                                    <div class="erreurs-champ">
+                                        {% for erreur in champ.errors %}
+                                            <span>
+                                                {{ erreur }}
+                                            </span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </section>
+
+                <!-- JUSTIFICATIFS -->
+
+                <section class="section-formulaire">
+                    <div class="entete-section-formulaire">
+                        <div class="numero-etape">
+                            2
+                        </div>
+
+                        <div>
+                            <h3>Pièces justificatives</h3>
+
+                            <p class="description-section">
+                                Ajoutez des documents lisibles aux
+                                formats PDF, JPG, JPEG ou PNG.
+                            </p>
+                        </div>
+                    </div>
+
+                    {{ justificatifs_formset.management_form }}
+
+                    <div
+                        class="liste-justificatifs"
+                        id="liste-justificatifs"
+                    >
+                        {% for justificatif_form in justificatifs_formset %}
+                            <article
+                                class="carte-justificatif formulaire-justificatif"
+                            >
+                                {% for champ_cache in justificatif_form.hidden_fields %}
+                                    {{ champ_cache }}
+                                {% endfor %}
+
+                                <div class="entete-carte-justificatif">
+                                    <div>
+                                        <span class="numero-document">
+                                            Document
+                                            <span class="numero-document-valeur">
+                                                {{ forloop.counter }}
+                                            </span>
+                                        </span>
+
+                                        {% if justificatif_form.instance.pk %}
+                                            <small>
+                                                Document déjà enregistré
+                                            </small>
+                                        {% else %}
+                                            <small>
+                                                Nouveau document
+                                            </small>
+                                        {% endif %}
+                                    </div>
+
+                                    {% if justificatif_form.instance.pk and justificatif_form.instance.fichier %}
+                                        <a
+                                            href="{{ justificatif_form.instance.fichier.url }}"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            class="bouton bouton-secondaire bouton-petit"
+                                        >
+                                            Voir le fichier actuel
+                                        </a>
+                                    {% endif %}
+                                </div>
+
+                                {% if justificatif_form.non_field_errors %}
+                                    <div class="message error">
+                                        {% for erreur in justificatif_form.non_field_errors %}
+                                            <p>{{ erreur }}</p>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+
+                                <div class="grille-formulaire">
+                                    {% for champ in justificatif_form.visible_fields %}
+                                        <div
+                                            class="
+                                                groupe-champ
+
+                                                {% if champ.name == 'DELETE' %}
+                                                    groupe-suppression
+                                                {% endif %}
+
+                                                {% if champ.errors %}
+                                                    groupe-champ-invalide
+                                                {% endif %}
+                                            "
+                                        >
+                                            {% if champ.name == "DELETE" %}
+                                                <label class="case-suppression">
+                                                    {{ champ }}
+
+                                                    <span>
+                                                        Supprimer ce document
+                                                    </span>
+                                                </label>
+
+                                            {% else %}
+                                                <label for="{{ champ.id_for_label }}">
+                                                    {{ champ.label }}
+
+                                                    {% if champ.field.required %}
+                                                        <span class="obligatoire">
+                                                            *
+                                                        </span>
+                                                    {% endif %}
+                                                </label>
+
+                                                {{ champ }}
+                                            {% endif %}
+
+                                            {% if champ.help_text %}
+                                                <small class="aide">
+                                                    {{ champ.help_text|safe }}
+                                                </small>
+                                            {% endif %}
+
+                                            {% if champ.errors %}
+                                                <div class="erreurs-champ">
+                                                    {% for erreur in champ.errors %}
+                                                        <span>
+                                                            {{ erreur }}
+                                                        </span>
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </article>
+                        {% endfor %}
+                    </div>
+
+                    <!-- FORMULAIRE VIDE UTILISÉ PAR JAVASCRIPT -->
+
+                    <template id="modele-justificatif">
+                        <article
+                            class="carte-justificatif formulaire-justificatif"
+                        >
+                            {% for champ_cache in justificatifs_formset.empty_form.hidden_fields %}
+                                {{ champ_cache }}
+                            {% endfor %}
+
+                            <div class="entete-carte-justificatif">
+                                <div>
+                                    <span class="numero-document">
+                                        Document
+                                        <span class="numero-document-valeur">
+                                            __numero__
+                                        </span>
+                                    </span>
+
+                                    <small>
+                                        Nouveau document
+                                    </small>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    class="bouton bouton-danger bouton-petit bouton-retirer-document"
+                                >
+                                    Retirer
+                                </button>
+                            </div>
+
+                            <div class="grille-formulaire">
+                                {% for champ in justificatifs_formset.empty_form.visible_fields %}
+                                    <div
+                                        class="
+                                            groupe-champ
+                                            {% if champ.name == 'DELETE' %}
+                                                groupe-suppression
+                                            {% endif %}
+                                        "
+                                    >
+                                        {% if champ.name == "DELETE" %}
+                                            <label class="case-suppression">
+                                                {{ champ }}
+
+                                                <span>
+                                                    Supprimer ce document
+                                                </span>
+                                            </label>
+
+                                        {% else %}
+                                            <label for="{{ champ.id_for_label }}">
+                                                {{ champ.label }}
+
+                                                {% if champ.field.required %}
+                                                    <span class="obligatoire">
+                                                        *
+                                                    </span>
+                                                {% endif %}
+                                            </label>
+
+                                            {{ champ }}
+                                        {% endif %}
+
+                                        {% if champ.help_text %}
+                                            <small class="aide">
+                                                {{ champ.help_text|safe }}
+                                            </small>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </article>
+                    </template>
+
+                    <div class="actions-justificatifs">
+                        <button
+                            type="button"
+                            id="ajouter-justificatif"
+                            class="bouton bouton-secondaire"
+                        >
+                            Ajouter un autre document
+                        </button>
+                    </div>
+
+                    <div class="information-fichier">
+                        <div>
+                            <strong>
+                                Formats acceptés
+                            </strong>
+
+                            <span>
+                                PDF, JPG, JPEG et PNG.
+                            </span>
+                        </div>
+
+                        <div>
+                            <strong>
+                                Taille maximale
+                            </strong>
+
+                            <span>
+                                5 Mo par fichier.
+                            </span>
+                        </div>
+
+                        <div>
+                            <strong>
+                                Lisibilité
+                            </strong>
+
+                            <span>
+                                Le contenu du document doit être
+                                net et entièrement visible.
+                            </span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- CHOIX DE L'ACTION -->
+
+                <section class="section-formulaire">
+                    <div class="entete-section-formulaire">
+                        <div class="numero-etape">
+                            3
+                        </div>
+
+                        <div>
+                            <h3>Enregistrement de la demande</h3>
+
+                            <p class="description-section">
+                                Choisissez entre un brouillon modifiable
+                                et une soumission à l'administration.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="choix-enregistrement">
+                        <article>
+                            <strong>
+                                Enregistrer en brouillon
+                            </strong>
+
+                            <p>
+                                La demande reste modifiable et n'est
+                                pas encore transmise à l'administration.
+                            </p>
+                        </article>
+
+                        <article>
+                            <strong>
+                                Soumettre la demande
+                            </strong>
+
+                            <p>
+                                Le dossier est transmis pour étude.
+                                Vérifiez les informations et documents
+                                avant de continuer.
+                            </p>
+                        </article>
+                    </div>
+                </section>
+
+                <div class="actions-formulaire">
+                    <button
+                        type="submit"
+                        name="action"
+                        value="brouillon"
+                        class="bouton bouton-secondaire"
+                    >
+                        Enregistrer en brouillon
+                    </button>
+
+                    <button
+                        type="submit"
+                        name="action"
+                        value="soumettre"
+                        class="bouton"
+                        id="bouton-soumettre-demande"
+                    >
+                        {% if demande and demande.statut == "INCOMPLETE" %}
+                            Corriger et soumettre de nouveau
+                        {% else %}
+                            Soumettre la demande
+                        {% endif %}
+                    </button>
+
+                    <a
+                        href="{% url 'hebergement:mes_demandes' %}"
+                        class="bouton bouton-annuler"
+                    >
+                        Annuler
+                    </a>
+                </div>
+            </form>
+        </section>
+
+        <section class="carte carte-information">
+            <h3>Avant de soumettre votre demande</h3>
+
+            <div class="liste-conseils">
+                <div class="conseil">
+                    <span class="icone-conseil">
+                        1
+                    </span>
+
+                    <div>
+                        <strong>
+                            Vérifiez les informations
+                        </strong>
+
+                        <p>
+                            Contrôlez l'année universitaire,
+                            la distance et les informations sociales.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="conseil">
+                    <span class="icone-conseil">
+                        2
+                    </span>
+
+                    <div>
+                        <strong>
+                            Ajoutez des justificatifs lisibles
+                        </strong>
+
+                        <p>
+                            Les documents illisibles peuvent être
+                            rejetés par l'administration.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="conseil">
+                    <span class="icone-conseil">
+                        3
+                    </span>
+
+                    <div>
+                        <strong>
+                            Choisissez la bonne action
+                        </strong>
+
+                        <p>
+                            Le brouillon reste modifiable.
+                            Une demande soumise est transmise
+                            à l'administration.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+</div>
+
+{% endblock %}

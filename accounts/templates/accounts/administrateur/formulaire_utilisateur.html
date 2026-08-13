@@ -1,0 +1,88 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>{{ titre_page }}</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'accounts/gestion_utilisateurs.css' %}"
+    >
+</head>
+
+<body>
+    <header class="entete">
+        <div>
+            <h1>Gestion des utilisateurs</h1>
+            <p>{{ titre_page }}</p>
+        </div>
+
+        <a
+            href="{% url 'accounts:liste_utilisateurs' %}"
+            class="lien-retour"
+        >
+            Retour aux utilisateurs
+        </a>
+    </header>
+
+    <main class="conteneur conteneur-formulaire">
+        <section class="carte">
+            <h2>{{ titre_page }}</h2>
+
+            <form method="post">
+                {% csrf_token %}
+
+                {% if formulaire.non_field_errors %}
+                    <div class="erreurs-generales">
+                        {{ formulaire.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <div class="grille-formulaire">
+                    {% for champ in formulaire %}
+                        <div class="groupe-champ">
+                            <label for="{{ champ.id_for_label }}">
+                                {{ champ.label }}
+                            </label>
+
+                            {{ champ }}
+
+                            {% if champ.help_text %}
+                                <small class="aide">
+                                    {{ champ.help_text|safe }}
+                                </small>
+                            {% endif %}
+
+                            {{ champ.errors }}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="actions">
+                    <button
+                        type="submit"
+                        class="bouton"
+                    >
+                        {{ bouton_validation }}
+                    </button>
+
+                    <a
+                        href="{% url 'accounts:liste_utilisateurs' %}"
+                        class="bouton bouton-secondaire"
+                    >
+                        Annuler
+                    </a>
+                </div>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

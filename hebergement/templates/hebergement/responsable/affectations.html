@@ -1,0 +1,1215 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Gestion des affectations — Internat universitaire
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'hebergement/responsable.css' %}"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'dashboard/style.css' %}?v=12"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'hebergement/affectations_premium.css' %}?v=2"
+    >
+</head>
+
+<body class="page-affectations-premium">
+
+
+<div class="app-shell">
+
+
+    <!-- =====================================================
+         SIDEBAR COMMUNE
+    ====================================================== -->
+
+    {% include "dashboard/sidebar_responsable.html" %}
+
+
+    <!-- =====================================================
+         ZONE PRINCIPALE
+    ====================================================== -->
+
+    <div class="main-area">
+
+
+        <!-- =================================================
+             TOPBAR
+        ================================================== -->
+
+        <header class="topbar-affectations">
+
+            <div class="topbar-affectations-gauche">
+
+                <span class="sur-titre-topbar-affectations">
+                    Espace responsable
+                </span>
+
+                <h1>
+                    Gestion des affectations
+                </h1>
+
+                <p>
+                    Entrées, transferts, sorties et suivi
+                    des étudiants hébergés.
+                </p>
+
+            </div>
+
+
+            <div class="topbar-affectations-droite">
+
+                <div class="date-topbar-affectations">
+                    <span>
+                        Aujourd’hui
+                    </span>
+
+                    <strong>
+                        {% now "d/m/Y" %}
+                    </strong>
+                </div>
+
+
+                <a
+                    href="{% url 'hebergement:liste_demandes_a_affecter' %}"
+                    class="bouton-affectation bouton-affectation-principal"
+                >
+                    + Nouvelle affectation
+                </a>
+
+
+                <a
+                    href="{% url 'hebergement:liste_transferts_responsable' %}"
+                    class="bouton-affectation bouton-affectation-clair"
+                >
+                    Historique des transferts
+                </a>
+
+
+                <div class="profil-topbar-affectations">
+
+                    <div
+                        class="avatar-topbar-affectations"
+                        aria-hidden="true"
+                    >
+                        {% if request.user.first_name %}
+                            {{ request.user.first_name|first|upper }}
+                            {{ request.user.last_name|first|upper }}
+                        {% else %}
+                            {{ request.user.username|first|upper }}
+                        {% endif %}
+                    </div>
+
+
+                    <div class="identite-topbar-affectations">
+
+                        <strong>
+                            {{ request.user.get_full_name|default:request.user.username }}
+                        </strong>
+
+                        <span>
+                            {% if request.user.is_superuser %}
+                                Super administrateur
+                            {% else %}
+                                {{ request.user.get_role_display }}
+                            {% endif %}
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- =================================================
+             CONTENU PRINCIPAL
+        ================================================== -->
+
+        <main class="conteneur-affectations-premium">
+
+
+            <!-- =================================================
+                 MESSAGES
+            ================================================== -->
+
+            {% if messages %}
+
+                <section class="messages-affectations">
+
+                    {% for message in messages %}
+
+                        <div class="message-affectation {{ message.tags }}">
+                            {{ message }}
+                        </div>
+
+                    {% endfor %}
+
+                </section>
+
+            {% endif %}
+
+
+            <!-- =================================================
+                 HERO
+            ================================================== -->
+
+            <section class="hero-affectations">
+
+                <div>
+
+                    <span class="sur-titre-hero">
+                        Gestion de l'hébergement
+                    </span>
+
+                    <h2>
+                        Affectations des étudiants
+                    </h2>
+
+                    <p>
+                        Visualisez rapidement les affectations prévues,
+                        actives, clôturées ou annulées et effectuez
+                        les opérations administratives nécessaires.
+                    </p>
+
+                </div>
+
+
+                <div class="compteur-hero-affectations">
+
+                    <strong>
+                        {{ nombre_affectations|default:0 }}
+                    </strong>
+
+                    <span>
+                        résultat(s)
+                    </span>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 STATISTIQUES
+            ================================================== -->
+
+            <section class="grille-stats-affectations">
+
+
+                <article class="stat-affectation stat-total">
+
+                    <span class="icone-stat-affectation">
+                        ▦
+                    </span>
+
+                    <div>
+                        <span>
+                            Total
+                        </span>
+
+                        <strong>
+                            {{ nombre_total_global|default:0 }}
+                        </strong>
+                    </div>
+
+                </article>
+
+
+                <article class="stat-affectation stat-prevue">
+
+                    <span class="icone-stat-affectation">
+                        ◷
+                    </span>
+
+                    <div>
+                        <span>
+                            Prévues
+                        </span>
+
+                        <strong>
+                            {{ nombre_prevues|default:0 }}
+                        </strong>
+                    </div>
+
+                </article>
+
+
+                <article class="stat-affectation stat-active">
+
+                    <span class="icone-stat-affectation">
+                        ●
+                    </span>
+
+                    <div>
+                        <span>
+                            Actives
+                        </span>
+
+                        <strong>
+                            {{ nombre_actives|default:0 }}
+                        </strong>
+                    </div>
+
+                </article>
+
+
+                <article class="stat-affectation stat-cloturee">
+
+                    <span class="icone-stat-affectation">
+                        ✓
+                    </span>
+
+                    <div>
+                        <span>
+                            Clôturées
+                        </span>
+
+                        <strong>
+                            {{ nombre_cloturees|default:0 }}
+                        </strong>
+                    </div>
+
+                </article>
+
+
+                <article class="stat-affectation stat-annulee">
+
+                    <span class="icone-stat-affectation">
+                        ×
+                    </span>
+
+                    <div>
+                        <span>
+                            Annulées
+                        </span>
+
+                        <strong>
+                            {{ nombre_annulees|default:0 }}
+                        </strong>
+                    </div>
+
+                </article>
+
+
+                <article class="stat-affectation">
+
+                    <span class="icone-stat-affectation">
+                        →
+                    </span>
+
+                    <div>
+                        <span>
+                            Entrées confirmées
+                        </span>
+
+                        <strong>
+                            {{ nombre_entrees_confirmees|default:0 }}
+                        </strong>
+                    </div>
+
+                </article>
+
+
+                <article class="stat-affectation">
+
+                    <span class="icone-stat-affectation">
+                        ↗
+                    </span>
+
+                    <div>
+                        <span>
+                            Sorties confirmées
+                        </span>
+
+                        <strong>
+                            {{ nombre_sorties_confirmees|default:0 }}
+                        </strong>
+                    </div>
+
+                </article>
+
+
+            </section>
+
+
+            <!-- =================================================
+                 FILTRES
+            ================================================== -->
+
+            <section
+                class="
+                    carte-affectations-premium
+                    carte-filtres-affectations
+                "
+            >
+
+                <div class="entete-carte-affectations">
+
+                    <div>
+
+                        <span class="mini-label-affectations">
+                            Recherche
+                        </span>
+
+                        <h2>
+                            Filtrer les affectations
+                        </h2>
+
+                        <p>
+                            Recherchez par étudiant, bâtiment,
+                            chambre, année ou statut.
+                        </p>
+
+                    </div>
+
+
+                    <span class="badge-resultats-affectations">
+                        {{ nombre_affectations|default:0 }}
+                        résultat(s)
+                    </span>
+
+                </div>
+
+
+                <form
+                    method="get"
+                    class="formulaire-filtres-affectations-premium"
+                >
+
+
+                    <div
+                        class="
+                            champ-filtre-affectation
+                            filtre-recherche-large
+                        "
+                    >
+
+                        <label for="recherche">
+                            Recherche
+                        </label>
+
+                        <input
+                            type="search"
+                            id="recherche"
+                            name="recherche"
+                            value="{{ recherche }}"
+                            placeholder="Nom, matricule, CNE, chambre..."
+                        >
+
+                    </div>
+
+
+                    <div class="champ-filtre-affectation">
+
+                        <label for="statut">
+                            Statut
+                        </label>
+
+                        <select
+                            id="statut"
+                            name="statut"
+                        >
+
+                            <option value="">
+                                Tous les statuts
+                            </option>
+
+                            {% for valeur, libelle in choix_statuts %}
+
+                                <option
+                                    value="{{ valeur }}"
+                                    {% if statut_selectionne == valeur %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ libelle }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="champ-filtre-affectation">
+
+                        <label for="annee">
+                            Année universitaire
+                        </label>
+
+                        <select
+                            id="annee"
+                            name="annee"
+                        >
+
+                            <option value="">
+                                Toutes les années
+                            </option>
+
+                            {% for annee in annees_universitaires %}
+
+                                <option
+                                    value="{{ annee.pk }}"
+                                    {% if annee_selectionnee == annee.pk|stringformat:"s" %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ annee.libelle }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="champ-filtre-affectation">
+
+                        <label for="batiment">
+                            Bâtiment
+                        </label>
+
+                        <select
+                            id="batiment"
+                            name="batiment"
+                        >
+
+                            <option value="">
+                                Tous les bâtiments
+                            </option>
+
+                            {% for batiment in batiments %}
+
+                                <option
+                                    value="{{ batiment.pk }}"
+                                    {% if batiment_selectionne == batiment.pk|stringformat:"s" %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ batiment.code }}
+                                    —
+                                    {{ batiment.nom }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="champ-filtre-affectation">
+
+                        <label for="chambre">
+                            Chambre
+                        </label>
+
+                        <select
+                            id="chambre"
+                            name="chambre"
+                        >
+
+                            <option value="">
+                                Toutes les chambres
+                            </option>
+
+                            {% for chambre in chambres %}
+
+                                <option
+                                    value="{{ chambre.pk }}"
+                                    {% if chambre_selectionnee == chambre.pk|stringformat:"s" %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ chambre.batiment.code }}
+                                    /
+                                    {{ chambre.numero }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="champ-filtre-affectation">
+
+                        <label for="date_debut">
+                            Entrée prévue du
+                        </label>
+
+                        <input
+                            type="date"
+                            id="date_debut"
+                            name="date_debut"
+                            value="{{ date_debut }}"
+                        >
+
+                    </div>
+
+
+                    <div class="champ-filtre-affectation">
+
+                        <label for="date_fin">
+                            Entrée prévue au
+                        </label>
+
+                        <input
+                            type="date"
+                            id="date_fin"
+                            name="date_fin"
+                            value="{{ date_fin }}"
+                        >
+
+                    </div>
+
+
+                    <div class="actions-filtres-affectations-premium">
+
+                        <a
+                            href="{% url 'hebergement:liste_affectations_responsable' %}"
+                            class="bouton-affectation bouton-affectation-clair"
+                        >
+                            Réinitialiser
+                        </a>
+
+                        <button
+                            type="submit"
+                            class="bouton-affectation bouton-affectation-principal"
+                        >
+                            Appliquer les filtres
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+
+            <!-- =================================================
+                 LISTE DES AFFECTATIONS
+            ================================================== -->
+
+            <section class="carte-affectations-premium">
+
+
+                <div class="entete-carte-affectations">
+
+                    <div>
+
+                        <span class="mini-label-affectations">
+                            Hébergement
+                        </span>
+
+                        <h2>
+                            Affectations enregistrées
+                        </h2>
+
+                        <p>
+                            Chaque dossier affiche les informations
+                            essentielles et les actions disponibles.
+                        </p>
+
+                    </div>
+
+
+                    <a
+                        href="{% url 'hebergement:liste_demandes_a_affecter' %}"
+                        class="bouton-affectation bouton-affectation-principal"
+                    >
+                        + Nouvelle affectation
+                    </a>
+
+                </div>
+
+
+                <div class="liste-cartes-affectations">
+
+
+                    {% for affectation in affectations %}
+
+
+                        <article
+                            class="
+                                carte-dossier-affectation
+                                dossier-{{ affectation.statut|lower }}
+                            "
+                        >
+
+
+                            <!-- ============================= -->
+                            <!-- EN-TÊTE DOSSIER -->
+                            <!-- ============================= -->
+
+                            <div class="entete-dossier-affectation">
+
+
+                                <div class="etudiant-dossier-affectation">
+
+
+                                    <div class="avatar-dossier-affectation">
+
+                                        {% if affectation.etudiant.utilisateur.first_name %}
+
+                                            {{ affectation.etudiant.utilisateur.first_name|first|upper }}
+                                            {{ affectation.etudiant.utilisateur.last_name|first|upper }}
+
+                                        {% else %}
+
+                                            {{ affectation.etudiant.utilisateur.username|first|upper }}
+
+                                        {% endif %}
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <span class="label-dossier">
+                                            Étudiant
+                                        </span>
+
+                                        <h3>
+                                            {{ affectation.etudiant.utilisateur.get_full_name|default:affectation.etudiant.utilisateur.username }}
+                                        </h3>
+
+                                        <p>
+                                            {{ affectation.etudiant.utilisateur.email|default:"Aucun email" }}
+                                        </p>
+
+                                    </div>
+
+
+                                </div>
+
+
+                                {% if affectation.statut == "PREVUE" %}
+
+                                    <span class="statut-dossier statut-prevue">
+                                        Prévue
+                                    </span>
+
+                                {% elif affectation.statut == "ACTIVE" %}
+
+                                    <span class="statut-dossier statut-active">
+                                        Active
+                                    </span>
+
+                                {% elif affectation.statut == "CLOTUREE" %}
+
+                                    <span class="statut-dossier statut-cloturee">
+                                        Clôturée
+                                    </span>
+
+                                {% elif affectation.statut == "ANNULEE" %}
+
+                                    <span class="statut-dossier statut-annulee">
+                                        Annulée
+                                    </span>
+
+                                {% endif %}
+
+
+                            </div>
+
+
+                            <!-- ============================= -->
+                            <!-- INFORMATIONS -->
+                            <!-- ============================= -->
+
+                            <div class="grille-infos-affectation">
+
+
+                                <div class="info-affectation">
+
+                                    <span>
+                                        Matricule
+                                    </span>
+
+                                    <strong>
+                                        {{ affectation.etudiant.matricule }}
+                                    </strong>
+
+                                    <small>
+                                        CNE :
+                                        {{ affectation.etudiant.cne }}
+                                    </small>
+
+                                </div>
+
+
+                                <div class="info-affectation">
+
+                                    <span>
+                                        Année
+                                    </span>
+
+                                    <strong>
+                                        {{ affectation.annee_universitaire.libelle }}
+                                    </strong>
+
+                                </div>
+
+
+                                <div
+                                    class="
+                                        info-affectation
+                                        info-chambre-affectation
+                                    "
+                                >
+
+                                    <span>
+                                        Hébergement
+                                    </span>
+
+                                    <strong>
+                                        {{ affectation.chambre.batiment.code }}
+                                        /
+                                        Chambre {{ affectation.chambre.numero }}
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="info-affectation">
+
+                                    <span>
+                                        Entrée prévue
+                                    </span>
+
+                                    <strong>
+                                        {{ affectation.date_entree_prevue|date:"d/m/Y" }}
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="info-affectation">
+
+                                    <span>
+                                        Entrée réelle
+                                    </span>
+
+                                    {% if affectation.date_entree_reelle %}
+
+                                        <strong class="texte-valide">
+                                            {{ affectation.date_entree_reelle|date:"d/m/Y" }}
+                                        </strong>
+
+                                    {% else %}
+
+                                        <strong class="texte-attente">
+                                            Non confirmée
+                                        </strong>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <div class="info-affectation">
+
+                                    <span>
+                                        Sortie prévue
+                                    </span>
+
+                                    <strong>
+                                        {{ affectation.date_sortie_prevue|date:"d/m/Y" }}
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="info-affectation">
+
+                                    <span>
+                                        Sortie réelle
+                                    </span>
+
+                                    {% if affectation.date_sortie_reelle %}
+
+                                        <strong class="texte-valide">
+                                            {{ affectation.date_sortie_reelle|date:"d/m/Y" }}
+                                        </strong>
+
+                                    {% else %}
+
+                                        <strong>
+                                            —
+                                        </strong>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <div class="info-affectation">
+
+                                    <span>
+                                        Créée par
+                                    </span>
+
+                                    <strong>
+
+                                        {% if affectation.creee_par %}
+
+                                            {{ affectation.creee_par.get_full_name|default:affectation.creee_par.username }}
+
+                                        {% else %}
+
+                                            —
+
+                                        {% endif %}
+
+                                    </strong>
+
+                                </div>
+
+
+                            </div>
+
+
+                            <!-- ============================= -->
+                            <!-- ACTIONS -->
+                            <!-- ============================= -->
+
+                            <div class="zone-actions-dossier-affectation">
+
+
+                                {% if affectation.statut == "PREVUE" %}
+
+
+                                    <div class="bloc-action-principale">
+
+
+                                        <div>
+
+                                            <span class="titre-action-dossier">
+                                                Confirmer l'entrée
+                                            </span>
+
+                                            <small>
+                                                Enregistrez la date réelle
+                                                d'arrivée de l'étudiant.
+                                            </small>
+
+                                        </div>
+
+
+                                        <form
+                                            method="post"
+                                            action="{% url 'hebergement:confirmer_entree_affectation' affectation.pk %}"
+                                            class="form-entree-dossier"
+                                        >
+
+                                            {% csrf_token %}
+
+                                            <input
+                                                type="date"
+                                                name="date_entree_reelle"
+                                                value="{{ affectation.date_entree_prevue|date:'Y-m-d' }}"
+                                                required
+                                            >
+
+                                            <button
+                                                type="submit"
+                                                class="bouton-affectation bouton-affectation-succes"
+                                                onclick="return confirm('Confirmer l’entrée de cet étudiant ?');"
+                                            >
+                                                Confirmer l'entrée
+                                            </button>
+
+                                        </form>
+
+
+                                    </div>
+
+
+                                {% elif affectation.statut == "ACTIVE" %}
+
+
+                                    <div class="actions-actives-dossier">
+
+
+                                        <a
+                                            href="{% url 'hebergement:transferer_affectation' affectation.pk %}"
+                                            class="bouton-affectation bouton-affectation-transfert"
+                                        >
+                                            ↻ Transférer
+                                        </a>
+
+
+                                        <a
+                                            href="{% url 'hebergement:cloturer_affectation' affectation.pk %}"
+                                            class="bouton-affectation bouton-affectation-danger"
+                                        >
+                                            Clôturer
+                                        </a>
+
+
+                                    </div>
+
+
+                                {% elif affectation.statut == "CLOTUREE" %}
+
+
+                                    <div class="etat-final-affectation">
+
+
+                                        <span class="icone-etat-final">
+                                            ✓
+                                        </span>
+
+
+                                        <div>
+
+                                            <strong>
+                                                Affectation clôturée
+                                            </strong>
+
+
+                                            {% if affectation.motif_sortie %}
+
+                                                <p>
+                                                    {{ affectation.motif_sortie }}
+                                                </p>
+
+                                            {% else %}
+
+                                                <p>
+                                                    La sortie de l'étudiant
+                                                    a été enregistrée.
+                                                </p>
+
+                                            {% endif %}
+
+                                        </div>
+
+
+                                    </div>
+
+
+                                {% elif affectation.statut == "ANNULEE" %}
+
+
+                                    <div
+                                        class="
+                                            etat-final-affectation
+                                            etat-annule
+                                        "
+                                    >
+
+
+                                        <span class="icone-etat-final">
+                                            ×
+                                        </span>
+
+
+                                        <div>
+
+                                            <strong>
+                                                Affectation annulée
+                                            </strong>
+
+                                            <p>
+                                                Cette affectation n'est plus active.
+                                            </p>
+
+                                        </div>
+
+
+                                    </div>
+
+
+                                {% endif %}
+
+
+                            </div>
+
+
+                        </article>
+
+
+                    {% empty %}
+
+
+                        <div class="etat-vide-affectations">
+
+
+                            <div class="icone-vide-affectations">
+                                ⌕
+                            </div>
+
+
+                            <h3>
+                                Aucune affectation trouvée
+                            </h3>
+
+
+                            <p>
+                                Aucun dossier ne correspond
+                                aux critères sélectionnés.
+                            </p>
+
+
+                            <a
+                                href="{% url 'hebergement:liste_affectations_responsable' %}"
+                                class="bouton-affectation bouton-affectation-clair"
+                            >
+                                Réinitialiser les filtres
+                            </a>
+
+
+                        </div>
+
+
+                    {% endfor %}
+
+
+                </div>
+
+
+                <!-- =================================================
+                     PAGINATION
+                ================================================== -->
+
+                {% if page_obj.paginator.num_pages > 1 %}
+
+
+                    <nav class="pagination-affectations-premium">
+
+
+                        <div class="infos-pagination-affectations">
+
+                            Page {{ page_obj.number }}
+                            sur {{ page_obj.paginator.num_pages }}
+
+                            —
+
+                            {{ page_obj.paginator.count }}
+                            résultat(s)
+
+                        </div>
+
+
+                        <div class="liens-pagination-affectations">
+
+
+                            {% if page_obj.has_previous %}
+
+
+                                <a
+                                    href="?page=1{% if chaine_filtres %}&{{ chaine_filtres }}{% endif %}"
+                                    class="bouton-page-affectation"
+                                >
+                                    Première
+                                </a>
+
+
+                                <a
+                                    href="?page={{ page_obj.previous_page_number }}{% if chaine_filtres %}&{{ chaine_filtres }}{% endif %}"
+                                    class="bouton-page-affectation"
+                                >
+                                    Précédente
+                                </a>
+
+
+                            {% endif %}
+
+
+                            {% for numero_page in page_obj.paginator.page_range %}
+
+
+                                {% if numero_page == page_obj.number %}
+
+                                    <span class="page-affectation-active">
+                                        {{ numero_page }}
+                                    </span>
+
+
+                                {% elif numero_page >= page_obj.number|add:"-2" and numero_page <= page_obj.number|add:"2" %}
+
+
+                                    <a
+                                        href="?page={{ numero_page }}{% if chaine_filtres %}&{{ chaine_filtres }}{% endif %}"
+                                        class="bouton-page-affectation"
+                                    >
+                                        {{ numero_page }}
+                                    </a>
+
+
+                                {% endif %}
+
+
+                            {% endfor %}
+
+
+                            {% if page_obj.has_next %}
+
+
+                                <a
+                                    href="?page={{ page_obj.next_page_number }}{% if chaine_filtres %}&{{ chaine_filtres }}{% endif %}"
+                                    class="bouton-page-affectation"
+                                >
+                                    Suivante
+                                </a>
+
+
+                                <a
+                                    href="?page={{ page_obj.paginator.num_pages }}{% if chaine_filtres %}&{{ chaine_filtres }}{% endif %}"
+                                    class="bouton-page-affectation"
+                                >
+                                    Dernière
+                                </a>
+
+
+                            {% endif %}
+
+
+                        </div>
+
+
+                    </nav>
+
+
+                {% endif %}
+
+
+            </section>
+
+
+        </main>
+
+
+    </div>
+
+
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,223 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Détail utilisateur</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'accounts/gestion_utilisateurs.css' %}"
+    >
+</head>
+
+<body>
+    <header class="entete">
+        <div>
+            <h1>Gestion des utilisateurs</h1>
+            <p>Détail du compte utilisateur</p>
+        </div>
+
+        <a
+            href="{% url 'accounts:liste_utilisateurs' %}"
+            class="lien-retour"
+        >
+            Retour aux utilisateurs
+        </a>
+    </header>
+
+    <main class="conteneur">
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <section class="carte">
+            <div class="entete-section">
+                <div class="profil-entete">
+                    <div class="avatar avatar-grand">
+                        {% if utilisateur_consulte.first_name %}
+                            {{ utilisateur_consulte.first_name|first|upper }}
+                            {{ utilisateur_consulte.last_name|first|upper }}
+                        {% else %}
+                            {{ utilisateur_consulte.username|first|upper }}
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <h2>
+                            {{ utilisateur_consulte.get_full_name|default:utilisateur_consulte.username }}
+                        </h2>
+
+                        <p>
+                            {{ utilisateur_consulte.username }}
+                        </p>
+                    </div>
+                </div>
+
+                {% if utilisateur_consulte.is_active %}
+                    <span class="badge badge-succes">
+                        Compte actif
+                    </span>
+                {% else %}
+                    <span class="badge badge-danger">
+                        Compte désactivé
+                    </span>
+                {% endif %}
+            </div>
+
+            <div class="grille-details">
+                <div class="information">
+                    <span>Nom d'utilisateur</span>
+                    <strong>
+                        {{ utilisateur_consulte.username }}
+                    </strong>
+                </div>
+
+                <div class="information">
+                    <span>Prénom</span>
+                    <strong>
+                        {{ utilisateur_consulte.first_name|default:"—" }}
+                    </strong>
+                </div>
+
+                <div class="information">
+                    <span>Nom</span>
+                    <strong>
+                        {{ utilisateur_consulte.last_name|default:"—" }}
+                    </strong>
+                </div>
+
+                <div class="information">
+                    <span>Email</span>
+                    <strong>
+                        {{ utilisateur_consulte.email|default:"—" }}
+                    </strong>
+                </div>
+
+                <div class="information">
+                    <span>Rôle</span>
+                    <strong>
+                        {{ utilisateur_consulte.get_role_display }}
+                    </strong>
+                </div>
+
+                <div class="information">
+                    <span>Accès à l'administration</span>
+                    <strong>
+                        {% if utilisateur_consulte.is_staff %}
+                            Oui
+                        {% else %}
+                            Non
+                        {% endif %}
+                    </strong>
+                </div>
+
+                <div class="information">
+                    <span>Superutilisateur</span>
+                    <strong>
+                        {% if utilisateur_consulte.is_superuser %}
+                            Oui
+                        {% else %}
+                            Non
+                        {% endif %}
+                    </strong>
+                </div>
+
+                <div class="information">
+                    <span>Date de création</span>
+                    <strong>
+                        {{ utilisateur_consulte.date_joined|date:"d/m/Y H:i" }}
+                    </strong>
+                </div>
+
+                <div class="information">
+                    <span>Dernière connexion</span>
+                    <strong>
+                        {% if utilisateur_consulte.last_login %}
+                            {{ utilisateur_consulte.last_login|date:"d/m/Y H:i" }}
+                        {% else %}
+                            Jamais connecté
+                        {% endif %}
+                    </strong>
+                </div>
+            </div>
+
+            {% if profil_etudiant %}
+                <section class="bloc-secondaire">
+                    <h3>Profil étudiant associé</h3>
+
+                    <div class="grille-details">
+                        <div class="information">
+                            <span>Matricule</span>
+                            <strong>
+                                {{ profil_etudiant.matricule }}
+                            </strong>
+                        </div>
+
+                        <div class="information">
+                            <span>CNE</span>
+                            <strong>
+                                {{ profil_etudiant.cne }}
+                            </strong>
+                        </div>
+
+                        <div class="information">
+                            <span>Statut étudiant</span>
+                            <strong>
+                                {{ profil_etudiant.get_statut_display }}
+                            </strong>
+                        </div>
+                    </div>
+                </section>
+            {% endif %}
+
+            <div class="actions">
+                <a
+                    href="{% url 'accounts:modifier_utilisateur' utilisateur_consulte.pk %}"
+                    class="bouton"
+                >
+                    Modifier le compte
+                </a>
+
+                {% if not utilisateur_consulte.is_superuser and utilisateur_consulte.pk != request.user.pk %}
+                    <form
+                        method="post"
+                        action="{% url 'accounts:changer_statut_utilisateur' utilisateur_consulte.pk %}"
+                    >
+                        {% csrf_token %}
+
+                        {% if utilisateur_consulte.is_active %}
+                            <button
+                                type="submit"
+                                class="bouton bouton-danger"
+                            >
+                                Désactiver le compte
+                            </button>
+                        {% else %}
+                            <button
+                                type="submit"
+                                class="bouton bouton-succes"
+                            >
+                                Activer le compte
+                            </button>
+                        {% endif %}
+                    </form>
+                {% endif %}
+            </div>
+        </section>
+    </main>
+</body>
+</html>

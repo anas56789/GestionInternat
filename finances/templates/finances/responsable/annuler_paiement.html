@@ -1,0 +1,159 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Annuler un paiement — GestionInternat</title>
+
+    <link rel="stylesheet" href="{% static 'dashboard/style.css' %}?v=12">
+    <link rel="stylesheet" href="{% static 'finances/finances_responsable_layout.css' %}?v=2">
+    <link rel="stylesheet" href="{% static 'finances/finances_responsable_forms.css' %}?v=1">
+    <link rel="stylesheet" href="{% static 'finances/finances_paiements_layout.css' %}?v=1">
+</head>
+
+<body class="finance-page">
+
+<div class="app-shell finance-shell">
+
+    {% include "dashboard/sidebar_responsable.html" %}
+
+    <div class="main-area finance-main">
+
+        <header class="finance-topbar">
+
+            <div class="finance-topbar-copy">
+                <span class="finance-eyebrow">Espace responsable</span>
+                <h1>Annuler un paiement</h1>
+                <p>Cette opération demande un motif administratif.</p>
+            </div>
+
+            <div class="finance-topbar-actions">
+                <a
+                    href="{% url 'finances:detail_situation_financiere' paiement.frais_hebergement.pk %}"
+                    class="finance-button finance-button-light"
+                >
+                    ← Retour au dossier
+                </a>
+            </div>
+
+        </header>
+
+
+        <main class="finance-content">
+
+            <section class="finance-cancel-page">
+
+                <section class="finance-panel finance-cancel-card">
+
+                    <div class="finance-danger-icon">
+                        !
+                    </div>
+
+                    <span class="finance-eyebrow">
+                        Opération sensible
+                    </span>
+
+                    <h1>
+                        Confirmer l’annulation
+                    </h1>
+
+                    <p class="finance-cancel-intro">
+                        Vous allez annuler un paiement déjà enregistré.
+                        Le motif sera conservé dans l’historique du dossier.
+                    </p>
+
+
+                    <div class="finance-cancel-summary">
+
+                        <div>
+                            <span>Montant</span>
+                            <strong>
+                                {{ paiement.montant }} DH
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Date du paiement</span>
+                            <strong>
+                                {{ paiement.date_paiement|date:"d/m/Y" }}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Étudiant</span>
+                            <strong>
+                                {{ paiement.frais_hebergement.etudiant.utilisateur.get_full_name|default:paiement.frais_hebergement.etudiant.utilisateur.username }}
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    {% if formulaire.non_field_errors %}
+                        <div class="finance-form-errors">
+                            {% for erreur in formulaire.non_field_errors %}
+                                <p>{{ erreur }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+
+                        <div class="finance-form-field {% if formulaire.motif_annulation.errors %}has-error{% endif %}">
+
+                            <label for="{{ formulaire.motif_annulation.id_for_label }}">
+                                Motif d’annulation *
+                            </label>
+
+                            {{ formulaire.motif_annulation }}
+
+                            {% for erreur in formulaire.motif_annulation.errors %}
+                                <span class="finance-field-error">
+                                    {{ erreur }}
+                                </span>
+                            {% endfor %}
+
+                        </div>
+
+
+                        <div class="finance-form-actions">
+
+                            <a
+                                href="{% url 'finances:detail_situation_financiere' paiement.frais_hebergement.pk %}"
+                                class="finance-button finance-button-light"
+                            >
+                                Retour
+                            </a>
+
+                            <button
+                                type="submit"
+                                class="finance-button finance-button-danger"
+                            >
+                                Confirmer l’annulation
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </section>
+
+            </section>
+
+        </main>
+
+
+        <footer class="finance-footer">
+            Gestion de l’internat universitaire — {% now "Y" %}
+        </footer>
+
+    </div>
+
+</div>
+
+</body>
+</html>

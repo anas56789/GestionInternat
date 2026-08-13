@@ -1,0 +1,388 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {{ titre_page }} — Internat universitaire
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'dashboard/style.css' %}?v=11"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'etudiants/gestion_etudiants_premium.css' %}?v=3"
+    >
+</head>
+
+<body class="page-etudiants-premium">
+
+
+<div class="app-shell">
+
+   {% include "dashboard/sidebar_responsable.html" %}
+
+    <div class="main-area">
+
+        <header class="topbar-etudiants">
+
+            <div class="topbar-etudiants-gauche">
+                <span class="sur-titre-etudiants">Espace responsable</span>
+                <h1>{{ titre_page }}</h1>
+                <p>Informations personnelles, académiques et administratives.</p>
+            </div>
+
+            <div class="topbar-etudiants-droite">
+
+                <div class="date-topbar-etudiants">
+                    <span>Aujourd’hui</span>
+                    <strong>{% now "d/m/Y" %}</strong>
+                </div>
+
+                {% if etudiant %}
+                    <a
+                        href="{% url 'etudiants:detail_etudiant' etudiant.pk %}"
+                        class="bouton-etudiant bouton-etudiant-clair"
+                    >
+                        Voir le dossier
+                    </a>
+                {% endif %}
+
+                <a
+                    href="{% url 'etudiants:liste_etudiants' %}"
+                    class="bouton-etudiant bouton-etudiant-clair"
+                >
+                    ← Retour
+                </a>
+
+                <div class="profil-topbar-etudiants">
+                    <div class="avatar-topbar-etudiants" aria-hidden="true">
+                        {% if request.user.first_name %}
+                            {{ request.user.first_name|first|upper }}
+                            {{ request.user.last_name|first|upper }}
+                        {% else %}
+                            {{ request.user.username|first|upper }}
+                        {% endif %}
+                    </div>
+
+                    <div class="identite-topbar-etudiants">
+                        <strong>
+                            {{ request.user.get_full_name|default:request.user.username }}
+                        </strong>
+                        <span>
+                            {% if request.user.is_superuser %}
+                                Super administrateur
+                            {% else %}
+                                {{ request.user.get_role_display }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+        </header>
+
+<main class="conteneur-etudiants-premium conteneur-formulaire-etudiant">
+
+    {% if messages %}
+        <section class="messages-etudiants-premium">
+            {% for message in messages %}
+                <div class="message-etudiant-premium {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </section>
+    {% endif %}
+
+    <section class="hero-formulaire-etudiant">
+
+        <div>
+            <span class="sur-titre-hero-etudiants">
+                Dossier administratif
+            </span>
+
+            <h2>
+                {% if etudiant %}
+                    {{ etudiant.utilisateur.get_full_name|default:etudiant.utilisateur.username }}
+                {% else %}
+                    Nouveau profil étudiant
+                {% endif %}
+            </h2>
+
+            <p>
+                Vérifiez soigneusement les données
+                avant d'enregistrer le profil.
+            </p>
+        </div>
+
+        <div class="icone-formulaire-etudiant">
+            🎓
+        </div>
+
+    </section>
+
+    <section class="grille-formulaire-etudiant">
+
+        <section class="carte-etudiants-premium carte-sans-marge">
+
+            <div class="entete-carte-etudiants">
+
+                <div>
+                    <span class="mini-label-etudiants">
+                        Formulaire
+                    </span>
+
+                    <h2>
+                        Informations du profil
+                    </h2>
+
+                    <p>
+                        Les champs marqués d'un astérisque
+                        sont obligatoires.
+                    </p>
+                </div>
+
+                {% if etudiant %}
+                    <span class="badge-mode-etudiant badge-mode-modification">
+                        Modification
+                    </span>
+                {% else %}
+                    <span class="badge-mode-etudiant">
+                        Création
+                    </span>
+                {% endif %}
+
+            </div>
+
+            {% if formulaire.non_field_errors %}
+                <div class="bloc-erreurs-etudiant">
+                    <strong>
+                        Le formulaire contient une erreur.
+                    </strong>
+
+                    {% for erreur in formulaire.non_field_errors %}
+                        <p>{{ erreur }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form
+                method="post"
+                enctype="multipart/form-data"
+                novalidate
+                class="formulaire-etudiant-premium"
+            >
+                {% csrf_token %}
+
+                <div class="grille-champs-etudiant">
+
+                    {% for champ in formulaire %}
+
+                        <div class="
+                            groupe-champ-etudiant
+                            {% if champ.name == 'adresse' or champ.name == 'photo' %}
+                                champ-etudiant-large
+                            {% endif %}
+                            {% if champ.errors %}
+                                groupe-champ-etudiant-invalide
+                            {% endif %}
+                        ">
+
+                            <label for="{{ champ.id_for_label }}">
+                                {{ champ.label }}
+
+                                {% if champ.field.required %}
+                                    <span class="obligatoire-etudiant">
+                                        *
+                                    </span>
+                                {% endif %}
+                            </label>
+
+                            {{ champ }}
+
+                            {% if champ.help_text %}
+                                <small class="aide-champ-etudiant">
+                                    {{ champ.help_text|safe }}
+                                </small>
+                            {% endif %}
+
+                            {% if champ.errors %}
+                                <div class="erreurs-champ-etudiant">
+                                    {% for erreur in champ.errors %}
+                                        <span>
+                                            {{ erreur }}
+                                        </span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+                <div class="separateur-formulaire-etudiant"></div>
+
+                <div class="actions-formulaire-etudiant">
+
+                    <a
+                        href="{% if etudiant %}{% url 'etudiants:detail_etudiant' etudiant.pk %}{% else %}{% url 'etudiants:liste_etudiants' %}{% endif %}"
+                        class="bouton-etudiant bouton-etudiant-clair"
+                    >
+                        Annuler
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="bouton-etudiant bouton-etudiant-principal bouton-validation-etudiant"
+                    >
+                        {% if etudiant %}
+                            ✓ {{ bouton_validation }}
+                        {% else %}
+                            + {{ bouton_validation }}
+                        {% endif %}
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+        <aside class="colonne-aide-etudiant">
+
+            {% if etudiant %}
+
+                <section class="carte-etudiants-premium carte-sans-marge">
+
+                    <span class="mini-label-etudiants">
+                        Profil actuel
+                    </span>
+
+                    <div class="profil-formulaire-resume">
+
+                        <div class="photo-formulaire-resume">
+
+                            {% if etudiant.photo %}
+                                <img
+                                    src="{{ etudiant.photo.url }}"
+                                    alt="Photo étudiant"
+                                >
+                            {% else %}
+                                <span>
+                                    {% if etudiant.utilisateur.first_name %}
+                                        {{ etudiant.utilisateur.first_name|first|upper }}
+                                        {{ etudiant.utilisateur.last_name|first|upper }}
+                                    {% else %}
+                                        {{ etudiant.utilisateur.username|first|upper }}
+                                    {% endif %}
+                                </span>
+                            {% endif %}
+
+                        </div>
+
+                        <div>
+                            <strong>
+                                {{ etudiant.utilisateur.get_full_name|default:etudiant.utilisateur.username }}
+                            </strong>
+
+                            <span>
+                                {{ etudiant.matricule }}
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <div class="ligne-resume-etudiant">
+                        <span>CNE</span>
+                        <strong>
+                            {{ etudiant.cne|default:"—" }}
+                        </strong>
+                    </div>
+
+                    <div class="ligne-resume-etudiant">
+                        <span>Filière</span>
+                        <strong>
+                            {{ etudiant.filiere|default:"—" }}
+                        </strong>
+                    </div>
+
+                    <div class="ligne-resume-etudiant">
+                        <span>Niveau</span>
+                        <strong>
+                            {{ etudiant.niveau_etude|default:"—" }}
+                        </strong>
+                    </div>
+
+                    <div class="ligne-resume-etudiant">
+                        <span>Statut</span>
+                        <strong>
+                            {{ etudiant.get_statut_display }}
+                        </strong>
+                    </div>
+
+                </section>
+
+            {% endif %}
+
+            <section class="carte-etudiants-premium carte-sans-marge carte-aide-etudiant">
+
+                <span class="mini-label-etudiants">
+                    Vérification
+                </span>
+
+                <h2>
+                    Avant d'enregistrer
+                </h2>
+
+                <div class="liste-conseils-etudiant">
+
+                    <div>
+                        <span>1</span>
+                        <p>
+                            Vérifiez le matricule et le CNE.
+                        </p>
+                    </div>
+
+                    <div>
+                        <span>2</span>
+                        <p>
+                            Associez le bon compte utilisateur
+                            au profil étudiant.
+                        </p>
+                    </div>
+
+                    <div>
+                        <span>3</span>
+                        <p>
+                            Contrôlez la filière, le niveau
+                            et le statut avant validation.
+                        </p>
+                    </div>
+
+                </div>
+
+            </section>
+
+        </aside>
+
+    </section>
+
+</main>
+
+    </div>
+</div>
+
+</body>
+</html>

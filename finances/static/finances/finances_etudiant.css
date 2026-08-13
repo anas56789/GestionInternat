@@ -1,0 +1,1241 @@
+:root {
+    --bleu: #2563eb;
+    --bleu-fonce: #1d4ed8;
+    --bleu-clair: #eff6ff;
+    --fond: #f3f6fb;
+    --blanc: #ffffff;
+    --texte: #0f172a;
+    --texte-secondaire: #64748b;
+    --bordure: #dbe4f0;
+    --gris-clair: #f8fafc;
+    --gris-fonce: #334155;
+    --vert: #15803d;
+    --vert-clair: #ecfdf3;
+    --orange: #b45309;
+    --orange-clair: #fff7ed;
+    --rouge: #c62828;
+    --rouge-clair: #fff1f2;
+    --violet: #7c3aed;
+    --violet-clair: #f5f3ff;
+    --ombre: 0 18px 45px rgba(15, 23, 42, 0.08);
+    --ombre-legere: 0 10px 28px rgba(15, 23, 42, 0.055);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    margin: 0;
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(37, 99, 235, 0.09),
+            transparent 32%
+        ),
+        var(--fond);
+    color: var(--texte);
+    font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+}
+
+button,
+input,
+textarea,
+select {
+    font: inherit;
+}
+
+/* =========================================================
+   EN-TÊTE
+========================================================= */
+
+.entete-principale {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 26px;
+    padding: 24px clamp(22px, 4vw, 64px);
+    background: rgba(255, 255, 255, 0.97);
+    border-bottom: 1px solid var(--bordure);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+}
+
+.identite-page {
+    display: flex;
+    align-items: center;
+    gap: 17px;
+}
+
+.logo-page {
+    display: grid;
+    flex: 0 0 auto;
+    width: 58px;
+    height: 58px;
+    place-items: center;
+    border-radius: 18px;
+    background: linear-gradient(135deg, var(--bleu), #60a5fa);
+    color: var(--blanc);
+    font-size: 21px;
+    font-weight: 900;
+    box-shadow: 0 12px 28px rgba(37, 99, 235, 0.25);
+}
+
+.sur-titre,
+.petit-titre {
+    display: inline-block;
+    color: var(--bleu);
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+}
+
+.entete-principale h1 {
+    margin: 5px 0 0;
+    font-size: clamp(25px, 3vw, 35px);
+}
+
+.entete-principale p {
+    max-width: 720px;
+    margin: 7px 0 0;
+    color: var(--texte-secondaire);
+    line-height: 1.5;
+}
+
+.navigation {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* =========================================================
+   CONTENU ET MESSAGES
+========================================================= */
+
+.conteneur {
+    width: min(1440px, calc(100% - 40px));
+    margin: 32px auto;
+}
+
+.messages {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.message {
+    padding: 15px 18px;
+    border: 1px solid #bbf7d0;
+    border-radius: 14px;
+    background: var(--vert-clair);
+    color: var(--vert);
+    font-weight: 700;
+}
+
+.message.error {
+    border-color: #fecdd3;
+    background: var(--rouge-clair);
+    color: var(--rouge);
+}
+
+.message.warning {
+    border-color: #fed7aa;
+    background: var(--orange-clair);
+    color: var(--orange);
+}
+
+/* =========================================================
+   BANNIÈRES
+========================================================= */
+
+.banniere-financiere,
+.banniere-detail {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+    margin-bottom: 22px;
+    padding: clamp(25px, 4vw, 40px);
+    border: 1px solid #cfe0ff;
+    border-radius: 25px;
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff 0%,
+            #eff6ff 100%
+        );
+    box-shadow: var(--ombre);
+}
+
+.banniere-financiere h2,
+.banniere-detail h2 {
+    margin: 7px 0 0;
+    font-size: clamp(28px, 4vw, 42px);
+}
+
+.banniere-financiere p,
+.banniere-detail p {
+    max-width: 760px;
+    margin: 11px 0 0;
+    color: var(--texte-secondaire);
+    line-height: 1.65;
+}
+
+.icone-banniere {
+    display: grid;
+    flex: 0 0 auto;
+    width: 92px;
+    height: 92px;
+    place-items: center;
+    border: 1px solid rgba(37, 99, 235, 0.15);
+    border-radius: 26px;
+    background: rgba(255, 255, 255, 0.9);
+    font-size: 43px;
+    box-shadow: var(--ombre-legere);
+}
+
+/* =========================================================
+   STATISTIQUES
+========================================================= */
+
+.grille-statistiques {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 15px;
+    margin-bottom: 22px;
+}
+
+.statistique {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    min-width: 0;
+    padding: 18px;
+    border: 1px solid var(--bordure);
+    border-radius: 17px;
+    background: var(--blanc);
+    box-shadow: var(--ombre-legere);
+}
+
+.icone-statistique {
+    display: grid;
+    flex: 0 0 auto;
+    width: 46px;
+    height: 46px;
+    place-items: center;
+    border-radius: 14px;
+    background: var(--bleu-clair);
+    font-size: 21px;
+}
+
+.statistique span,
+.statistique strong {
+    display: block;
+}
+
+.statistique span {
+    color: var(--texte-secondaire);
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.statistique strong {
+    margin-top: 4px;
+    font-size: 22px;
+}
+
+/* =========================================================
+   CARTES ET LAYOUT
+========================================================= */
+
+.carte-principale {
+    padding: clamp(22px, 3vw, 32px);
+    border: 1px solid var(--bordure);
+    border-radius: 24px;
+    background: var(--blanc);
+    box-shadow: var(--ombre);
+}
+
+.entete-section {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.entete-section h2 {
+    margin: 6px 0 0;
+    font-size: clamp(23px, 3vw, 31px);
+}
+
+.entete-section p {
+    margin: 8px 0 0;
+    color: var(--texte-secondaire);
+    line-height: 1.55;
+}
+
+.grille-detail-financier {
+    display: grid;
+    grid-template-columns: minmax(0, 1.65fr) minmax(330px, 0.75fr);
+    align-items: start;
+    gap: 22px;
+}
+
+.colonne-principale,
+.colonne-secondaire {
+    display: grid;
+    gap: 22px;
+}
+
+/* =========================================================
+   LISTE DES FRAIS
+========================================================= */
+
+.grille-frais {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.carte-frais {
+    position: relative;
+    display: flex;
+    min-width: 0;
+    overflow: hidden;
+    flex-direction: column;
+    padding: 23px;
+    border: 1px solid var(--bordure);
+    border-radius: 20px;
+    background: #ffffff;
+    box-shadow: var(--ombre-legere);
+}
+
+.barre-statut {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 5px;
+    background: #94a3b8;
+}
+
+.entete-frais {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 18px;
+}
+
+.annee-frais {
+    display: block;
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.entete-frais small {
+    display: block;
+    margin-top: 6px;
+    color: var(--texte-secondaire);
+}
+
+.resume-montants {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.resume-montants > div {
+    padding: 13px;
+    border: 1px solid #e7edf6;
+    border-radius: 13px;
+    background: var(--gris-clair);
+}
+
+.resume-montants span,
+.resume-montants strong {
+    display: block;
+}
+
+.resume-montants span {
+    margin-bottom: 5px;
+    color: var(--texte-secondaire);
+    font-size: 11px;
+}
+
+.resume-montants strong {
+    font-size: 16px;
+}
+
+/* =========================================================
+   PROGRESSION
+========================================================= */
+
+.bloc-progression {
+    margin-top: 17px;
+    padding: 15px;
+    border: 1px solid var(--bordure);
+    border-radius: 14px;
+    background: #fbfdff;
+}
+
+.entete-progression {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 10px;
+}
+
+.entete-progression span {
+    color: var(--texte-secondaire);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.barre-progression {
+    width: 100%;
+    height: 9px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #e2e8f0;
+}
+
+.barre-progression span {
+    display: block;
+    min-width: 0;
+    max-width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    background:
+        linear-gradient(
+            90deg,
+            var(--bleu),
+            #60a5fa
+        );
+}
+
+/* =========================================================
+   INFORMATIONS ET COMMENTAIRES
+========================================================= */
+
+.informations-frais,
+.liste-informations {
+    display: grid;
+    gap: 11px;
+    margin-top: 17px;
+}
+
+.information-ligne {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    padding-bottom: 11px;
+    border-bottom: 1px solid #edf1f6;
+}
+
+.information-ligne:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+
+.information-ligne span {
+    color: var(--texte-secondaire);
+    font-size: 13px;
+}
+
+.information-ligne strong {
+    max-width: 60%;
+    overflow-wrap: anywhere;
+    text-align: right;
+}
+
+.commentaire-frais,
+.commentaire-paiement,
+.motif-annulation {
+    margin-top: 16px;
+    padding: 14px 16px;
+    border-radius: 13px;
+}
+
+.commentaire-frais,
+.commentaire-paiement {
+    border-left: 4px solid var(--bleu);
+    background: var(--bleu-clair);
+}
+
+.motif-annulation {
+    border-left: 4px solid var(--rouge);
+    background: var(--rouge-clair);
+    color: #991b1b;
+}
+
+.commentaire-frais p,
+.commentaire-paiement p,
+.motif-annulation p {
+    margin: 7px 0 0;
+    line-height: 1.55;
+}
+
+/* =========================================================
+   PAIEMENTS
+========================================================= */
+
+.liste-paiements {
+    display: grid;
+    gap: 15px;
+}
+
+.paiement {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    gap: 14px;
+    padding: 17px;
+    border: 1px solid var(--bordure);
+    border-radius: 16px;
+    background: #ffffff;
+}
+
+.paiement-valide {
+    border-color: #bbf7d0;
+}
+
+.paiement-attente {
+    border-color: #fed7aa;
+}
+
+.paiement-annule {
+    border-color: #fecaca;
+}
+
+.icone-paiement {
+    display: grid;
+    width: 48px;
+    height: 48px;
+    place-items: center;
+    border-radius: 14px;
+    background: var(--gris-clair);
+    font-size: 22px;
+}
+
+.contenu-paiement {
+    min-width: 0;
+}
+
+.entete-paiement {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.entete-paiement > div > strong {
+    display: block;
+    font-size: 21px;
+}
+
+.entete-paiement > div > span {
+    display: block;
+    margin-top: 4px;
+    color: var(--texte-secondaire);
+    font-size: 13px;
+}
+
+.grille-informations-paiement {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.grille-informations-paiement > div {
+    padding: 12px;
+    border: 1px solid #e7edf6;
+    border-radius: 12px;
+    background: var(--gris-clair);
+}
+
+.grille-informations-paiement span,
+.grille-informations-paiement strong {
+    display: block;
+}
+
+.grille-informations-paiement span {
+    margin-bottom: 5px;
+    color: var(--texte-secondaire);
+    font-size: 11px;
+}
+
+.grille-informations-paiement strong {
+    overflow-wrap: anywhere;
+    font-size: 13px;
+}
+
+/* =========================================================
+   BADGES ET COULEURS
+========================================================= */
+
+.badge-statut {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    padding: 7px 11px;
+    border-radius: 999px;
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 12px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.statut-paye,
+.statut-paiement-valide {
+    background: var(--vert-clair);
+    color: var(--vert);
+}
+
+.statut-non-paye,
+.statut-en-retard,
+.statut-partiellement-paye-en-retard,
+.statut-paiement-annule {
+    background: var(--rouge-clair);
+    color: var(--rouge);
+}
+
+.statut-partiellement-paye,
+.statut-paiement-attente {
+    background: var(--orange-clair);
+    color: var(--orange);
+}
+
+.barre-statut.statut-paye {
+    background: var(--vert);
+}
+
+.barre-statut.statut-partiellement-paye {
+    background: var(--orange);
+}
+
+.barre-statut.statut-non-paye,
+.barre-statut.statut-en-retard,
+.barre-statut.statut-partiellement-paye-en-retard {
+    background: var(--rouge);
+}
+
+.valeur-succes {
+    color: var(--vert);
+}
+
+.valeur-danger {
+    color: var(--rouge);
+}
+
+/* =========================================================
+   BOUTONS
+========================================================= */
+
+.actions-frais {
+    margin-top: auto;
+    padding-top: 19px;
+}
+
+.bouton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 43px;
+    padding: 10px 16px;
+    border: 1px solid transparent;
+    border-radius: 11px;
+    font-weight: 900;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+        transform 0.18s ease,
+        background 0.18s ease,
+        border-color 0.18s ease;
+}
+
+.bouton:hover {
+    transform: translateY(-1px);
+}
+
+.bouton-principal {
+    background: var(--bleu);
+    color: var(--blanc);
+}
+
+.bouton-principal:hover {
+    background: var(--bleu-fonce);
+}
+
+.bouton-secondaire {
+    background: var(--gris-fonce);
+    color: var(--blanc);
+}
+
+.bouton-clair {
+    border-color: var(--bordure);
+    background: var(--blanc);
+    color: var(--gris-fonce);
+}
+
+/* =========================================================
+   ÉTAT VIDE ET AIDE
+========================================================= */
+
+.etat-vide {
+    display: grid;
+    justify-items: center;
+    padding: 55px 18px;
+    text-align: center;
+}
+
+.icone-vide {
+    display: grid;
+    width: 70px;
+    height: 70px;
+    margin-bottom: 15px;
+    place-items: center;
+    border-radius: 21px;
+    background: var(--bleu-clair);
+    font-size: 33px;
+}
+
+.etat-vide h3 {
+    margin: 0;
+    font-size: 21px;
+}
+
+.etat-vide p {
+    max-width: 520px;
+    margin: 8px 0 0;
+    color: var(--texte-secondaire);
+    line-height: 1.55;
+}
+
+.carte-aide p {
+    color: var(--texte-secondaire);
+    line-height: 1.6;
+}
+
+.carte-aide .bouton {
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* =========================================================
+   PIED DE PAGE
+========================================================= */
+
+.pied-page {
+    padding: 4px 20px 30px;
+    color: var(--texte-secondaire);
+    text-align: center;
+    font-size: 13px;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1100px) {
+    .grille-statistiques {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grille-frais {
+        grid-template-columns: 1fr;
+    }
+
+    .grille-detail-financier {
+        grid-template-columns: 1fr;
+    }
+
+    .colonne-secondaire {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 750px) {
+    .entete-principale,
+    .banniere-financiere,
+    .banniere-detail,
+    .entete-section {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .identite-page {
+        align-items: flex-start;
+    }
+
+    .navigation {
+        width: 100%;
+    }
+
+    .navigation .bouton {
+        flex: 1;
+    }
+
+    .conteneur {
+        width: min(100% - 24px, 1440px);
+        margin: 20px auto;
+    }
+
+    .colonne-secondaire {
+        grid-template-columns: 1fr;
+    }
+
+    .resume-montants,
+    .grille-informations-paiement {
+        grid-template-columns: 1fr;
+    }
+
+    .entete-frais,
+    .entete-paiement {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 500px) {
+    .entete-principale {
+        padding: 19px 15px;
+    }
+
+    .logo-page {
+        width: 50px;
+        height: 50px;
+        border-radius: 15px;
+    }
+
+    .navigation {
+        flex-direction: column;
+    }
+
+    .grille-statistiques {
+        grid-template-columns: 1fr;
+    }
+
+    .carte-principale,
+    .banniere-financiere,
+    .banniere-detail,
+    .carte-frais {
+        padding: 20px;
+        border-radius: 19px;
+    }
+
+    .paiement {
+        grid-template-columns: 1fr;
+    }
+
+    .information-ligne {
+        flex-direction: column;
+    }
+
+    .information-ligne strong {
+        max-width: 100%;
+        text-align: left;
+    }
+}
+
+
+/* =========================================================
+   DÉCLARATION ÉTUDIANTE DE PAIEMENT
+========================================================= */
+
+.conteneur-declaration {
+    width: min(1180px, calc(100% - 40px));
+}
+
+.grille-declaration {
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1.55fr)
+        minmax(300px, 0.65fr);
+    align-items: start;
+    gap: 22px;
+}
+
+.icone-section,
+.icone-information {
+    display: grid;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 14px;
+    background: var(--bleu-clair);
+}
+
+.icone-section {
+    width: 48px;
+    height: 48px;
+    font-size: 23px;
+}
+
+.icone-information {
+    width: 42px;
+    height: 42px;
+    background: var(--blanc);
+}
+
+.grille-formulaire-paiement {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 17px;
+}
+
+.groupe-champ {
+    min-width: 0;
+}
+
+.groupe-champ-large {
+    grid-column: 1 / -1;
+}
+
+.groupe-champ label {
+    display: block;
+    margin-bottom: 8px;
+    color: #1e293b;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.groupe-champ input,
+.groupe-champ select,
+.groupe-champ textarea {
+    width: 100%;
+    min-height: 47px;
+    padding: 12px 14px;
+    border: 1px solid #cfd9e7;
+    border-radius: 12px;
+    outline: none;
+    background: var(--blanc);
+    color: var(--texte);
+}
+
+.groupe-champ textarea {
+    resize: vertical;
+    line-height: 1.55;
+}
+
+.groupe-champ input:focus,
+.groupe-champ select:focus,
+.groupe-champ textarea:focus {
+    border-color: #7ca5ff;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.11);
+}
+
+.champ-fichier {
+    padding: 7px !important;
+    background: var(--gris-clair) !important;
+}
+
+.champ-fichier::file-selector-button {
+    margin-right: 12px;
+    padding: 9px 13px;
+    border: 0;
+    border-radius: 9px;
+    background: var(--bleu-clair);
+    color: var(--bleu-fonce);
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.groupe-champ-invalide input,
+.groupe-champ-invalide select,
+.groupe-champ-invalide textarea {
+    border-color: #f87171 !important;
+    background: #fffafa;
+}
+
+.obligatoire {
+    color: var(--rouge);
+}
+
+.aide {
+    display: block;
+    margin-top: 7px;
+    color: var(--texte-secondaire);
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.erreurs-champ,
+.errorlist {
+    display: grid;
+    gap: 4px;
+    margin: 7px 0 0;
+    padding: 0;
+    list-style: none;
+    color: var(--rouge);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.information-validation {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    margin-top: 20px;
+    padding: 16px;
+    border: 1px solid #bfdbfe;
+    border-radius: 14px;
+    background: var(--bleu-clair);
+    color: #1e40af;
+}
+
+.information-validation p {
+    margin: 6px 0 0;
+    line-height: 1.5;
+}
+
+.actions-formulaire-paiement {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 11px;
+    margin-top: 22px;
+    padding-top: 22px;
+    border-top: 1px solid var(--bordure);
+}
+
+.carte-aide-paiement {
+    position: sticky;
+    top: 20px;
+}
+
+.liste-conseils {
+    display: grid;
+    gap: 10px;
+    padding-left: 20px;
+    color: #334155;
+    line-height: 1.55;
+}
+
+.alerte-especes {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #fed7aa;
+    border-radius: 13px;
+    background: var(--orange-clair);
+    color: #92400e;
+}
+
+.alerte-especes p {
+    margin: 6px 0 0;
+    line-height: 1.5;
+}
+
+.valeur-information {
+    color: var(--bleu);
+}
+
+/* Preuve et origine dans l'historique */
+
+.preuve-paiement {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-top: 13px;
+    padding: 13px;
+    border: 1px solid #bfdbfe;
+    border-radius: 12px;
+    background: var(--bleu-clair);
+}
+
+.preuve-paiement strong,
+.preuve-paiement span {
+    display: block;
+}
+
+.preuve-paiement span {
+    margin-top: 4px;
+    color: #475569;
+    font-size: 12px;
+}
+
+/* Barre validé / en attente / restant */
+
+.barre-progression-multiple {
+    display: flex;
+    width: 100%;
+    height: 11px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #e2e8f0;
+}
+
+.segment-valide,
+.segment-attente {
+    display: block;
+    height: 100%;
+}
+
+.segment-valide {
+    background: var(--bleu);
+}
+
+.segment-attente {
+    background: var(--orange);
+}
+
+.legende-progression {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 15px;
+    margin-top: 12px;
+    color: var(--texte-secondaire);
+    font-size: 11px;
+}
+
+.legende-progression span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.legende-progression i {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+}
+
+.legende-validee {
+    background: var(--bleu);
+}
+
+.legende-attente {
+    background: var(--orange);
+}
+
+.legende-restante {
+    background: #e2e8f0;
+}
+
+.alerte-paiement-attente {
+    margin-bottom: 10px;
+    padding: 12px 14px;
+    border: 1px solid #fed7aa;
+    border-radius: 11px;
+    background: var(--orange-clair);
+    color: #92400e;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+@media (max-width: 900px) {
+    .grille-declaration {
+        grid-template-columns: 1fr;
+    }
+
+    .carte-aide-paiement {
+        position: static;
+    }
+}
+
+@media (max-width: 600px) {
+    .grille-formulaire-paiement {
+        grid-template-columns: 1fr;
+    }
+
+    .groupe-champ-large {
+        grid-column: auto;
+    }
+
+    .actions-formulaire-paiement,
+    .preuve-paiement {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .actions-formulaire-paiement .bouton,
+    .preuve-paiement .bouton {
+        width: 100%;
+    }
+}
+
+/* =========================================================
+   INTÉGRATION — LAYOUT ÉTUDIANT COMMUN
+========================================================= */
+
+.page-etudiant-layout .conteneur-finances-layout {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+}
+
+.page-etudiant-layout .entete-principale,
+.page-etudiant-layout .pied-page {
+    display: none !important;
+}
+
+.page-etudiant-layout .banniere-financiere,
+.page-etudiant-layout .banniere-detail {
+    margin-top: 0;
+}
+
+.page-etudiant-layout .carte-principale,
+.page-etudiant-layout .statistique,
+.page-etudiant-layout .carte-frais {
+    border-color: #d6e0ed;
+}
+
+.page-etudiant-layout .grille-statistiques .statistique {
+    position: relative;
+    overflow: hidden;
+}
+
+.page-etudiant-layout .grille-statistiques .statistique::before {
+    content: "";
+    position: absolute;
+    top: 12px;
+    bottom: 12px;
+    left: 0;
+    width: 4px;
+    border-radius: 0 999px 999px 0;
+    background: #3b82f6;
+}
+
+.page-etudiant-layout .grille-statistiques .statistique:nth-child(2)::before {
+    background: #16a34a;
+}
+
+.page-etudiant-layout .grille-statistiques .statistique:nth-child(3)::before {
+    background: #f59e0b;
+}
+
+.page-etudiant-layout .grille-statistiques .statistique:nth-child(4)::before {
+    background: #7c3aed;
+}
+
+.page-etudiant-layout .grille-statistiques .statistique:nth-child(5)::before {
+    background: #0ea5e9;
+}
+
+.page-etudiant-layout .carte-aide-paiement {
+    top: 18px;
+}
+
+@media (max-width: 700px) {
+    .page-etudiant-layout .conteneur-finances-layout {
+        width: 100%;
+    }
+}

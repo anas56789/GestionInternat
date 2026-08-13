@@ -1,0 +1,507 @@
+{% extends "dashboard/base_etudiant.html" %}
+{% load static %}
+
+{% block title %}
+Détail de mes frais — GestionInternat
+{% endblock %}
+
+{% block titre_page %}
+Détail de mes frais
+{% endblock %}
+
+{% block sous_titre_page %}
+Consultez les paiements, les validations et le solde de votre dossier financier.
+{% endblock %}
+
+{% block css_page %}
+<link
+    rel="stylesheet"
+    href="{% static 'finances/finances_etudiant.css' %}?v=5"
+>
+<link
+    rel="stylesheet"
+    href="{% static 'finances/recu_paiement.css' %}?v=2"
+>
+{% endblock %}
+
+{% block contenu_etudiant %}
+<div class="actions-page-etudiant">
+    <a
+        href="{% url 'finances:ma_situation_financiere' %}"
+        class="bouton bouton-secondaire"
+    >
+        ← Retour à ma situation
+    </a>
+
+    {% if peut_declarer_paiement %}
+        <a
+            href="{% url 'finances:declarer_paiement_etudiant' frais.pk %}"
+            class="bouton bouton-principal"
+        >
+            Continuer le paiement
+        </a>
+    {% endif %}
+</div>
+
+<div class="conteneur conteneur-finances-layout">
+<section class="banniere-detail">
+            <div>
+                <span class="sur-titre">
+                    Année universitaire
+                </span>
+
+                <h2>
+                    {{ frais.annee_universitaire.libelle }}
+                </h2>
+
+                <p>
+                    Échéance fixée au
+                    {{ frais.date_echeance|date:"d/m/Y" }}.
+                </p>
+            </div>
+
+            <span
+                class="
+                    badge-statut
+                    statut-{{ frais.statut_financier|slugify }}
+                "
+            >
+                {{ frais.statut_financier }}
+            </span>
+        </section>
+
+        <section class="grille-statistiques">
+            <article class="statistique">
+                <div class="icone-statistique" aria-hidden="true">
+                    🧾
+                </div>
+
+                <div>
+                    <span>Montant total</span>
+
+                    <strong>
+                        {{ frais.montant_total|floatformat:2 }} DH
+                    </strong>
+                </div>
+            </article>
+
+            <article class="statistique">
+                <div class="icone-statistique" aria-hidden="true">
+                    ✅
+                </div>
+
+                <div>
+                    <span>Montant validé</span>
+
+                    <strong class="valeur-succes">
+                        {{ frais.montant_paye|floatformat:2 }} DH
+                    </strong>
+                </div>
+            </article>
+
+            <article class="statistique">
+                <div class="icone-statistique" aria-hidden="true">
+                    ⏳
+                </div>
+
+                <div>
+                    <span>Montant restant</span>
+
+                    <strong
+                        class="
+                            {% if frais.montant_restant > 0 %}
+                                valeur-danger
+                            {% else %}
+                                valeur-succes
+                            {% endif %}
+                        "
+                    >
+                        {{ frais.montant_restant|floatformat:2 }} DH
+                    </strong>
+                </div>
+            </article>
+
+            <article class="statistique">
+                <div class="icone-statistique" aria-hidden="true">
+                    ⏳
+                </div>
+
+                <div>
+                    <span>En attente</span>
+
+                    <strong class="valeur-attente">
+                        {{ montant_en_attente|floatformat:2 }} DH
+                    </strong>
+                </div>
+            </article>
+
+            <article class="statistique">
+                <div class="icone-statistique" aria-hidden="true">
+                    💳
+                </div>
+
+                <div>
+                    <span>Encore déclarable</span>
+
+                    <strong class="valeur-information">
+                        {{ montant_declarable|floatformat:2 }} DH
+                    </strong>
+                </div>
+            </article>
+        </section>
+
+        <section class="grille-detail-financier">
+            <div class="colonne-principale">
+                <article class="carte-principale">
+                    <div class="entete-section">
+                        <div>
+                            <span class="petit-titre">
+                                Historique
+                            </span>
+
+                            <h2>Mes paiements</h2>
+
+                            <p>
+                                Les paiements validés sont intégrés
+                                au montant payé.
+                            </p>
+                        </div>
+                    </div>
+
+                    {% if paiements %}
+                        <div class="liste-paiements">
+                            {% for paiement in paiements %}
+                                <article
+                                    class="
+                                        paiement
+                                        paiement-{{ paiement.statut|lower }}
+                                    "
+                                >
+                                    <div class="icone-paiement" aria-hidden="true">
+                                        {% if paiement.statut == "VALIDE" %}
+                                            ✅
+                                        {% elif paiement.statut == "ANNULE" %}
+                                            ❌
+                                        {% else %}
+                                            ⏳
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="contenu-paiement">
+                                        <div class="entete-paiement">
+                                            <div>
+                                                <strong>
+                                                    {{ paiement.montant|floatformat:2 }} DH
+                                                </strong>
+
+                                                <span>
+                                                    {{ paiement.get_mode_paiement_display }}
+                                                </span>
+                                            </div>
+
+                                            <span
+                                                class="
+                                                    badge-statut
+                                                    statut-paiement-{{ paiement.statut|lower }}
+                                                "
+                                            >
+                                                {{ paiement.get_statut_display }}
+                                            </span>
+                                        </div>
+
+                                        <div class="grille-informations-paiement">
+                                            <div>
+                                                <span>Date du paiement</span>
+
+                                                <strong>
+                                                    {{ paiement.date_paiement|date:"d/m/Y" }}
+                                                </strong>
+                                            </div>
+
+                                            <div>
+                                                <span>Référence</span>
+
+                                                <strong>
+                                                    {{ paiement.reference|default:"Non renseignée" }}
+                                                </strong>
+                                            </div>
+
+                                            <div>
+                                                <span>Date de validation</span>
+
+                                                <strong>
+                                                    {% if paiement.date_validation %}
+                                                        {{ paiement.date_validation|date:"d/m/Y à H:i" }}
+                                                    {% else %}
+                                                        Non validé
+                                                    {% endif %}
+                                                </strong>
+                                            </div>
+
+                                            <div>
+                                                <span>Origine</span>
+
+                                                <strong>
+                                                    {{ paiement.get_origine_display }}
+                                                </strong>
+                                            </div>
+
+                                            <div>
+                                                <span>Enregistré par</span>
+
+                                                <strong>
+                                                    {% if paiement.origine == "ETUDIANT" %}
+                                                        Déclaré par vous
+                                                    {% elif paiement.enregistre_par %}
+                                                        {{ paiement.enregistre_par.get_full_name|default:paiement.enregistre_par.username }}
+                                                    {% else %}
+                                                        Administration
+                                                    {% endif %}
+                                                </strong>
+                                            </div>
+                                        </div>
+
+                                        {% if paiement.preuve_paiement %}
+                                            <div class="preuve-paiement">
+                                                <div>
+                                                    <strong>
+                                                        Preuve de paiement
+                                                    </strong>
+
+                                                    <span>
+                                                        Document transmis à l’administration
+                                                    </span>
+                                                </div>
+
+                                                <a
+                                                    href="{{ paiement.preuve_paiement.url }}"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    class="bouton bouton-clair bouton-petit"
+                                                >
+                                                    Consulter la preuve
+                                                </a>
+                                            </div>
+                                        {% endif %}
+
+                                        {% if paiement.statut == "VALIDE" %}
+                                            <div class="actions-recu-paiement">
+                                                <a
+                                                    href="{% url 'finances:recu_paiement_etudiant' paiement.pk %}"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    class="bouton bouton-principal bouton-petit"
+                                                >
+                                                    Afficher le reçu
+                                                </a>
+                                            </div>
+                                        {% endif %}
+
+                                        {% if paiement.commentaire %}
+                                            <div class="commentaire-paiement">
+                                                <strong>Commentaire</strong>
+
+                                                <p>
+                                                    {{ paiement.commentaire }}
+                                                </p>
+                                            </div>
+                                        {% endif %}
+
+                                        {% if paiement.statut == "ANNULE" and paiement.motif_annulation %}
+                                            <div class="motif-annulation">
+                                                <strong>
+                                                    Motif de l’annulation
+                                                </strong>
+
+                                                <p>
+                                                    {{ paiement.motif_annulation }}
+                                                </p>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </article>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="etat-vide">
+                            <div class="icone-vide" aria-hidden="true">
+                                💳
+                            </div>
+
+                            <h3>Aucun paiement enregistré</h3>
+
+                            <p>
+                                Aucun paiement n’est encore associé
+                                à ces frais d’hébergement.
+                            </p>
+                        </div>
+                    {% endif %}
+                </article>
+            </div>
+
+            <aside class="colonne-secondaire">
+                <article class="carte-principale">
+                    <div class="entete-section">
+                        <div>
+                            <span class="petit-titre">
+                                Résumé
+                            </span>
+
+                            <h2>Informations</h2>
+                        </div>
+                    </div>
+
+                    <div class="bloc-progression">
+                        <div class="entete-progression">
+                            <span>Progression du règlement</span>
+
+                            <strong>
+                                {{ pourcentage_valide }} % validé
+                            </strong>
+                        </div>
+
+                        <div class="barre-progression-multiple">
+                            <span
+                                class="segment-valide"
+                                style="width: {{ pourcentage_valide }}%;"
+                                title="Montant validé"
+                            ></span>
+
+                            <span
+                                class="segment-attente"
+                                style="width: {{ pourcentage_en_attente }}%;"
+                                title="Montant en attente"
+                            ></span>
+                        </div>
+
+                        <div class="legende-progression">
+                            <span>
+                                <i class="legende-validee"></i>
+                                Validé
+                            </span>
+
+                            <span>
+                                <i class="legende-attente"></i>
+                                En attente
+                            </span>
+
+                            <span>
+                                <i class="legende-restante"></i>
+                                Restant
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="liste-informations">
+                        <div class="information-ligne">
+                            <span>Statut financier</span>
+
+                            <strong>
+                                {{ frais.statut_financier }}
+                            </strong>
+                        </div>
+
+                        <div class="information-ligne">
+                            <span>Paiements en attente</span>
+
+                            <strong class="valeur-attente">
+                                {{ montant_en_attente|floatformat:2 }} DH
+                            </strong>
+                        </div>
+
+                        <div class="information-ligne">
+                            <span>Encore déclarable</span>
+
+                            <strong>
+                                {{ montant_declarable|floatformat:2 }} DH
+                            </strong>
+                        </div>
+
+                        <div class="information-ligne">
+                            <span>Date d’échéance</span>
+
+                            <strong>
+                                {{ frais.date_echeance|date:"d/m/Y" }}
+                            </strong>
+                        </div>
+
+                        <div class="information-ligne">
+                            <span>Frais actifs</span>
+
+                            <strong>
+                                {% if frais.est_actif %}
+                                    Oui
+                                {% else %}
+                                    Non
+                                {% endif %}
+                            </strong>
+                        </div>
+
+                        <div class="information-ligne">
+                            <span>Date de création</span>
+
+                            <strong>
+                                {{ frais.date_creation|date:"d/m/Y à H:i" }}
+                            </strong>
+                        </div>
+
+                        <div class="information-ligne">
+                            <span>Dernière modification</span>
+
+                            <strong>
+                                {{ frais.date_modification|date:"d/m/Y à H:i" }}
+                            </strong>
+                        </div>
+                    </div>
+
+                    {% if frais.commentaire %}
+                        <div class="commentaire-frais">
+                            <strong>
+                                Commentaire de l’administration
+                            </strong>
+
+                            <p>
+                                {{ frais.commentaire }}
+                            </p>
+                        </div>
+                    {% endif %}
+                </article>
+
+                <article class="carte-principale carte-aide">
+                    <span class="petit-titre">
+                        Information
+                    </span>
+
+                    <h2>À propos des paiements</h2>
+
+                    <p>
+                        Un paiement en attente n’est pas encore déduit
+                        du montant restant. Il doit d’abord être validé
+                        par l’administration.
+                    </p>
+
+                    {% if peut_declarer_paiement %}
+                        <a
+                            href="{% url 'finances:declarer_paiement_etudiant' frais.pk %}"
+                            class="bouton bouton-principal"
+                        >
+                            Continuer le paiement
+                        </a>
+                    {% elif montant_en_attente > 0 %}
+                        <div class="alerte-paiement-attente">
+                            Une déclaration couvre déjà
+                            le montant encore disponible.
+                        </div>
+                    {% endif %}
+
+                    <a
+                        href="{% url 'finances:ma_situation_financiere' %}"
+                        class="bouton bouton-secondaire"
+                    >
+                        Retour à ma situation
+                    </a>
+                </article>
+            </aside>
+        </section>
+</div>
+{% endblock %}

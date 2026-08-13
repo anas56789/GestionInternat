@@ -1,0 +1,709 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Créer une affectation</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'hebergement/gestion_locaux.css' %}"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'dashboard/style.css' %}?v=11"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'hebergement/creer_affectation_premium.css' %}?v=1"
+    >
+</head>
+
+<body class="page-creer-affectation-premium">
+
+
+<div class="app-shell">
+
+    {% include "dashboard/sidebar_responsable.html" %}
+
+    <div class="main-area">
+
+        <header class="topbar-creer-affectation">
+
+            <div>
+                <span class="sur-titre-creer-affectation">Espace responsable</span>
+                <h1>Nouvelle affectation</h1>
+                <p>Attribuer une chambre à un étudiant dont la demande a été acceptée.</p>
+            </div>
+
+            <div class="actions-topbar-creer-affectation">
+
+                <a
+                    href="{% url 'hebergement:liste_demandes_a_affecter' %}"
+                    class="bouton-topbar-affectation bouton-topbar-secondaire"
+                >
+                    ← Demandes acceptées
+                </a>
+
+                <a
+                    href="{% url 'hebergement:liste_affectations_responsable' %}"
+                    class="bouton-topbar-affectation bouton-topbar-secondaire"
+                >
+                    Affectations
+                </a>
+
+                <div class="profil-topbar-creer-affectation">
+                    <div class="avatar-topbar-creer-affectation">
+                        {% if request.user.first_name %}
+                            {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
+                        {% else %}
+                            {{ request.user.username|first|upper }}
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <strong>{{ request.user.get_full_name|default:request.user.username }}</strong>
+                        <span>
+                            {% if request.user.is_superuser %}
+                                Super administrateur
+                            {% else %}
+                                {{ request.user.get_role_display }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+        </header>
+
+    <main class="conteneur conteneur-affectation">
+
+        {% if messages %}
+            <section class="messages">
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </section>
+        {% endif %}
+
+        <!-- BANNIÈRE -->
+
+        <section class="banniere-affectation">
+            <div>
+                <span class="petit-titre">
+                    Gestion de l’hébergement
+                </span>
+
+                <h2>Affecter une chambre</h2>
+
+                <p>
+                    Sélectionnez une chambre disponible et
+                    définissez les dates prévues d’entrée
+                    et de sortie de l’étudiant.
+                </p>
+            </div>
+
+            <div class="icone-banniere-affectation">
+                🛏️
+            </div>
+        </section>
+
+        <!-- INFORMATIONS ÉTUDIANT -->
+
+        <section class="carte">
+            <div class="entete-section">
+                <div>
+                    <h2>Étudiant concerné</h2>
+
+                    <p>
+                        Informations associées à la demande
+                        d’hébergement acceptée.
+                    </p>
+                </div>
+
+                <span class="badge badge-acceptee">
+                    Demande acceptée
+                </span>
+            </div>
+
+            <div class="identite-etudiant-affectation">
+                <div class="avatar-etudiant-affectation">
+                    {% if demande.etudiant.utilisateur.first_name %}
+                        {{ demande.etudiant.utilisateur.first_name|first|upper }}
+                    {% else %}
+                        {{ demande.etudiant.utilisateur.username|first|upper }}
+                    {% endif %}
+                </div>
+
+                <div>
+                    <strong>
+                        {% if demande.etudiant.utilisateur.get_full_name %}
+                            {{ demande.etudiant.utilisateur.get_full_name }}
+                        {% else %}
+                            {{ demande.etudiant.utilisateur.username }}
+                        {% endif %}
+                    </strong>
+
+                    <span>
+                        {{ demande.etudiant.matricule }}
+                    </span>
+                </div>
+            </div>
+
+            <div class="grille-details grille-details-affectation">
+                <div class="information">
+                    <span>Matricule</span>
+
+                    <strong>
+                        {{ demande.etudiant.matricule }}
+                    </strong>
+                </div>
+
+                <div class="information">
+                    <span>CNE</span>
+
+                    <strong>
+                        {{ demande.etudiant.cne }}
+                    </strong>
+                </div>
+
+                <div class="information">
+                    <span>Filière</span>
+
+                    <strong>
+                        {{ demande.etudiant.filiere }}
+                    </strong>
+                </div>
+
+                <div class="information">
+                    <span>Niveau</span>
+
+                    <strong>
+                        {{ demande.etudiant.niveau_etude }}
+                    </strong>
+                </div>
+
+                <div class="information">
+                    <span>Année universitaire</span>
+
+                    <strong>
+                        {{ demande.annee_universitaire.libelle }}
+                    </strong>
+                </div>
+
+                <div class="information">
+                    <span>Distance du domicile</span>
+
+                    <strong>
+                        {{ demande.distance_domicile }} km
+                    </strong>
+                </div>
+
+                <div class="information">
+                    <span>Date d’acceptation</span>
+
+                    <strong>
+                        {% if demande.date_decision %}
+                            {{ demande.date_decision|date:"d/m/Y à H:i" }}
+                        {% else %}
+                            Non renseignée
+                        {% endif %}
+                    </strong>
+                </div>
+
+                <div class="information">
+                    <span>Statut de la demande</span>
+
+                    <strong>
+                        {{ demande.get_statut_display }}
+                    </strong>
+                </div>
+            </div>
+
+            {% if demande.motif_decision %}
+                <div class="observation-affectation">
+                    <strong>
+                        Observation administrative
+                    </strong>
+
+                    <p>
+                        {{ demande.motif_decision }}
+                    </p>
+                </div>
+            {% endif %}
+        </section>
+
+        <!-- FORMULAIRE -->
+
+        <section class="carte">
+            <div class="entete-section">
+                <div>
+                    <h2>Informations de l’affectation</h2>
+
+                    <p>
+                        Les champs marqués d’un astérisque
+                        sont obligatoires.
+                    </p>
+                </div>
+
+                <span class="badge-resultats">
+                    {{ demande.annee_universitaire.libelle }}
+                </span>
+            </div>
+
+            <form
+                method="post"
+                novalidate
+                id="formulaire-affectation"
+            >
+                {% csrf_token %}
+
+                {% if formulaire.non_field_errors %}
+                    <div class="message error">
+                        <strong>
+                            L’affectation ne peut pas être enregistrée.
+                        </strong>
+
+                        <ul>
+                            {% for erreur in formulaire.non_field_errors %}
+                                <li>{{ erreur }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                {% if formulaire.errors %}
+                    <div class="message error">
+                        <strong>
+                            Corrigez les champs signalés
+                            avant de continuer.
+                        </strong>
+                    </div>
+                {% endif %}
+
+                <!-- CHAMBRE -->
+
+                <div class="section-affectation">
+                    <div class="entete-etape-affectation">
+                        <span class="numero-etape-affectation">
+                            1
+                        </span>
+
+                        <div>
+                            <h3>Sélection de la chambre</h3>
+
+                            <p>
+                                Seules les chambres proposées
+                                par le formulaire peuvent être attribuées.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div
+                        class="
+                            groupe-champ groupe-champ-affectation
+                            {% if formulaire.chambre.errors %}
+                                groupe-champ-invalide
+                            {% endif %}
+                        "
+                    >
+                        <label for="{{ formulaire.chambre.id_for_label }}">
+                            {{ formulaire.chambre.label }}
+
+                            <span class="obligatoire">*</span>
+                        </label>
+
+                        {{ formulaire.chambre }}
+
+                        {% if formulaire.chambre.help_text %}
+                            <small class="aide">
+                                {{ formulaire.chambre.help_text }}
+                            </small>
+                        {% endif %}
+
+                        {% if formulaire.chambre.errors %}
+                            <div class="erreurs-champ">
+                                {% for erreur in formulaire.chambre.errors %}
+                                    <span>{{ erreur }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="information-selection-chambre">
+                        <div>
+                            <strong>Disponibilité</strong>
+
+                            <span>
+                                La chambre doit comporter au moins
+                                une place disponible.
+                            </span>
+                        </div>
+
+                        <div>
+                            <strong>État</strong>
+
+                            <span>
+                                Une chambre hors service ne peut
+                                pas recevoir une nouvelle affectation.
+                            </span>
+                        </div>
+
+                        <div>
+                            <strong>Capacité</strong>
+
+                            <span>
+                                Le nombre d’occupants ne doit pas
+                                dépasser la capacité autorisée.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DATES -->
+
+                <div class="section-affectation">
+                    <div class="entete-etape-affectation">
+                        <span class="numero-etape-affectation">
+                            2
+                        </span>
+
+                        <div>
+                            <h3>Période prévue</h3>
+
+                            <p>
+                                Définissez les dates prévues
+                                d’entrée et de sortie.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="grille-dates-affectation">
+                        <div
+                            class="
+                                groupe-champ groupe-champ-affectation
+                                {% if formulaire.date_entree_prevue.errors %}
+                                    groupe-champ-invalide
+                                {% endif %}
+                            "
+                        >
+                            <label
+                                for="{{ formulaire.date_entree_prevue.id_for_label }}"
+                            >
+                                {{ formulaire.date_entree_prevue.label }}
+
+                                <span class="obligatoire">*</span>
+                            </label>
+
+                            {{ formulaire.date_entree_prevue }}
+
+                            {% if formulaire.date_entree_prevue.help_text %}
+                                <small class="aide">
+                                    {{ formulaire.date_entree_prevue.help_text }}
+                                </small>
+                            {% endif %}
+
+                            {% if formulaire.date_entree_prevue.errors %}
+                                <div class="erreurs-champ">
+                                    {% for erreur in formulaire.date_entree_prevue.errors %}
+                                        <span>{{ erreur }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div
+                            class="
+                                groupe-champ groupe-champ-affectation
+                                {% if formulaire.date_sortie_prevue.errors %}
+                                    groupe-champ-invalide
+                                {% endif %}
+                            "
+                        >
+                            <label
+                                for="{{ formulaire.date_sortie_prevue.id_for_label }}"
+                            >
+                                {{ formulaire.date_sortie_prevue.label }}
+
+                                <span class="obligatoire">*</span>
+                            </label>
+
+                            {{ formulaire.date_sortie_prevue }}
+
+                            {% if formulaire.date_sortie_prevue.help_text %}
+                                <small class="aide">
+                                    {{ formulaire.date_sortie_prevue.help_text }}
+                                </small>
+                            {% endif %}
+
+                            {% if formulaire.date_sortie_prevue.errors %}
+                                <div class="erreurs-champ">
+                                    {% for erreur in formulaire.date_sortie_prevue.errors %}
+                                        <span>{{ erreur }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="periode-annee-affectation">
+                        <div>
+                            <span>Début de l’année universitaire</span>
+
+                            <strong>
+                                {{ demande.annee_universitaire.date_debut|date:"d/m/Y" }}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Fin de l’année universitaire</span>
+
+                            <strong>
+                                {{ demande.annee_universitaire.date_fin|date:"d/m/Y" }}
+                            </strong>
+                        </div>
+                    </div>
+                </div>
+
+                {{ formulaire.statut.as_hidden }}
+
+                <!-- RÉCAPITULATIF -->
+
+                <div class="section-affectation">
+                    <div class="entete-etape-affectation">
+                        <span class="numero-etape-affectation">
+                            3
+                        </span>
+
+                        <div>
+                            <h3>Confirmation</h3>
+
+                            <p>
+                                Vérifiez les informations avant
+                                d’enregistrer l’affectation.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="resume-confirmation-affectation">
+                        <div>
+                            <span>Étudiant</span>
+
+                            <strong>
+                                {{ demande.etudiant.matricule }}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Année universitaire</span>
+
+                            <strong>
+                                {{ demande.annee_universitaire.libelle }}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Statut initial</span>
+
+                            <strong>Affectation prévue</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ACTIONS -->
+
+                <div class="actions-affectation">
+                    <a
+                        href="{% url 'hebergement:liste_demandes_a_affecter' %}"
+                        class="bouton bouton-secondaire"
+                    >
+                        Annuler
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="bouton bouton-succes"
+                        id="bouton-confirmer-affectation"
+                    >
+                        Confirmer l’affectation
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- RÈGLES -->
+
+        <section class="carte carte-regles-affectation">
+            <h2>Règles d’affectation</h2>
+
+            <div class="grille-regles-affectation">
+                <article>
+                    <span>1</span>
+
+                    <div>
+                        <strong>Demande acceptée</strong>
+
+                        <p>
+                            Seule une demande acceptée peut
+                            donner lieu à une affectation.
+                        </p>
+                    </div>
+                </article>
+
+                <article>
+                    <span>2</span>
+
+                    <div>
+                        <strong>Une seule affectation ouverte</strong>
+
+                        <p>
+    Un étudiant ne peut pas posséder plusieurs
+    affectations prévues ou actives simultanément.
+</p>
+                    </div>
+                </article>
+
+                <article>
+                    <span>3</span>
+
+                    <div>
+                        <strong>Chambre disponible</strong>
+
+                        <p>
+                            La chambre choisie doit disposer
+                            d’une place libre et être opérationnelle.
+                        </p>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <div
+        id="limites-annee-affectation"
+        data-date-debut="{{ demande.annee_universitaire.date_debut|date:'Y-m-d' }}"
+        data-date-fin="{{ demande.annee_universitaire.date_fin|date:'Y-m-d' }}"
+        hidden
+    ></div>
+
+    <script>
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+                const formulaire = document.getElementById(
+                    "formulaire-affectation"
+                );
+
+                const boutonConfirmation = document.getElementById(
+                    "bouton-confirmer-affectation"
+                );
+
+                const champEntree = document.getElementById(
+                    "{{ formulaire.date_entree_prevue.id_for_label }}"
+                );
+
+                const champSortie = document.getElementById(
+                    "{{ formulaire.date_sortie_prevue.id_for_label }}"
+                );
+
+                boutonConfirmation.addEventListener(
+                    "click",
+                    function (event) {
+                        if (
+                            champEntree
+                            && champSortie
+                            && champEntree.value
+                            && champSortie.value
+                            && champSortie.value < champEntree.value
+                        ) {
+                            event.preventDefault();
+
+                            window.alert(
+                                "La date de sortie doit être " +
+                                "postérieure ou égale à la date d’entrée."
+                            );
+
+                            return;
+                        }
+
+                        const confirmation = window.confirm(
+                            "Confirmer l’attribution de cette " +
+                            "chambre à l’étudiant ?"
+                        );
+
+                        if (!confirmation) {
+                            event.preventDefault();
+                        }
+                    }
+                );
+
+                const limitesAnnee = document.getElementById(
+    "limites-annee-affectation"
+);
+
+if (
+    limitesAnnee
+    && champEntree
+    && champSortie
+) {
+    const dateDebutAnnee = (
+        limitesAnnee.dataset.dateDebut
+    );
+
+    const dateFinAnnee = (
+        limitesAnnee.dataset.dateFin
+    );
+
+    champEntree.min = dateDebutAnnee;
+    champEntree.max = dateFinAnnee;
+
+    champSortie.min = dateDebutAnnee;
+    champSortie.max = dateFinAnnee;
+
+    champEntree.addEventListener(
+        "change",
+        function () {
+            if (champEntree.value) {
+                champSortie.min = champEntree.value;
+
+                if (
+                    champSortie.value
+                    && champSortie.value
+                    < champEntree.value
+                ) {
+                    champSortie.value = "";
+                }
+            }
+        }
+    );
+}
+
+                formulaire.addEventListener(
+                    "submit",
+                    function () {
+                        formulaire.classList.add(
+                            "formulaire-en-envoi"
+                        );
+                    }
+                );
+            }
+        );
+    </script>
+
+    </div>
+</div>
+
+</body>
+</html>

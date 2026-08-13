@@ -1,0 +1,264 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Gestion des utilisateurs</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'accounts/gestion_utilisateurs.css' %}"
+    >
+</head>
+
+<body>
+    <header class="entete">
+        <div>
+            <h1>Gestion des utilisateurs</h1>
+            <p>Comptes, rôles et accès à l'application</p>
+        </div>
+
+        <a
+            href="{% url 'dashboard:accueil' %}"
+            class="lien-retour"
+        >
+            Retour au tableau de bord
+        </a>
+    </header>
+
+    <main class="conteneur">
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <section class="carte">
+            <div class="entete-section">
+                <div>
+                    <h2>Liste des utilisateurs</h2>
+
+                    <p>
+                        {{ nombre_utilisateurs }}
+                        utilisateur(s) trouvé(s).
+                    </p>
+                </div>
+
+                <a
+                    href="{% url 'accounts:creer_utilisateur' %}"
+                    class="bouton"
+                >
+                    Créer un utilisateur
+                </a>
+            </div>
+
+            <form method="get" class="filtres">
+                <div class="groupe-champ">
+                    <label for="recherche">
+                        Recherche
+                    </label>
+
+                    <input
+                        type="search"
+                        id="recherche"
+                        name="recherche"
+                        value="{{ recherche }}"
+                        class="champ"
+                        placeholder="Nom, prénom, email ou identifiant"
+                    >
+                </div>
+
+                <div class="groupe-champ">
+                    <label for="role">
+                        Rôle
+                    </label>
+
+                    <select
+                        id="role"
+                        name="role"
+                        class="champ"
+                    >
+                        <option value="">Tous les rôles</option>
+
+                        {% for valeur, libelle in choix_roles %}
+                            <option
+                                value="{{ valeur }}"
+                                {% if role_selectionne == valeur %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ libelle }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="groupe-champ">
+                    <label for="statut">
+                        Statut
+                    </label>
+
+                    <select
+                        id="statut"
+                        name="statut"
+                        class="champ"
+                    >
+                        <option value="">Tous</option>
+
+                        <option
+                            value="ACTIF"
+                            {% if statut_selectionne == "ACTIF" %}
+                                selected
+                            {% endif %}
+                        >
+                            Actif
+                        </option>
+
+                        <option
+                            value="INACTIF"
+                            {% if statut_selectionne == "INACTIF" %}
+                                selected
+                            {% endif %}
+                        >
+                            Inactif
+                        </option>
+                    </select>
+                </div>
+
+                <div class="actions-filtres">
+                    <button type="submit" class="bouton">
+                        Filtrer
+                    </button>
+
+                    <a
+                        href="{% url 'accounts:liste_utilisateurs' %}"
+                        class="bouton bouton-secondaire"
+                    >
+                        Réinitialiser
+                    </a>
+                </div>
+            </form>
+
+            <div class="tableau-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Utilisateur</th>
+                            <th>Identifiant</th>
+                            <th>Email</th>
+                            <th>Rôle</th>
+                            <th>Statut</th>
+                            <th>Accès admin</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for utilisateur in utilisateurs %}
+                            <tr>
+                                <td>
+                                    <div class="utilisateur-cellule">
+                                        <div class="avatar">
+                                            {% if utilisateur.first_name %}
+                                                {{ utilisateur.first_name|first|upper }}
+                                                {{ utilisateur.last_name|first|upper }}
+                                            {% else %}
+                                                {{ utilisateur.username|first|upper }}
+                                            {% endif %}
+                                        </div>
+
+                                        <div>
+                                            <strong>
+                                                {{ utilisateur.get_full_name|default:utilisateur.username }}
+                                            </strong>
+
+                                            {% if utilisateur.is_superuser %}
+                                                <small>
+                                                    Superutilisateur
+                                                </small>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    {{ utilisateur.username }}
+                                </td>
+
+                                <td>
+                                    {{ utilisateur.email|default:"—" }}
+                                </td>
+
+                                <td>
+                                    <span class="badge">
+                                        {{ utilisateur.get_role_display }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    {% if utilisateur.is_active %}
+                                        <span class="badge badge-succes">
+                                            Actif
+                                        </span>
+                                    {% else %}
+                                        <span class="badge badge-danger">
+                                            Inactif
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {% if utilisateur.is_staff %}
+                                        Oui
+                                    {% else %}
+                                        Non
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    <div class="actions-tableau">
+                                        <a
+                                            href="{% url 'accounts:detail_utilisateur' utilisateur.pk %}"
+                                            class="bouton bouton-petit"
+                                        >
+                                            Voir
+                                        </a>
+
+                                        <a
+                                            href="{% url 'accounts:modifier_utilisateur' utilisateur.pk %}"
+                                            class="bouton bouton-secondaire bouton-petit"
+                                        >
+                                            Modifier
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        {% empty %}
+                            <tr>
+                                <td
+                                    colspan="7"
+                                    class="aucune-donnee"
+                                >
+                                    Aucun utilisateur trouvé.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

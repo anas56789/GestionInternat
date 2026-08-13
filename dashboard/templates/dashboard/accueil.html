@@ -1,0 +1,1819 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Tableau de bord responsable — GestionInternat</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'dashboard/style.css' %}?v=12"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'dashboard/dashboard_stats_modern.css' %}?v=1"
+    >
+</head>
+
+<body>
+
+<div class="app-shell">
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+    <aside class="sidebar-admin">
+
+        <div class="sidebar-brand">
+            <img
+                src="{% static 'accounts/images/logo-gestioninternat.png' %}"
+                alt="GestionInternat"
+                class="sidebar-logo"
+            >
+        </div>
+
+        <nav class="sidebar-nav" aria-label="Navigation principale">
+
+            <a
+                href="{% url 'dashboard:accueil' %}"
+                class="sidebar-link active"
+            >
+                <span class="sidebar-icon">▦</span>
+                <span>Tableau de bord</span>
+            </a>
+
+            <a
+                href="{% url 'etudiants:liste_etudiants' %}"
+                class="sidebar-link"
+            >
+                <span class="sidebar-icon">👥</span>
+                <span>Étudiants</span>
+            </a>
+
+            <a
+                href="{% url 'hebergement:liste_demandes_responsable' %}"
+                class="sidebar-link"
+            >
+                <span class="sidebar-icon">📄</span>
+                <span>Demandes</span>
+            </a>
+
+            <a
+                href="{% url 'hebergement:liste_affectations_responsable' %}"
+                class="sidebar-link"
+            >
+                <span class="sidebar-icon">🛏️</span>
+                <span>Affectations</span>
+            </a>
+
+            <a
+                href="{% url 'hebergement:liste_transferts_responsable' %}"
+                class="sidebar-link"
+            >
+                <span class="sidebar-icon">↔</span>
+                <span>Transferts</span>
+            </a>
+
+            <a
+                href="{% url 'hebergement:liste_chambres' %}"
+                class="sidebar-link"
+            >
+                <span class="sidebar-icon">🚪</span>
+                <span>Chambres</span>
+            </a>
+
+            <a
+                href="{% url 'hebergement:liste_batiments' %}"
+                class="sidebar-link"
+            >
+                <span class="sidebar-icon">🏢</span>
+                <span>Bâtiments</span>
+            </a>
+
+            <a
+                href="{% url 'hebergement:liste_annees_universitaires' %}"
+                class="sidebar-link"
+            >
+                <span class="sidebar-icon">📅</span>
+                <span>Années universitaires</span>
+            </a>
+
+            <a
+                href="{% url 'finances:liste_frais' %}"
+                class="sidebar-link"
+            >
+                <span class="sidebar-icon">💰</span>
+                <span>Finances</span>
+            </a>
+
+            <a
+                href="{% url 'reclamations:liste_reclamations_responsable' %}"
+                class="sidebar-link"
+            >
+                <span class="sidebar-icon">🛠️</span>
+                <span>Réclamations</span>
+            </a>
+
+            <a
+                href="{% url 'notifications:mes_notifications' %}"
+                class="sidebar-link"
+            >
+                <span class="sidebar-icon">🔔</span>
+                <span>Notifications</span>
+
+                {% if nombre_notifications_non_lues %}
+                    <strong class="sidebar-badge">
+                        {{ nombre_notifications_non_lues }}
+                    </strong>
+                {% endif %}
+            </a>
+
+            {% if request.user.is_superuser or request.user.role == "ADMIN" or request.user.role == "RESP" %}
+                <a
+                    href="{% url 'audit:historique_actions' %}"
+                    class="sidebar-link"
+                >
+                    <span class="sidebar-icon">🕒</span>
+                    <span>Audit</span>
+                </a>
+            {% endif %}
+
+        </nav>
+
+        <div class="sidebar-footer">
+            <a
+                href="{% url 'accounts:deconnexion' %}"
+                class="sidebar-link sidebar-logout"
+            >
+                <span class="sidebar-icon">↪</span>
+                <span>Déconnexion</span>
+            </a>
+        </div>
+
+    </aside>
+
+
+    <!-- =====================================================
+         CONTENU
+    ====================================================== -->
+    <div class="main-area">
+
+        <main class="dashboard-content">
+
+            {% if messages %}
+                <section class="messages">
+                    {% for message in messages %}
+                        <div class="message {{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </section>
+            {% endif %}
+
+
+            <!-- =================================================
+                 HERO
+            ================================================== -->
+            <section class="dashboard-hero">
+
+                <div class="hero-copy">
+                    <span class="eyebrow">
+                        Tableau de bord administratif
+                    </span>
+
+                    <h1>
+                        Bonjour
+                        {{ request.user.first_name|default:request.user.username }}
+                    </h1>
+
+                    <p>
+                        Retrouvez en un seul endroit les priorités du jour,
+                        l’état de l’internat, les indicateurs clés et les accès
+                        aux modules de gestion.
+                    </p>
+                </div>
+
+                <div class="hero-stats">
+
+                    <article class="hero-stat">
+                        <div>
+                            <span>Occupation actuelle</span>
+                            <strong>{{ taux_occupation|default:0 }} %</strong>
+                            <small>
+                                {{ places_occupees|default:0 }}
+                                / {{ capacite_totale|default:0 }} places
+                            </small>
+                        </div>
+
+                        <div class="hero-stat-icon">◔</div>
+                    </article>
+
+                    <article class="hero-stat">
+                        <div>
+                            <span>Aujourd’hui</span>
+                            <strong>{% now "d/m/Y" %}</strong>
+                        </div>
+
+                        <div class="hero-stat-icon">📅</div>
+                    </article>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 KPI
+            ================================================== -->
+            <section class="kpi-grid">
+
+                <a
+                    href="{% url 'etudiants:liste_etudiants' %}"
+                    class="kpi-card"
+                >
+                    <div class="kpi-icon">🎓</div>
+
+                    <div class="kpi-copy">
+                        <span>Étudiants</span>
+                        <strong>{{ nombre_etudiants|default:0 }}</strong>
+                        <small>Profils enregistrés</small>
+                    </div>
+
+                    <span class="kpi-arrow">→</span>
+                </a>
+
+                <a
+                    href="{% url 'hebergement:liste_demandes_responsable' %}"
+                    class="kpi-card"
+                >
+                    <div class="kpi-icon kpi-violet">📄</div>
+
+                    <div class="kpi-copy">
+                        <span>Demandes à traiter</span>
+                        <strong>{{ demandes_en_attente|default:0 }}</strong>
+                        <small>À examiner ou finaliser</small>
+                    </div>
+
+                    <span class="kpi-arrow">→</span>
+                </a>
+
+                <a
+                    href="{% url 'hebergement:liste_affectations_responsable' %}"
+                    class="kpi-card"
+                >
+                    <div class="kpi-icon">🛏️</div>
+
+                    <div class="kpi-copy">
+                        <span>Affectations actives</span>
+                        <strong>{{ affectations_actives|default:0 }}</strong>
+                        <small>Étudiants actuellement hébergés</small>
+                    </div>
+
+                    <span class="kpi-arrow">→</span>
+                </a>
+
+                <a
+                    href="{% url 'notifications:mes_notifications' %}"
+                    class="kpi-card kpi-card-orange"
+                >
+                    <div class="kpi-icon kpi-orange">🔔</div>
+
+                    <div class="kpi-copy">
+                        <span>Notifications</span>
+                        <strong>{{ nombre_notifications_non_lues|default:0 }}</strong>
+                        <small>Non lue(s)</small>
+                    </div>
+
+                    <span class="kpi-arrow">→</span>
+                </a>
+
+            </section>
+
+
+            <!-- =================================================
+                 INDICATEURS EXÉCUTIFS MODERNES
+            ================================================== -->
+            <section class="executive-section">
+
+                <div class="executive-heading">
+
+                    <div>
+                        <span class="eyebrow">
+                            Vue exécutive
+                        </span>
+
+                        <h2>
+                            Indicateurs de performance
+                        </h2>
+
+                        <p>
+                            Une lecture rapide de l’occupation,
+                            des admissions, des paiements et de la charge
+                            administrative actuelle.
+                        </p>
+                    </div>
+
+                    <div class="executive-health">
+                        <span>Charge à traiter</span>
+                        <strong>{{ charge_operationnelle|default:0 }}</strong>
+                        <small>opération(s) prioritaire(s)</small>
+                    </div>
+
+                </div>
+
+
+                <div class="executive-grid">
+
+                    <!-- OCCUPATION -->
+                    <article class="executive-card executive-card-blue">
+
+                        <div class="executive-card-top">
+                            <div>
+                                <span class="executive-label">
+                                    Occupation
+                                </span>
+
+                                <strong class="executive-value">
+                                    {{ taux_occupation|default:0 }}%
+                                </strong>
+                            </div>
+
+                            <div
+                                class="executive-ring"
+                                style="--metric-value: {{ taux_occupation|default:0 }};"
+                            >
+                                <span>🛏️</span>
+                            </div>
+                        </div>
+
+                        <div class="executive-progress">
+                            <div
+                                class="executive-progress-fill"
+                                data-progress="{{ taux_occupation|default:0 }}"
+                            ></div>
+                        </div>
+
+                        <div class="executive-meta">
+                            <span>
+                                {{ places_occupees|default:0 }} occupée(s)
+                            </span>
+
+                            <strong>
+                                {{ places_disponibles|default:0 }} libre(s)
+                            </strong>
+                        </div>
+
+                    </article>
+
+
+                    <!-- ADMISSIONS -->
+                    <article class="executive-card executive-card-green">
+
+                        <div class="executive-card-top">
+                            <div>
+                                <span class="executive-label">
+                                    Taux d’acceptation
+                                </span>
+
+                                <strong class="executive-value">
+                                    {{ taux_acceptation_demandes|default:0 }}%
+                                </strong>
+                            </div>
+
+                            <div
+                                class="executive-ring"
+                                style="--metric-value: {{ taux_acceptation_demandes|default:0 }};"
+                            >
+                                <span>✓</span>
+                            </div>
+                        </div>
+
+                        <div class="executive-progress">
+                            <div
+                                class="executive-progress-fill"
+                                data-progress="{{ taux_acceptation_demandes|default:0 }}"
+                            ></div>
+                        </div>
+
+                        <div class="executive-meta">
+                            <span>
+                                {{ demandes_acceptees|default:0 }} acceptée(s)
+                            </span>
+
+                            <strong>
+                                {{ nombre_demandes_total|default:0 }} total
+                            </strong>
+                        </div>
+
+                    </article>
+
+
+                    <!-- PAIEMENTS -->
+                    <article class="executive-card executive-card-purple">
+
+                        <div class="executive-card-top">
+                            <div>
+                                <span class="executive-label">
+                                    Paiements validés
+                                </span>
+
+                                <strong class="executive-value">
+                                    {{ taux_validation_paiements|default:0 }}%
+                                </strong>
+                            </div>
+
+                            <div
+                                class="executive-ring"
+                                style="--metric-value: {{ taux_validation_paiements|default:0 }};"
+                            >
+                                <span>💳</span>
+                            </div>
+                        </div>
+
+                        <div class="executive-progress">
+                            <div
+                                class="executive-progress-fill"
+                                data-progress="{{ taux_validation_paiements|default:0 }}"
+                            ></div>
+                        </div>
+
+                        <div class="executive-meta">
+                            <span>
+                                {{ paiements_valides|default:0 }} validé(s)
+                            </span>
+
+                            <strong>
+                                {{ paiements_en_attente|default:0 }} attente
+                            </strong>
+                        </div>
+
+                    </article>
+
+
+                    <!-- AFFECTATIONS -->
+                    <article class="executive-card executive-card-cyan">
+
+                        <div class="executive-card-top">
+                            <div>
+                                <span class="executive-label">
+                                    Affectations actives
+                                </span>
+
+                                <strong class="executive-value">
+                                    {{ taux_affectations_actives|default:0 }}%
+                                </strong>
+                            </div>
+
+                            <div
+                                class="executive-ring"
+                                style="--metric-value: {{ taux_affectations_actives|default:0 }};"
+                            >
+                                <span>🏢</span>
+                            </div>
+                        </div>
+
+                        <div class="executive-progress">
+                            <div
+                                class="executive-progress-fill"
+                                data-progress="{{ taux_affectations_actives|default:0 }}"
+                            ></div>
+                        </div>
+
+                        <div class="executive-meta">
+                            <span>
+                                {{ affectations_actives|default:0 }} active(s)
+                            </span>
+
+                            <strong>
+                                {{ nombre_affectations_total|default:0 }} total
+                            </strong>
+                        </div>
+
+                    </article>
+
+
+                    <!-- CHAMBRES -->
+                    <article class="executive-card executive-card-orange">
+
+                        <div class="executive-card-top">
+                            <div>
+                                <span class="executive-label">
+                                    Chambres disponibles
+                                </span>
+
+                                <strong class="executive-value">
+                                    {{ taux_chambres_disponibles|default:0 }}%
+                                </strong>
+                            </div>
+
+                            <div
+                                class="executive-ring"
+                                style="--metric-value: {{ taux_chambres_disponibles|default:0 }};"
+                            >
+                                <span>🚪</span>
+                            </div>
+                        </div>
+
+                        <div class="executive-progress">
+                            <div
+                                class="executive-progress-fill"
+                                data-progress="{{ taux_chambres_disponibles|default:0 }}"
+                            ></div>
+                        </div>
+
+                        <div class="executive-meta">
+                            <span>
+                                {{ chambres_disponibles|default:0 }} disponible(s)
+                            </span>
+
+                            <strong>
+                                {{ chambres_indisponibles|default:0 }} indispo.
+                            </strong>
+                        </div>
+
+                    </article>
+
+
+                    <!-- PRIORITÉS -->
+                    <article class="executive-card executive-card-red">
+
+                        <div class="executive-card-top">
+                            <div>
+                                <span class="executive-label">
+                                    Charge opérationnelle
+                                </span>
+
+                                <strong class="executive-value">
+                                    {{ charge_operationnelle|default:0 }}
+                                </strong>
+                            </div>
+
+                            <div class="executive-ring executive-ring-static">
+                                <span>⚡</span>
+                            </div>
+                        </div>
+
+                        <div class="executive-priority-list">
+
+                            <div>
+                                <span>Demandes</span>
+                                <strong>{{ demandes_en_attente|default:0 }}</strong>
+                            </div>
+
+                            <div>
+                                <span>Paiements</span>
+                                <strong>{{ paiements_en_attente|default:0 }}</strong>
+                            </div>
+
+                            <div>
+                                <span>Réclamations</span>
+                                <strong>{{ reclamations_ouvertes|default:0 }}</strong>
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 PRIORITÉS + PROFIL
+            ================================================== -->
+            <section class="primary-grid">
+
+                <article class="panel priorities-panel">
+
+                    <div class="panel-heading">
+                        <div>
+                            <span class="eyebrow">Pilotage</span>
+                            <h2>Priorités administratives</h2>
+                            <p>
+                                Les opérations qui demandent le plus rapidement
+                                votre attention.
+                            </p>
+                        </div>
+
+                        <span class="live-badge">
+                            Temps réel
+                        </span>
+                    </div>
+
+
+                    <div class="priority-list">
+
+                        <a
+                            href="{% url 'hebergement:liste_demandes_responsable' %}"
+                            class="priority-row"
+                        >
+                            <span class="priority-icon priority-purple">📄</span>
+
+                            <div class="priority-copy">
+                                <strong>Demandes d’hébergement</strong>
+                                <small>
+                                    Dossiers soumis, en étude ou nécessitant
+                                    une décision.
+                                </small>
+                            </div>
+
+                            <span class="priority-count">
+                                {{ demandes_en_attente|default:0 }}
+                            </span>
+
+                            <span class="priority-action">
+                                Traiter →
+                            </span>
+                        </a>
+
+
+                        <a
+                            href="{% url 'finances:liste_paiements_en_attente' %}"
+                            class="priority-row"
+                        >
+                            <span class="priority-icon priority-orange">💳</span>
+
+                            <div class="priority-copy">
+                                <strong>Paiements en attente</strong>
+                                <small>
+                                    Déclarations à contrôler avant validation.
+                                </small>
+                            </div>
+
+                            <span class="priority-count">
+                                {{ paiements_en_attente|default:0 }}
+                            </span>
+
+                            <span class="priority-action">
+                                Vérifier →
+                            </span>
+                        </a>
+
+
+                        <a
+                            href="{% url 'reclamations:liste_reclamations_responsable' %}"
+                            class="priority-row"
+                        >
+                            <span class="priority-icon priority-green">🛠️</span>
+
+                            <div class="priority-copy">
+                                <strong>Réclamations ouvertes</strong>
+                                <small>
+                                    Signalements à consulter et à résoudre.
+                                </small>
+                            </div>
+
+                            <span class="priority-count">
+                                {{ reclamations_ouvertes|default:0 }}
+                            </span>
+
+                            <span class="priority-action">
+                                Traiter →
+                            </span>
+                        </a>
+
+                    </div>
+
+                </article>
+
+
+                <aside class="panel profile-panel">
+
+                    <div class="panel-heading profile-heading">
+                        <div>
+                            <span class="eyebrow">Mon espace</span>
+                            <h2>Responsable</h2>
+                        </div>
+                    </div>
+
+
+                    <div class="profile-identity">
+
+                        <div class="profile-avatar">
+                            {% if request.user.first_name %}
+                                {{ request.user.first_name|first|upper }}
+                                {{ request.user.last_name|first|upper }}
+                            {% else %}
+                                {{ request.user.username|first|upper }}
+                            {% endif %}
+                        </div>
+
+                        <div>
+                            <strong>
+                                {{ request.user.get_full_name|default:request.user.username }}
+                            </strong>
+
+                            <span>
+                                {% if request.user.is_superuser %}
+                                    Super administrateur
+                                {% else %}
+                                    {{ request.user.get_role_display }}
+                                {% endif %}
+                            </span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="profile-info">
+
+                        <div class="profile-info-row">
+                            <span>✉ &nbsp; Adresse e-mail</span>
+                            <strong>
+                                {{ request.user.email|default:"Non renseignée" }}
+                            </strong>
+                        </div>
+
+                        <div class="profile-info-row">
+                            <span>♧ &nbsp; Notifications</span>
+                            <strong>
+                                {{ nombre_notifications_non_lues|default:0 }}
+                                non lue(s)
+                            </strong>
+                        </div>
+
+                        <div class="profile-info-row">
+                            <span>🛡 &nbsp; Accès</span>
+                            <strong>Gestion administrative</strong>
+                        </div>
+
+                    </div>
+
+
+                    <a
+                        href="{% url 'notifications:mes_notifications' %}"
+                        class="profile-button"
+                    >
+                        Mes notifications →
+                    </a>
+
+                </aside>
+
+            </section>
+
+
+            <!-- =================================================
+                 ZONE BASSE
+            ================================================== -->
+            <section class="bottom-grid">
+
+                <!-- ACTIONS -->
+                <article class="panel quick-actions-panel">
+
+                    <div class="compact-heading">
+                        <span class="eyebrow">Navigation</span>
+                        <h3>Actions rapides</h3>
+                    </div>
+
+                    <div class="quick-actions">
+
+                        <a
+                            href="{% url 'hebergement:liste_demandes_responsable' %}"
+                            class="quick-action"
+                        >
+                            <span>📄</span>
+                            <strong>Demandes</strong>
+                        </a>
+
+                        <a
+                            href="{% url 'hebergement:liste_demandes_a_affecter' %}"
+                            class="quick-action"
+                        >
+                            <span>✅</span>
+                            <strong>À affecter</strong>
+                        </a>
+
+                        <a
+                            href="{% url 'hebergement:liste_affectations_responsable' %}"
+                            class="quick-action"
+                        >
+                            <span>🛏️</span>
+                            <strong>Affectations</strong>
+                        </a>
+
+                        <a
+                            href="{% url 'hebergement:liste_transferts_responsable' %}"
+                            class="quick-action"
+                        >
+                            <span>↔</span>
+                            <strong>Transferts</strong>
+                        </a>
+
+                        <a
+                            href="{% url 'hebergement:liste_chambres' %}"
+                            class="quick-action"
+                        >
+                            <span>🚪</span>
+                            <strong>Chambres</strong>
+                        </a>
+
+                        <a
+                            href="{% url 'hebergement:liste_batiments' %}"
+                            class="quick-action"
+                        >
+                            <span>🏢</span>
+                            <strong>Bâtiments</strong>
+                        </a>
+
+                    </div>
+
+                </article>
+
+
+                <!-- STATS -->
+                <article class="panel stats-panel">
+
+                    <div class="compact-heading">
+                        <span class="eyebrow">Vue globale</span>
+                        <h3>Statistiques</h3>
+                    </div>
+
+                    <div class="stats-compact">
+
+                        <div class="donut-css"
+                             style="--occupation: {{ taux_occupation|default:0 }};">
+                            <div>
+                                <strong>{{ taux_occupation|default:0 }}%</strong>
+                                <span>occupation</span>
+                            </div>
+                        </div>
+
+                        <div class="stats-list">
+                            <div>
+                                <span>Étudiants</span>
+                                <strong>{{ nombre_etudiants|default:0 }}</strong>
+                            </div>
+
+                            <div>
+                                <span>Affectations</span>
+                                <strong>{{ affectations_actives|default:0 }}</strong>
+                            </div>
+
+                            <div>
+                                <span>Demandes</span>
+                                <strong>{{ demandes_en_attente|default:0 }}</strong>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </article>
+
+
+                <!-- CAPACITÉ -->
+                <article class="panel capacity-panel">
+
+                    <div class="compact-heading">
+                        <span class="eyebrow">Hébergement</span>
+                        <h3>Capacité</h3>
+                    </div>
+
+                    <div class="capacity-value">
+                        <strong>{{ taux_occupation|default:0 }} %</strong>
+                        <span>
+                            {{ places_occupees|default:0 }}
+                            places occupées sur
+                            {{ capacite_totale|default:0 }}
+                        </span>
+                    </div>
+
+                    <div class="capacity-track">
+                        <div
+                            class="capacity-fill"
+                            data-taux="{{ taux_occupation|default:0 }}"
+                        ></div>
+                    </div>
+
+                    <div class="capacity-meta">
+                        <div>
+                            <span>Disponibles</span>
+                            <strong>{{ places_disponibles|default:0 }}</strong>
+                        </div>
+
+                        <div>
+                            <span>Chambres</span>
+                            <strong>{{ nombre_chambres|default:0 }}</strong>
+                        </div>
+
+                        <div>
+                            <span>Bâtiments</span>
+                            <strong>{{ nombre_batiments|default:0 }}</strong>
+                        </div>
+                    </div>
+
+                    <a
+                        href="{% url 'hebergement:liste_chambres' %}"
+                        class="capacity-link"
+                    >
+                        Voir les chambres →
+                    </a>
+
+                </article>
+
+            </section>
+
+
+            <!-- =================================================
+                 ANALYTIQUE DE L'INTERNAT
+            ================================================== -->
+            <section class="analytics-section">
+
+                <div class="analytics-heading">
+                    <div>
+                        <span class="eyebrow">Analyse opérationnelle</span>
+                        <h2>Statistiques de l’internat</h2>
+                        <p>
+                            Suivez les demandes, les affectations, les paiements
+                            et l’occupation réelle des bâtiments et des chambres.
+                        </p>
+                    </div>
+
+                    <a
+                        href="{% url 'hebergement:liste_batiments' %}"
+                        class="analytics-heading-link"
+                    >
+                        Voir les bâtiments →
+                    </a>
+                </div>
+
+
+                <!-- =================================================
+                     GRAPHIQUES
+                ================================================== -->
+                <div class="analytics-grid">
+
+                    <!-- DEMANDES -->
+                    <article class="analytics-card">
+
+                        <div class="analytics-card-heading">
+                            <div>
+                                <span class="analytics-label">Demandes</span>
+                                <h3>État des demandes d’hébergement</h3>
+                            </div>
+
+                            <span class="analytics-icon">▥</span>
+                        </div>
+
+                        <div
+                            class="analytics-bars"
+                            data-chart-bars
+                        >
+
+                            <div class="analytics-bar-row">
+                                <div class="analytics-bar-meta">
+                                    <span>Soumises</span>
+                                    <strong>{{ demandes_soumises|default:0 }}</strong>
+                                </div>
+                                <div class="analytics-bar-track">
+                                    <div
+                                        class="analytics-bar-fill bar-blue"
+                                        data-value="{{ demandes_soumises|default:0 }}"
+                                    ></div>
+                                </div>
+                            </div>
+
+                            <div class="analytics-bar-row">
+                                <div class="analytics-bar-meta">
+                                    <span>En étude</span>
+                                    <strong>{{ demandes_en_etude|default:0 }}</strong>
+                                </div>
+                                <div class="analytics-bar-track">
+                                    <div
+                                        class="analytics-bar-fill bar-indigo"
+                                        data-value="{{ demandes_en_etude|default:0 }}"
+                                    ></div>
+                                </div>
+                            </div>
+
+                            <div class="analytics-bar-row">
+                                <div class="analytics-bar-meta">
+                                    <span>Incomplètes</span>
+                                    <strong>{{ demandes_incompletes|default:0 }}</strong>
+                                </div>
+                                <div class="analytics-bar-track">
+                                    <div
+                                        class="analytics-bar-fill bar-orange"
+                                        data-value="{{ demandes_incompletes|default:0 }}"
+                                    ></div>
+                                </div>
+                            </div>
+
+                            <div class="analytics-bar-row">
+                                <div class="analytics-bar-meta">
+                                    <span>Acceptées</span>
+                                    <strong>{{ demandes_acceptees|default:0 }}</strong>
+                                </div>
+                                <div class="analytics-bar-track">
+                                    <div
+                                        class="analytics-bar-fill bar-green"
+                                        data-value="{{ demandes_acceptees|default:0 }}"
+                                    ></div>
+                                </div>
+                            </div>
+
+                            <div class="analytics-bar-row">
+                                <div class="analytics-bar-meta">
+                                    <span>Refusées</span>
+                                    <strong>{{ demandes_refusees|default:0 }}</strong>
+                                </div>
+                                <div class="analytics-bar-track">
+                                    <div
+                                        class="analytics-bar-fill bar-red"
+                                        data-value="{{ demandes_refusees|default:0 }}"
+                                    ></div>
+                                </div>
+                            </div>
+
+                            <div class="analytics-bar-row">
+                                <div class="analytics-bar-meta">
+                                    <span>Liste d’attente</span>
+                                    <strong>{{ demandes_liste_attente|default:0 }}</strong>
+                                </div>
+                                <div class="analytics-bar-track">
+                                    <div
+                                        class="analytics-bar-fill bar-gray"
+                                        data-value="{{ demandes_liste_attente|default:0 }}"
+                                    ></div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </article>
+
+
+                    <!-- AFFECTATIONS -->
+                    <article class="analytics-card">
+
+                        <div class="analytics-card-heading">
+                            <div>
+                                <span class="analytics-label">Hébergement</span>
+                                <h3>Répartition des affectations</h3>
+                            </div>
+
+                            <span class="analytics-icon">◉</span>
+                        </div>
+
+                        <div class="doughnut-layout">
+
+                            <div class="canvas-wrapper">
+                                <canvas
+                                    id="affectationsChart"
+                                    width="270"
+                                    height="270"
+                                    aria-label="Diagramme des affectations"
+                                ></canvas>
+
+                                <div class="canvas-center">
+                                    <strong id="totalAffectationsChart">
+                                        {{ nombre_affectations_total|default:0 }}
+                                    </strong>
+                                    <span>Affectations</span>
+                                </div>
+                            </div>
+
+                            <div class="doughnut-legend">
+
+                                <div>
+                                    <i class="legend-dot dot-prevue"></i>
+                                    <span>Prévues</span>
+                                    <strong id="affectationsPrevues">
+                                        {{ affectations_prevues|default:0 }}
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <i class="legend-dot dot-active"></i>
+                                    <span>Actives</span>
+                                    <strong id="affectationsActives">
+                                        {{ affectations_actives|default:0 }}
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <i class="legend-dot dot-cloturee"></i>
+                                    <span>Clôturées</span>
+                                    <strong id="affectationsCloturees">
+                                        {{ affectations_cloturees|default:0 }}
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <i class="legend-dot dot-annulee"></i>
+                                    <span>Annulées</span>
+                                    <strong id="affectationsAnnulees">
+                                        {{ affectations_annulees|default:0 }}
+                                    </strong>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+
+                    <!-- PAIEMENTS -->
+                    <article class="analytics-card">
+
+                        <div class="analytics-card-heading">
+                            <div>
+                                <span class="analytics-label">Finances</span>
+                                <h3>État des paiements</h3>
+                            </div>
+
+                            <span class="analytics-icon">▤</span>
+                        </div>
+
+                        <div
+                            class="analytics-bars"
+                            data-chart-bars
+                        >
+
+                            <div class="analytics-bar-row">
+                                <div class="analytics-bar-meta">
+                                    <span>Validés</span>
+                                    <strong>{{ paiements_valides|default:0 }}</strong>
+                                </div>
+                                <div class="analytics-bar-track">
+                                    <div
+                                        class="analytics-bar-fill bar-green"
+                                        data-value="{{ paiements_valides|default:0 }}"
+                                    ></div>
+                                </div>
+                            </div>
+
+                            <div class="analytics-bar-row">
+                                <div class="analytics-bar-meta">
+                                    <span>En attente</span>
+                                    <strong>{{ paiements_en_attente|default:0 }}</strong>
+                                </div>
+                                <div class="analytics-bar-track">
+                                    <div
+                                        class="analytics-bar-fill bar-orange"
+                                        data-value="{{ paiements_en_attente|default:0 }}"
+                                    ></div>
+                                </div>
+                            </div>
+
+                            <div class="analytics-bar-row">
+                                <div class="analytics-bar-meta">
+                                    <span>Annulés</span>
+                                    <strong>{{ paiements_annules|default:0 }}</strong>
+                                </div>
+                                <div class="analytics-bar-track">
+                                    <div
+                                        class="analytics-bar-fill bar-gray-dark"
+                                        data-value="{{ paiements_annules|default:0 }}"
+                                    ></div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="analytics-mini-summary">
+                            <div>
+                                <span>Total</span>
+                                <strong>{{ paiements_total|default:0 }}</strong>
+                            </div>
+                            <div>
+                                <span>À vérifier</span>
+                                <strong>{{ paiements_en_attente|default:0 }}</strong>
+                            </div>
+                        </div>
+
+                    </article>
+
+
+                    <!-- CHAMBRES -->
+                    <article class="analytics-card">
+
+                        <div class="analytics-card-heading">
+                            <div>
+                                <span class="analytics-label">Chambres</span>
+                                <h3>Disponibilité actuelle</h3>
+                            </div>
+
+                            <span class="analytics-icon">▦</span>
+                        </div>
+
+                        <div class="room-status-stack">
+
+                            <div
+                                class="room-stack-segment room-stack-free"
+                                data-room-value="{{ chambres_vides|default:0 }}"
+                                title="Libres : {{ chambres_vides|default:0 }}"
+                            ></div>
+
+                            <div
+                                class="room-stack-segment room-stack-partial"
+                                data-room-value="{{ chambres_partielles|default:0 }}"
+                                title="Partielles : {{ chambres_partielles|default:0 }}"
+                            ></div>
+
+                            <div
+                                class="room-stack-segment room-stack-full"
+                                data-room-value="{{ chambres_completes|default:0 }}"
+                                title="Complètes : {{ chambres_completes|default:0 }}"
+                            ></div>
+
+                            <div
+                                class="room-stack-segment room-stack-off"
+                                data-room-value="{{ chambres_indisponibles|default:0 }}"
+                                title="Indisponibles : {{ chambres_indisponibles|default:0 }}"
+                            ></div>
+
+                        </div>
+
+                        <div class="room-status-grid">
+
+                            <div>
+                                <i class="room-state-square state-free"></i>
+                                <span>Libres</span>
+                                <strong>{{ chambres_vides|default:0 }}</strong>
+                            </div>
+
+                            <div>
+                                <i class="room-state-square state-partial"></i>
+                                <span>Partielles</span>
+                                <strong>{{ chambres_partielles|default:0 }}</strong>
+                            </div>
+
+                            <div>
+                                <i class="room-state-square state-full"></i>
+                                <span>Complètes</span>
+                                <strong>{{ chambres_completes|default:0 }}</strong>
+                            </div>
+
+                            <div>
+                                <i class="room-state-square state-off"></i>
+                                <span>Indisponibles</span>
+                                <strong>{{ chambres_indisponibles|default:0 }}</strong>
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+
+                <!-- =================================================
+                     OCCUPATION PAR BÂTIMENT
+                ================================================== -->
+                <article class="analytics-card building-comparison-card">
+
+                    <div class="analytics-card-heading">
+                        <div>
+                            <span class="analytics-label">Capacité</span>
+                            <h3>Occupation par bâtiment</h3>
+                            <p>
+                                Comparaison du nombre de places occupées
+                                avec la capacité de chaque bâtiment.
+                            </p>
+                        </div>
+
+                        <span class="analytics-icon">▥</span>
+                    </div>
+
+                    <div class="building-comparison-list">
+
+                        {% for batiment in batiments_occupation %}
+                            <div class="building-comparison-row">
+
+                                <div class="building-comparison-label">
+                                    <strong>{{ batiment.code }}</strong>
+                                    <span>{{ batiment.nom }}</span>
+                                </div>
+
+                                <div class="building-comparison-track">
+                                    <div
+                                        class="building-comparison-fill"
+                                        data-taux="{{ batiment.taux }}"
+                                    ></div>
+                                </div>
+
+                                <div class="building-comparison-value">
+                                    <strong>{{ batiment.taux }} %</strong>
+                                    <small>
+                                        {{ batiment.occupation }}
+                                        / {{ batiment.capacite }}
+                                    </small>
+                                </div>
+
+                            </div>
+                        {% empty %}
+                            <div class="analytics-empty">
+                                Aucun bâtiment enregistré.
+                            </div>
+                        {% endfor %}
+
+                    </div>
+
+                </article>
+
+
+                <!-- =================================================
+                     VISUALISATION NOIR / GRIS DES BÂTIMENTS
+                ================================================== -->
+                <div class="occupation-heading">
+                    <div>
+                        <span class="eyebrow">Infrastructure visuelle</span>
+                        <h2>Occupation des bâtiments et chambres</h2>
+                        <p>
+                            Représentation monochrome : chaque fenêtre correspond
+                            à une chambre réelle de la base de données.
+                        </p>
+                    </div>
+
+                    <div class="occupation-legend">
+                        <span>
+                            <i class="occupancy-key key-free"></i>
+                            Libre
+                        </span>
+                        <span>
+                            <i class="occupancy-key key-partial"></i>
+                            Partielle
+                        </span>
+                        <span>
+                            <i class="occupancy-key key-full"></i>
+                            Complète
+                        </span>
+                        <span>
+                            <i class="occupancy-key key-off"></i>
+                            Indisponible
+                        </span>
+                    </div>
+                </div>
+
+
+                <div class="buildings-visual-grid">
+
+                    {% for batiment in batiments_occupation %}
+
+                        <article class="building-card">
+
+                            <div class="building-card-heading">
+                                <div>
+                                    <span class="building-code">
+                                        {{ batiment.code }}
+                                    </span>
+                                    <h3>{{ batiment.nom }}</h3>
+                                </div>
+
+                                <div class="building-rate">
+                                    {{ batiment.taux }} %
+                                </div>
+                            </div>
+
+
+                            <div class="building-scene">
+
+                                <div class="building-shadow"></div>
+
+                                <div class="building-roof"></div>
+
+                                <div class="building-body">
+
+                                    <div class="building-windows">
+
+                                        {% for chambre in batiment.chambres %}
+
+                                            <div
+                                                class="
+                                                    room-window
+                                                    room-window-{{ chambre.etat }}
+                                                "
+                                                title="
+                                                    Chambre {{ chambre.numero }}
+                                                    — {{ chambre.occupation }}/{{ chambre.capacite }} place(s)
+                                                "
+                                            >
+                                                <span>{{ chambre.numero }}</span>
+
+                                                <small>
+                                                    {{ chambre.occupation }}
+                                                    /
+                                                    {{ chambre.capacite }}
+                                                </small>
+                                            </div>
+
+                                        {% empty %}
+
+                                            <div class="building-no-room">
+                                                Aucune chambre
+                                            </div>
+
+                                        {% endfor %}
+
+                                    </div>
+
+
+                                    <div class="building-door">
+                                        <span>{{ batiment.code }}</span>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="building-summary">
+
+                                <div>
+                                    <span>Occupation</span>
+                                    <strong>
+                                        {{ batiment.occupation }}
+                                        /
+                                        {{ batiment.capacite }}
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Disponibles</span>
+                                    <strong>
+                                        {{ batiment.disponibles }}
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Chambres</span>
+                                    <strong>
+                                        {{ batiment.nombre_chambres }}
+                                    </strong>
+                                </div>
+
+                            </div>
+
+
+                            <div class="building-progress">
+                                <div
+                                    class="building-progress-fill"
+                                    data-taux="{{ batiment.taux }}"
+                                ></div>
+                            </div>
+
+                        </article>
+
+                    {% empty %}
+
+                        <div class="analytics-empty analytics-empty-large">
+                            <strong>Aucun bâtiment enregistré</strong>
+                            <span>
+                                Les visualisations apparaîtront ici
+                                après la création des bâtiments et chambres.
+                            </span>
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </section>
+
+        </main>
+
+
+        <!-- =====================================================
+             FOOTER — EN BAS, JAMAIS À DROITE
+        ====================================================== -->
+        <footer class="dashboard-footer">
+            Gestion de l’internat universitaire —
+            {% now "Y" %}
+        </footer>
+
+    </div>
+
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        /* =====================================================
+           BARRE DE CAPACITÉ
+        ====================================================== */
+        document
+            .querySelectorAll(".capacity-fill")
+            .forEach(function (barre) {
+                let taux = Number(
+                    barre.dataset.taux || 0
+                );
+
+                taux = Math.max(
+                    0,
+                    Math.min(
+                        taux,
+                        100
+                    )
+                );
+
+                barre.style.width =
+                    taux + "%";
+            });
+
+
+        /* =====================================================
+           HISTOGRAMMES DYNAMIQUES
+        ====================================================== */
+        document
+            .querySelectorAll("[data-chart-bars]")
+            .forEach(function (graphique) {
+
+                const barres = Array.from(
+                    graphique.querySelectorAll(
+                        ".analytics-bar-fill"
+                    )
+                );
+
+                let maximum = 0;
+
+                barres.forEach(function (barre) {
+                    const valeur = Number(
+                        barre.dataset.value || 0
+                    );
+
+                    if (valeur > maximum) {
+                        maximum = valeur;
+                    }
+                });
+
+                barres.forEach(function (barre) {
+                    const valeur = Number(
+                        barre.dataset.value || 0
+                    );
+
+                    const largeur = (
+                        maximum > 0
+                            ? (valeur / maximum) * 100
+                            : 0
+                    );
+
+                    requestAnimationFrame(
+                        function () {
+                            barre.style.width =
+                                largeur + "%";
+                        }
+                    );
+                });
+            });
+
+
+        /* =====================================================
+           BARRES BÂTIMENTS
+        ====================================================== */
+        document
+            .querySelectorAll(
+                ".building-comparison-fill, " +
+                ".building-progress-fill"
+            )
+            .forEach(function (barre) {
+                let taux = Number(
+                    barre.dataset.taux || 0
+                );
+
+                taux = Math.max(
+                    0,
+                    Math.min(
+                        taux,
+                        100
+                    )
+                );
+
+                requestAnimationFrame(
+                    function () {
+                        barre.style.width =
+                            taux + "%";
+                    }
+                );
+            });
+
+
+        /* =====================================================
+           ÉTAT DES CHAMBRES — BARRE EMPILÉE
+        ====================================================== */
+        const segments = Array.from(
+            document.querySelectorAll(
+                ".room-stack-segment"
+            )
+        );
+
+        const totalChambres = segments.reduce(
+            function (total, segment) {
+                return (
+                    total
+                    + Number(
+                        segment.dataset.roomValue || 0
+                    )
+                );
+            },
+            0
+        );
+
+        segments.forEach(function (segment) {
+            const valeur = Number(
+                segment.dataset.roomValue || 0
+            );
+
+            const largeur = (
+                totalChambres > 0
+                    ? (valeur / totalChambres) * 100
+                    : 0
+            );
+
+            segment.style.width =
+                largeur + "%";
+        });
+
+
+        /* =====================================================
+           DIAGRAMME CIRCULAIRE AFFECTATIONS
+           Sans librairie externe.
+        ====================================================== */
+        const canvas = document.getElementById(
+            "affectationsChart"
+        );
+
+        if (canvas) {
+            const contexte =
+                canvas.getContext("2d");
+
+            const valeurs = [
+                Number(
+                    document
+                        .getElementById(
+                            "affectationsPrevues"
+                        )
+                        ?.textContent || 0
+                ),
+                Number(
+                    document
+                        .getElementById(
+                            "affectationsActives"
+                        )
+                        ?.textContent || 0
+                ),
+                Number(
+                    document
+                        .getElementById(
+                            "affectationsCloturees"
+                        )
+                        ?.textContent || 0
+                ),
+                Number(
+                    document
+                        .getElementById(
+                            "affectationsAnnulees"
+                        )
+                        ?.textContent || 0
+                )
+            ];
+
+            const total = valeurs.reduce(
+                function (somme, valeur) {
+                    return somme + valeur;
+                },
+                0
+            );
+
+            const totalElement =
+                document.getElementById(
+                    "totalAffectationsChart"
+                );
+
+            if (totalElement) {
+                totalElement.textContent =
+                    total;
+            }
+
+            const centreX =
+                canvas.width / 2;
+
+            const centreY =
+                canvas.height / 2;
+
+            const rayon = 96;
+
+            const epaisseur = 27;
+
+            const couleurs = [
+                "#94a3b8",
+                "#2563eb",
+                "#111827",
+                "#cbd5e1"
+            ];
+
+            contexte.clearRect(
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
+
+            if (total <= 0) {
+                contexte.beginPath();
+
+                contexte.arc(
+                    centreX,
+                    centreY,
+                    rayon,
+                    0,
+                    Math.PI * 2
+                );
+
+                contexte.strokeStyle =
+                    "#e2e8f0";
+
+                contexte.lineWidth =
+                    epaisseur;
+
+                contexte.stroke();
+
+            } else {
+                let angleDepart =
+                    -Math.PI / 2;
+
+                valeurs.forEach(
+                    function (
+                        valeur,
+                        index
+                    ) {
+                        if (valeur <= 0) {
+                            return;
+                        }
+
+                        const angle = (
+                            valeur / total
+                        ) * Math.PI * 2;
+
+                        contexte.beginPath();
+
+                        contexte.arc(
+                            centreX,
+                            centreY,
+                            rayon,
+                            angleDepart,
+                            angleDepart + angle
+                        );
+
+                        contexte.strokeStyle =
+                            couleurs[index];
+
+                        contexte.lineWidth =
+                            epaisseur;
+
+                        contexte.lineCap =
+                            "butt";
+
+                        contexte.stroke();
+
+                        angleDepart += angle;
+                    }
+                );
+            }
+        }
+    });
+</script>
+
+
+<script>
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+            document
+                .querySelectorAll(
+                    ".executive-progress-fill"
+                )
+                .forEach(
+                    function (barre) {
+                        let valeur = Number(
+                            barre.dataset.progress || 0
+                        );
+
+                        valeur = Math.max(
+                            0,
+                            Math.min(
+                                valeur,
+                                100
+                            )
+                        );
+
+                        requestAnimationFrame(
+                            function () {
+                                barre.style.width =
+                                    valeur + "%";
+                            }
+                        );
+                    }
+                );
+        }
+    );
+</script>
+
+</body>
+</html>

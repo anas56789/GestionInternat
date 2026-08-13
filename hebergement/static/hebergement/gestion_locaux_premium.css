@@ -1,0 +1,1441 @@
+
+/* =========================================================
+   GESTION DES LOCAUX — RESPONSABLE PREMIUM
+   Bâtiments + chambres + détail bâtiment
+========================================================= */
+
+:root {
+    --bleu: #2563eb;
+    --bleu-fonce: #1e3a8a;
+    --bleu-clair: #eff6ff;
+    --texte: #0f172a;
+    --texte-secondaire: #64748b;
+    --fond: #f3f6fb;
+    --fond-carte: #ffffff;
+    --bordure: #e2e8f0;
+    --bordure-forte: #cbd5e1;
+    --vert: #15803d;
+    --vert-clair: #dcfce7;
+    --orange: #c2410c;
+    --orange-clair: #ffedd5;
+    --jaune: #a16207;
+    --jaune-clair: #fef9c3;
+    --rouge: #b91c1c;
+    --rouge-clair: #fee2e2;
+    --gris: #475569;
+    --gris-clair: #f1f5f9;
+    --ombre:
+        0 10px 30px rgba(15, 23, 42, .065);
+    --ombre-legere:
+        0 5px 18px rgba(15, 23, 42, .045);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    margin: 0;
+    background:
+        linear-gradient(
+            180deg,
+            #f8fafc 0,
+            #f3f6fb 320px,
+            #eef2f7 100%
+        );
+    color: var(--texte);
+    font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+/* =========================================================
+   EN-TÊTE
+========================================================= */
+
+.entete {
+    min-height: 104px;
+    padding: 18px clamp(22px, 4vw, 62px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 26px;
+    border-bottom: 1px solid var(--bordure);
+    background: rgba(255, 255, 255, .97);
+    box-shadow: 0 7px 25px rgba(15, 23, 42, .05);
+}
+
+.identite-page {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.logo-page {
+    width: 60px;
+    height: 60px;
+    flex: 0 0 60px;
+    display: grid;
+    place-items: center;
+    border-radius: 17px;
+    background:
+        linear-gradient(
+            135deg,
+            var(--bleu),
+            #60a5fa
+        );
+    color: #fff;
+    box-shadow:
+        0 11px 25px rgba(37, 99, 235, .22);
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.identite-page h1 {
+    margin: 0;
+    font-size: clamp(22px, 2.2vw, 31px);
+    letter-spacing: -.025em;
+}
+
+.identite-page p {
+    margin: 5px 0 0;
+    color: var(--texte-secondaire);
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.actions-entete {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 9px;
+}
+
+/* =========================================================
+   BOUTONS
+========================================================= */
+
+.bouton,
+.lien-retour,
+.bouton-pagination,
+.page-actuelle {
+    min-height: 41px;
+    padding: 9px 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 800;
+    text-decoration: none;
+    transition:
+        transform .16s ease,
+        border-color .16s ease,
+        background .16s ease,
+        box-shadow .16s ease;
+}
+
+.bouton {
+    background: var(--bleu);
+    color: #fff;
+    box-shadow:
+        0 7px 16px rgba(37, 99, 235, .16);
+    cursor: pointer;
+}
+
+.bouton:hover,
+.lien-retour:hover,
+.bouton-pagination:hover {
+    transform: translateY(-1px);
+}
+
+.bouton:hover {
+    background: #1d4ed8;
+}
+
+.bouton-secondaire,
+.lien-retour {
+    border-color: #dbe4f0;
+    background: #fff;
+    color: #334155;
+    box-shadow: none;
+}
+
+.bouton-secondaire:hover,
+.lien-retour:hover {
+    border-color: #bfdbfe;
+    background: var(--bleu-clair);
+    color: #1d4ed8;
+}
+
+.bouton-succes {
+    background: var(--vert);
+    color: #fff;
+}
+
+.bouton-succes:hover {
+    background: #166534;
+}
+
+.bouton-danger {
+    background: #dc2626;
+    color: #fff;
+}
+
+.bouton-danger:hover {
+    background: var(--rouge);
+}
+
+.bouton-attente {
+    background: #d97706;
+    color: #fff;
+}
+
+.bouton-attente:hover {
+    background: #b45309;
+}
+
+.bouton-petit {
+    min-height: 34px;
+    padding: 7px 10px;
+    border-radius: 8px;
+    font-size: 10px;
+}
+
+/* =========================================================
+   CONTENEUR + MESSAGES
+========================================================= */
+
+.conteneur {
+    width: min(1480px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 30px 0 46px;
+}
+
+.messages {
+    margin-bottom: 18px;
+    display: grid;
+    gap: 10px;
+}
+
+.message {
+    padding: 13px 16px;
+    border: 1px solid #bfdbfe;
+    border-radius: 11px;
+    background: var(--bleu-clair);
+    color: #1e40af;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.message.success {
+    border-color: #bbf7d0;
+    background: #f0fdf4;
+    color: #166534;
+}
+
+.message.error {
+    border-color: #fecaca;
+    background: #fef2f2;
+    color: var(--rouge);
+}
+
+.message.warning {
+    border-color: #fed7aa;
+    background: #fff7ed;
+    color: var(--orange);
+}
+
+/* =========================================================
+   BANNIÈRES
+========================================================= */
+
+.banniere-batiments,
+.banniere-chambres,
+.banniere-detail-batiment {
+    margin-bottom: 22px;
+    padding: clamp(25px, 3vw, 37px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    overflow: hidden;
+    position: relative;
+    border-radius: 22px;
+    background:
+        radial-gradient(
+            circle at 88% 15%,
+            rgba(255,255,255,.18),
+            transparent 24%
+        ),
+        linear-gradient(
+            135deg,
+            var(--bleu-fonce),
+            var(--bleu) 57%,
+            #3b82f6
+        );
+    color: #fff;
+    box-shadow:
+        0 18px 36px rgba(37, 99, 235, .2);
+}
+
+.banniere-batiments::after,
+.banniere-detail-batiment::after {
+    content: "";
+    width: 125px;
+    height: 115px;
+    position: absolute;
+    right: 180px;
+    bottom: -38px;
+    opacity: .16;
+    background:
+        linear-gradient(
+            90deg,
+            transparent 14%,
+            #fff 14% 30%,
+            transparent 30% 42%,
+            #fff 42% 58%,
+            transparent 58% 70%,
+            #fff 70% 86%,
+            transparent 86%
+        );
+    border: 8px solid #fff;
+    border-bottom-width: 18px;
+    border-radius: 8px 8px 0 0;
+    pointer-events: none;
+}
+
+.petit-titre {
+    display: block;
+    margin-bottom: 8px;
+    color: #bfdbfe;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: .11em;
+    text-transform: uppercase;
+}
+
+.banniere-batiments h2,
+.banniere-chambres h2,
+.banniere-detail-batiment h2 {
+    margin: 0 0 9px;
+    font-size: clamp(28px, 3vw, 39px);
+    letter-spacing: -.03em;
+}
+
+.banniere-batiments p,
+.banniere-chambres p,
+.banniere-detail-batiment p {
+    max-width: 780px;
+    margin: 0;
+    color: #dbeafe;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.compteur-banniere {
+    min-width: 145px;
+    padding: 19px 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 17px;
+    background: rgba(255,255,255,.12);
+    backdrop-filter: blur(8px);
+}
+
+.compteur-banniere strong {
+    font-size: 33px;
+}
+
+.compteur-banniere span {
+    margin-top: 2px;
+    color: #dbeafe;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+/* =========================================================
+   STATISTIQUES
+========================================================= */
+
+.statistiques-batiments,
+.statistiques-chambres,
+.statistiques-detail-batiment {
+    margin-bottom: 22px;
+    display: grid;
+    gap: 11px;
+}
+
+.statistiques-batiments {
+    grid-template-columns:
+        repeat(5, minmax(145px, 1fr));
+}
+
+.statistiques-chambres {
+    grid-template-columns:
+        repeat(5, minmax(145px, 1fr));
+}
+
+.statistiques-detail-batiment {
+    grid-template-columns:
+        repeat(5, minmax(130px, 1fr));
+}
+
+.statistique-batiment,
+.statistique-chambre,
+.statistique-detail {
+    min-width: 0;
+    min-height: 97px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    border: 1px solid var(--bordure);
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: var(--ombre-legere);
+}
+
+.statistique-detail {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3px;
+}
+
+.icone-statistique {
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    background: var(--bleu-clair);
+    font-size: 18px;
+}
+
+.statistique-batiment > div:last-child,
+.statistique-chambre > div:last-child {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.statistique-batiment span,
+.statistique-chambre span,
+.statistique-detail span {
+    color: var(--texte-secondaire);
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.statistique-batiment strong,
+.statistique-chambre strong,
+.statistique-detail strong {
+    font-size: 21px;
+}
+
+/* =========================================================
+   CARTES GÉNÉRALES
+========================================================= */
+
+.carte {
+    margin-bottom: 22px;
+    padding: 23px;
+    border: 1px solid var(--bordure);
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: var(--ombre);
+}
+
+.entete-section {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.entete-section h2 {
+    margin: 0 0 5px;
+    font-size: 21px;
+    letter-spacing: -.02em;
+}
+
+.entete-section p {
+    margin: 0;
+    color: var(--texte-secondaire);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.badge-resultats {
+    padding: 7px 10px;
+    border-radius: 999px;
+    background: var(--bleu-clair);
+    color: #1d4ed8;
+    font-size: 9px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+/* =========================================================
+   FILTRES
+========================================================= */
+
+.formulaire-filtres-batiments,
+.formulaire-filtres-chambres {
+    display: grid;
+    align-items: end;
+    gap: 12px;
+}
+
+.formulaire-filtres-batiments {
+    grid-template-columns:
+        minmax(280px, 1.55fr)
+        repeat(3, minmax(150px, 1fr));
+}
+
+.formulaire-filtres-chambres {
+    grid-template-columns:
+        minmax(270px, 1.4fr)
+        repeat(3, minmax(145px, 1fr));
+}
+
+.groupe-filtre {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.groupe-filtre label {
+    color: #334155;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.groupe-filtre input,
+.groupe-filtre select {
+    width: 100%;
+    height: 42px;
+    padding: 0 11px;
+    border: 1px solid var(--bordure-forte);
+    border-radius: 9px;
+    outline: 0;
+    background: #fff;
+    color: var(--texte);
+    font-size: 11px;
+}
+
+.groupe-filtre input:focus,
+.groupe-filtre select:focus {
+    border-color: var(--bleu);
+    box-shadow:
+        0 0 0 3px rgba(37,99,235,.1);
+}
+
+.actions-filtres-batiments,
+.actions-filtres-chambres {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+/* =========================================================
+   LISTE DES BÂTIMENTS
+========================================================= */
+
+.grille-batiments {
+    display: grid;
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+    gap: 15px;
+}
+
+.carte-batiment-amelioree {
+    min-width: 0;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid #dbe4f0;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: var(--ombre-legere);
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        border-color .18s ease;
+}
+
+.carte-batiment-amelioree:hover {
+    transform: translateY(-2px);
+    border-color: #bfdbfe;
+    box-shadow:
+        0 13px 30px rgba(15,23,42,.08);
+}
+
+.carte-batiment-amelioree::before {
+    content: "";
+    width: 62px;
+    height: 52px;
+    position: absolute;
+    right: 18px;
+    top: 74px;
+    opacity: .08;
+    border: 4px solid #0f172a;
+    border-bottom-width: 8px;
+    border-radius: 5px 5px 0 0;
+    background:
+        repeating-linear-gradient(
+            90deg,
+            transparent 0 8px,
+            #0f172a 8px 13px,
+            transparent 13px 20px
+        );
+    pointer-events: none;
+}
+
+.entete-carte-batiment {
+    padding: 17px 18px 14px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 13px;
+    border-bottom: 1px solid #eef2f7;
+    background: #fbfdff;
+}
+
+.code-batiment-carte {
+    display: block;
+    margin-bottom: 3px;
+    color: var(--bleu);
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+}
+
+.entete-carte-batiment h3 {
+    margin: 0;
+    font-size: 17px;
+}
+
+.badge-batiment,
+.badge-chambre {
+    padding: 6px 9px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: var(--gris-clair);
+    color: var(--gris);
+    font-size: 9px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.badge-batiment-actif,
+.badge-disponible {
+    background: var(--vert-clair);
+    color: #166534;
+}
+
+.badge-batiment-inactif,
+.badge-hors-service {
+    background: var(--gris-clair);
+    color: #475569;
+}
+
+.badge-batiment-maintenance,
+.badge-maintenance {
+    background: var(--jaune-clair);
+    color: #854d0e;
+}
+
+.badge-complete {
+    background: var(--rouge-clair);
+    color: #991b1b;
+}
+
+.badge-partielle {
+    background: var(--bleu-clair);
+    color: #1d4ed8;
+}
+
+.description-batiment {
+    min-height: 52px;
+    margin: 0;
+    padding: 13px 18px 0;
+    color: #475569;
+    font-size: 11px;
+    line-height: 1.55;
+}
+
+.texte-secondaire {
+    color: var(--texte-secondaire);
+}
+
+.resume-batiment {
+    padding: 14px 18px;
+    display: grid;
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.resume-batiment > div {
+    min-width: 0;
+    padding: 9px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    border: 1px solid #e7edf5;
+    border-radius: 9px;
+    background: #f8fafc;
+}
+
+.resume-batiment span {
+    color: #94a3b8;
+    font-size: 7px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.resume-batiment strong {
+    font-size: 12px;
+}
+
+.occupation-batiment {
+    padding: 0 18px 14px;
+}
+
+.ligne-occupation {
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    color: var(--texte-secondaire);
+    font-size: 9px;
+}
+
+.ligne-occupation strong {
+    color: var(--texte);
+}
+
+.barre-occupation-batiment,
+.barre-detail-batiment,
+.barre-etage,
+.barre-occupation {
+    height: 7px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #e2e8f0;
+}
+
+.progression-batiment,
+.progression-detail-batiment,
+.progression-etage,
+.progression-occupation {
+    height: 100%;
+    border-radius: inherit;
+    background: var(--bleu);
+}
+
+.progression-batiment-normale,
+.progression-normale {
+    background: var(--bleu);
+}
+
+.progression-batiment-elevee,
+.progression-elevee {
+    background: #d97706;
+}
+
+.progression-batiment-complete,
+.progression-complete {
+    background: #dc2626;
+}
+
+.etat-chambres-batiment {
+    padding: 0 18px 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.indicateur-chambre {
+    padding: 5px 7px;
+    border-radius: 999px;
+    font-size: 8px;
+    font-weight: 800;
+}
+
+.indicateur-disponible {
+    background: var(--vert-clair);
+    color: #166534;
+}
+
+.indicateur-complete {
+    background: var(--rouge-clair);
+    color: #991b1b;
+}
+
+.indicateur-maintenance {
+    background: var(--jaune-clair);
+    color: #854d0e;
+}
+
+.actions-carte-batiment {
+    padding: 13px 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    border-top: 1px solid #eef2f7;
+    background: #fbfdff;
+}
+
+/* =========================================================
+   TABLEAUX
+========================================================= */
+
+.tableau-responsive {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--bordure);
+    border-radius: 13px;
+}
+
+.tableau-chambres,
+.tableau-detail-batiment {
+    width: 100%;
+    min-width: 1100px;
+    border-collapse: collapse;
+    background: #fff;
+}
+
+.tableau-chambres thead,
+.tableau-detail-batiment thead {
+    background: #f8fafc;
+}
+
+.tableau-chambres th,
+.tableau-detail-batiment th {
+    padding: 11px 10px;
+    border-bottom: 1px solid var(--bordure);
+    color: #64748b;
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: .04em;
+    text-align: left;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.tableau-chambres td,
+.tableau-detail-batiment td {
+    padding: 11px 10px;
+    border-bottom: 1px solid #eef2f7;
+    color: #334155;
+    font-size: 10px;
+    vertical-align: middle;
+}
+
+.tableau-chambres tbody tr:hover,
+.tableau-detail-batiment tbody tr:hover {
+    background: #fbfdff;
+}
+
+.tableau-chambres tbody tr:last-child td,
+.tableau-detail-batiment tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.batiment-cellule {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.batiment-cellule strong,
+.numero-chambre {
+    color: #0f172a;
+    font-size: 10px;
+}
+
+.batiment-cellule small {
+    color: var(--texte-secondaire);
+    font-size: 8px;
+}
+
+.bloc-progression {
+    min-width: 110px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.bloc-progression .barre-occupation {
+    min-width: 70px;
+    flex: 1;
+}
+
+.bloc-progression small {
+    min-width: 32px;
+    color: var(--texte-secondaire);
+    font-size: 8px;
+}
+
+.actions-tableau {
+    min-width: 220px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.actions-tableau form {
+    margin: 0;
+}
+
+.aucune-donnee {
+    padding: 35px !important;
+    text-align: center;
+}
+
+/* =========================================================
+   DÉTAIL BÂTIMENT
+========================================================= */
+
+.taux-global-batiment {
+    color: var(--bleu);
+    font-size: 28px;
+}
+
+.barre-detail-batiment {
+    height: 10px;
+    margin-bottom: 20px;
+}
+
+.legende-occupation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    color: var(--texte-secondaire);
+    font-size: 10px;
+}
+
+.grille-etages {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    gap: 13px;
+}
+
+.carte-etage {
+    padding: 16px;
+    border: 1px solid var(--bordure);
+    border-radius: 13px;
+    background: #fff;
+    box-shadow: var(--ombre-legere);
+}
+
+.entete-etage {
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.numero-etage {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.numero-etage strong {
+    font-size: 15px;
+}
+
+.numero-etage span {
+    color: var(--texte-secondaire);
+    font-size: 9px;
+}
+
+.taux-etage {
+    color: var(--bleu);
+    font-size: 16px;
+    font-weight: 900;
+}
+
+.statistiques-etage {
+    margin: 12px 0;
+    display: grid;
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+    gap: 7px;
+}
+
+.statistiques-etage > div {
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    border-radius: 8px;
+    background: #f8fafc;
+}
+
+.statistiques-etage span {
+    color: #94a3b8;
+    font-size: 7px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.statistiques-etage strong {
+    font-size: 11px;
+}
+
+.liste-residents {
+    min-width: 190px;
+    display: grid;
+    gap: 5px;
+}
+
+.resident-chambre {
+    padding: 6px 7px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    border-radius: 7px;
+    background: #f8fafc;
+}
+
+.resident-chambre strong {
+    font-size: 9px;
+}
+
+.resident-chambre small {
+    color: var(--texte-secondaire);
+    font-size: 8px;
+}
+
+/* =========================================================
+   PAGINATION
+========================================================= */
+
+.pagination {
+    margin-top: 20px;
+    padding-top: 17px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    border-top: 1px solid #eef2f7;
+}
+
+.informations-pagination {
+    color: var(--texte-secondaire);
+    font-size: 10px;
+}
+
+.liens-pagination {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.bouton-pagination,
+.page-actuelle {
+    min-width: 34px;
+    min-height: 34px;
+    padding: 6px 9px;
+    border-color: var(--bordure);
+    background: #fff;
+    color: #475569;
+    font-size: 9px;
+}
+
+.bouton-pagination:hover {
+    border-color: #bfdbfe;
+    background: var(--bleu-clair);
+    color: var(--bleu);
+}
+
+.page-actuelle {
+    border-color: var(--bleu);
+    background: var(--bleu);
+    color: #fff;
+}
+
+/* =========================================================
+   ÉTAT VIDE
+========================================================= */
+
+.etat-vide {
+    width: 100%;
+    padding: 42px 18px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.icone-vide {
+    width: 54px;
+    height: 54px;
+    margin-bottom: 11px;
+    display: grid;
+    place-items: center;
+    border-radius: 15px;
+    background: var(--bleu-clair);
+    font-size: 24px;
+}
+
+.etat-vide strong {
+    font-size: 14px;
+}
+
+.etat-vide p {
+    max-width: 500px;
+    margin: 5px 0 14px;
+    color: var(--texte-secondaire);
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+.pied-page {
+    padding: 0 20px 28px;
+    color: var(--texte-secondaire);
+    text-align: center;
+    font-size: 10px;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1250px) {
+    .grille-batiments {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .statistiques-batiments,
+    .statistiques-chambres,
+    .statistiques-detail-batiment {
+        grid-template-columns:
+            repeat(3, minmax(145px, 1fr));
+    }
+
+    .formulaire-filtres-chambres {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+
+    .filtre-recherche-chambre {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 950px) {
+    .entete {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .actions-entete {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .banniere-batiments,
+    .banniere-chambres,
+    .banniere-detail-batiment {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .banniere-batiments::after,
+    .banniere-detail-batiment::after {
+        display: none;
+    }
+
+    .formulaire-filtres-batiments,
+    .formulaire-filtres-chambres {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .filtre-recherche-batiment,
+    .filtre-recherche-chambre {
+        grid-column: 1 / -1;
+    }
+
+    .grille-etages {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 670px) {
+    .conteneur {
+        width: calc(100% - 22px);
+        padding-top: 18px;
+    }
+
+    .entete {
+        padding: 15px 16px;
+    }
+
+    .actions-entete {
+        flex-direction: column;
+    }
+
+    .actions-entete .bouton,
+    .actions-entete .lien-retour {
+        width: 100%;
+    }
+
+    .statistiques-batiments,
+    .statistiques-chambres,
+    .statistiques-detail-batiment,
+    .formulaire-filtres-batiments,
+    .formulaire-filtres-chambres,
+    .grille-batiments,
+    .resume-batiment,
+    .statistiques-etage {
+        grid-template-columns: 1fr;
+    }
+
+    .filtre-recherche-batiment,
+    .filtre-recherche-chambre {
+        grid-column: auto;
+    }
+
+    .carte {
+        padding: 16px;
+    }
+
+    .entete-section,
+    .entete-carte-batiment,
+    .pagination {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .actions-filtres-batiments,
+    .actions-filtres-chambres {
+        flex-direction: column-reverse;
+    }
+
+    .actions-filtres-batiments .bouton,
+    .actions-filtres-chambres .bouton {
+        width: 100%;
+    }
+
+    .actions-carte-batiment .bouton {
+        width: 100%;
+    }
+
+    .liens-pagination {
+        width: 100%;
+    }
+}
+
+
+/* =========================================================
+   CHAMBRES — INTÉGRATION LAYOUT GESTIONINTERNAT
+========================================================= */
+
+body {
+    overflow-x: hidden;
+}
+
+.app-shell {
+    min-height: 100vh;
+}
+
+.main-area {
+    min-width: 0;
+    min-height: 100vh;
+}
+
+.topbar-locaux {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+
+    min-height: 92px;
+    padding: 15px clamp(20px, 3vw, 40px);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+
+    border-bottom: 1px solid #e2e8f0;
+    background: rgba(255, 255, 255, .96);
+    box-shadow: 0 6px 22px rgba(15, 23, 42, .045);
+
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.sur-titre-topbar-locaux {
+    display: block;
+    margin-bottom: 3px;
+
+    color: #2563eb;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+}
+
+.topbar-locaux h1 {
+    margin: 0;
+    color: #0f172a;
+    font-size: clamp(23px, 2.3vw, 31px);
+    font-weight: 850;
+    letter-spacing: -.025em;
+}
+
+.topbar-locaux p {
+    margin: 5px 0 0;
+    color: #64748b;
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.actions-topbar-locaux {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 9px;
+}
+
+.profil-topbar-locaux {
+    min-width: 180px;
+    padding: 6px 10px 6px 7px;
+
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    background: #fff;
+}
+
+.avatar-topbar-locaux {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2563eb, #60a5fa);
+    color: #fff;
+
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.profil-topbar-locaux strong,
+.profil-topbar-locaux span {
+    display: block;
+}
+
+.profil-topbar-locaux strong {
+    max-width: 150px;
+    overflow: hidden;
+    color: #0f172a;
+    font-size: 11px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.profil-topbar-locaux span {
+    margin-top: 2px;
+    color: #64748b;
+    font-size: 9px;
+}
+
+.main-area > .conteneur {
+    width: min(1480px, calc(100% - 36px));
+    margin: 0 auto;
+    padding: 24px 0 44px;
+}
+
+/* L'ancien en-tête standalone n'est plus utilisé sur cette page. */
+.main-area > .entete,
+.main-area > .pied-page {
+    display: none;
+}
+
+@media (max-width: 1120px) {
+    .topbar-locaux {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .actions-topbar-locaux {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 760px) {
+    .topbar-locaux {
+        position: static;
+        padding: 14px;
+    }
+
+    .actions-topbar-locaux {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .actions-topbar-locaux .bouton,
+    .profil-topbar-locaux {
+        width: 100%;
+    }
+
+    .main-area > .conteneur {
+        width: calc(100% - 22px);
+        padding-top: 16px;
+    }
+}
+

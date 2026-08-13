@@ -1,0 +1,568 @@
+{% load static %}
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>Demandes acceptées — GestionInternat</title>
+
+    <!-- IMPORTANT : styles de la sidebar commune -->
+    <link
+        rel="stylesheet"
+        href="{% static 'dashboard/style.css' %}?v=12"
+    >
+
+    <!-- Styles propres à cette page -->
+    <link
+        rel="stylesheet"
+        href="{% static 'hebergement/demandes_acceptees_premium.css' %}?v=2"
+    >
+
+    <style>
+        /*
+         * Couche minimale pour intégrer correctement l'ancien design
+         * dans le layout commun sidebar + contenu.
+         */
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .affectations-shell {
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        .affectations-main {
+            min-width: 0;
+            min-height: 100vh;
+            background: #f4f7fb;
+        }
+
+        .affectations-main .top {
+            position: relative;
+            width: 100%;
+            margin: 0;
+        }
+
+        .affectations-main .wrap {
+            width: 100%;
+            max-width: none;
+            margin: 0;
+        }
+
+        @media (max-width: 800px) {
+            .affectations-main .top {
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app-shell affectations-shell">
+
+    <!--
+        IMPORTANT :
+        La sidebar doit être directement dans app-shell,
+        PAS à l'intérieur du header .top.
+    -->
+    {% include "dashboard/sidebar_responsable.html" %}
+
+
+    <div class="main-area affectations-main">
+
+        <!-- ========================= -->
+        <!-- EN-TÊTE -->
+        <!-- ========================= -->
+
+        <header class="top">
+
+            <div class="brand">
+
+                <div class="logo">
+                    GI
+                </div>
+
+                <div>
+                    <span class="ey">
+                        Espace responsable
+                    </span>
+
+                    <h1>
+                        Demandes acceptées
+                    </h1>
+
+                    <p>
+                        Affectez les étudiants admis à une chambre.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <nav class="nav">
+
+                <a
+                    class="btn bl"
+                    href="{% url 'hebergement:liste_demandes_responsable' %}"
+                >
+                    Demandes
+                </a>
+
+                <a
+                    class="btn bl"
+                    href="{% url 'hebergement:liste_affectations_responsable' %}"
+                >
+                    Affectations
+                </a>
+
+                <a
+                    class="btn bd"
+                    href="{% url 'dashboard:accueil' %}"
+                >
+                    Tableau de bord
+                </a>
+
+            </nav>
+
+        </header>
+
+
+        <!-- ========================= -->
+        <!-- CONTENU PRINCIPAL -->
+        <!-- ========================= -->
+
+        <main class="wrap">
+
+
+            <!-- ========================= -->
+            <!-- MESSAGES DJANGO -->
+            <!-- ========================= -->
+
+            {% if messages %}
+
+                <div class="messages">
+
+                    {% for message in messages %}
+
+                        <div class="message {{ message.tags }}">
+                            {{ message }}
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
+
+            <!-- ========================= -->
+            <!-- HERO -->
+            <!-- ========================= -->
+
+            <section class="hero">
+
+                <div>
+
+                    <span class="ey eyw">
+                        Hébergement
+                    </span>
+
+                    <h2>
+                        Demandes prêtes pour l'affectation
+                    </h2>
+
+                    <p>
+                        Repérez immédiatement les étudiants encore à affecter
+                        et ceux disposant déjà d'une affectation prévue ou active.
+                    </p>
+
+                </div>
+
+
+                <div class="hcount">
+
+                    <strong>
+                        {{ nombre_affiche|default:0 }}
+                    </strong>
+
+                    <span>
+                        résultat(s)
+                    </span>
+
+                </div>
+
+            </section>
+
+
+            <!-- ========================= -->
+            <!-- STATISTIQUES -->
+            <!-- ========================= -->
+
+            <section class="stats">
+
+                <article class="stat">
+
+                    <span>
+                        Demandes acceptées
+                    </span>
+
+                    <strong>
+                        {{ nombre_total|default:0 }}
+                    </strong>
+
+                </article>
+
+
+                <article class="stat">
+
+                    <span>
+                        À affecter
+                    </span>
+
+                    <strong>
+                        {{ nombre_a_affecter|default:0 }}
+                    </strong>
+
+                </article>
+
+
+                <article class="stat">
+
+                    <span>
+                        Déjà affectées
+                    </span>
+
+                    <strong>
+                        {{ nombre_deja_affectees|default:0 }}
+                    </strong>
+
+                </article>
+
+            </section>
+
+
+            <!-- ========================= -->
+            <!-- FILTRES -->
+            <!-- ========================= -->
+
+            <section class="panel">
+
+                <div class="phead">
+
+                    <div>
+
+                        <span class="ey">
+                            Recherche
+                        </span>
+
+                        <h2>
+                            Filtrer
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <form
+                    method="get"
+                    class="filters"
+                >
+
+                    <div class="field">
+
+                        <label for="recherche">
+                            Étudiant
+                        </label>
+
+                        <input
+                            id="recherche"
+                            name="recherche"
+                            type="search"
+                            value="{{ recherche }}"
+                            placeholder="Nom, matricule, CNE ou année"
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label for="etat">
+                            État
+                        </label>
+
+                        <select
+                            id="etat"
+                            name="etat"
+                        >
+
+                            <option
+                                value="TOUTES"
+                                {% if etat_selectionne == "TOUTES" %}selected{% endif %}
+                            >
+                                Toutes
+                            </option>
+
+                            <option
+                                value="A_AFFECTER"
+                                {% if etat_selectionne == "A_AFFECTER" %}selected{% endif %}
+                            >
+                                À affecter
+                            </option>
+
+                            <option
+                                value="DEJA_AFFECTEES"
+                                {% if etat_selectionne == "DEJA_AFFECTEES" %}selected{% endif %}
+                            >
+                                Déjà affectées
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="factions">
+
+                        <button
+                            class="btn bp"
+                            type="submit"
+                        >
+                            Appliquer
+                        </button>
+
+                        <a
+                            class="btn bl"
+                            href="{% url 'hebergement:liste_demandes_a_affecter' %}"
+                        >
+                            Réinitialiser
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+
+            <!-- ========================= -->
+            <!-- TITRE LISTE -->
+            <!-- ========================= -->
+
+            <div class="section-head">
+
+                <div>
+
+                    <span class="ey">
+                        Dossiers
+                    </span>
+
+                    <h2>
+                        Étudiants acceptés
+                    </h2>
+
+                    <p>
+                        Une vue synthétique pour accélérer l'affectation.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- ========================= -->
+            <!-- LISTE -->
+            <!-- ========================= -->
+
+            {% if demandes %}
+
+                <div class="grid">
+
+                    {% for demande in demandes %}
+
+                        <article class="card">
+
+                            <div class="card-top">
+
+                                <div class="student">
+
+                                    <div class="av">
+                                        {{ demande.etudiant.utilisateur.first_name|first|default:"E" }}
+                                    </div>
+
+                                    <div>
+
+                                        <h3>
+                                            {{ demande.etudiant.utilisateur.get_full_name|default:demande.etudiant.utilisateur.username }}
+                                        </h3>
+
+                                        <p>
+                                            {{ demande.etudiant.matricule }}
+                                            ·
+                                            CNE {{ demande.etudiant.cne }}
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+
+                                {% if demande.est_deja_affectee %}
+
+                                    <span class="badge assigned">
+                                        Déjà affectée
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge ready">
+                                        À affecter
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <div class="meta">
+
+                                <div>
+                                    <span>Année</span>
+
+                                    <strong>
+                                        {{ demande.annee_universitaire.libelle }}
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Décision</span>
+
+                                    <strong>
+                                        {{ demande.date_decision|date:"d/m/Y"|default:"—" }}
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Filière</span>
+
+                                    <strong>
+                                        {{ demande.etudiant.filiere|default:"—" }}
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Niveau</span>
+
+                                    <strong>
+                                        {{ demande.etudiant.niveau_etude|default:"—" }}
+                                    </strong>
+                                </div>
+
+                            </div>
+
+
+                            {% if demande.est_deja_affectee and demande.affectation_en_cours %}
+
+                                <div class="box">
+
+                                    Affectation actuelle :
+
+                                    <strong>
+                                        {{ demande.affectation_en_cours.chambre.batiment.code }}/{{ demande.affectation_en_cours.chambre.numero }}
+                                    </strong>
+
+                                    ·
+
+                                    {{ demande.affectation_en_cours.get_statut_display }}
+
+                                </div>
+
+                            {% else %}
+
+                                <div class="box">
+
+                                    Prête :
+
+                                    <strong>
+                                        choisissez une chambre disponible
+                                        et les dates de séjour.
+                                    </strong>
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <div class="cacts">
+
+                                <a
+                                    class="btn bl"
+                                    href="{% url 'hebergement:detail_demande_responsable' demande.pk %}"
+                                >
+                                    Voir le dossier
+                                </a>
+
+
+                                {% if demande.est_deja_affectee %}
+
+                                    <a
+                                        class="btn bd"
+                                        href="{% url 'hebergement:liste_affectations_responsable' %}?recherche={{ demande.etudiant.matricule|urlencode }}"
+                                    >
+                                        Voir l'affectation
+                                    </a>
+
+                                {% else %}
+
+                                    <a
+                                        class="btn bp"
+                                        href="{% url 'hebergement:creer_affectation' demande.pk %}"
+                                    >
+                                        Affecter une chambre
+                                    </a>
+
+                                {% endif %}
+
+                            </div>
+
+                        </article>
+
+                    {% endfor %}
+
+                </div>
+
+
+            {% else %}
+
+                <section class="empty">
+
+                    <h3>
+                        Aucune demande dans cette sélection
+                    </h3>
+
+                    <p>
+                        Modifiez les filtres ou revenez aux demandes.
+                    </p>
+
+                </section>
+
+            {% endif %}
+
+        </main>
+
+    </div>
+
+</div>
+
+</body>
+</html>

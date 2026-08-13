@@ -1,0 +1,904 @@
+:root {
+    --bleu: #2563eb;
+    --bleu-fonce: #1d4ed8;
+    --bleu-clair: #eff6ff;
+    --bleu-tres-clair: #f8fbff;
+
+    --vert: #15803d;
+    --vert-clair: #ecfdf3;
+
+    --orange: #b45309;
+    --orange-clair: #fff7ed;
+
+    --rouge: #c62828;
+    --rouge-clair: #fff1f2;
+
+    --violet: #7c3aed;
+    --violet-clair: #f5f3ff;
+
+    --fond: #f3f6fb;
+    --blanc: #ffffff;
+    --texte: #0f172a;
+    --texte-secondaire: #64748b;
+    --bordure: #dbe4f0;
+    --gris-clair: #f8fafc;
+    --gris-fonce: #334155;
+
+    --ombre: 0 18px 45px rgba(15, 23, 42, 0.08);
+    --ombre-legere: 0 10px 28px rgba(15, 23, 42, 0.055);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    margin: 0;
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(37, 99, 235, 0.09),
+            transparent 32%
+        ),
+        var(--fond);
+    color: var(--texte);
+    font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+}
+
+button,
+input,
+textarea,
+select {
+    font: inherit;
+}
+
+a {
+    color: inherit;
+}
+
+/* =========================================================
+   EN-TÊTE
+========================================================= */
+
+.entete-principale {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+    padding: 24px clamp(22px, 4vw, 64px);
+    background: rgba(255, 255, 255, 0.97);
+    border-bottom: 1px solid var(--bordure);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+}
+
+.entete-principale h1 {
+    margin: 0;
+    color: var(--texte);
+    font-size: clamp(25px, 3vw, 35px);
+}
+
+.entete-principale p {
+    margin: 7px 0 0;
+    color: var(--texte-secondaire);
+    line-height: 1.5;
+}
+
+.navigation {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* =========================================================
+   CONTENEUR ET MESSAGES
+========================================================= */
+
+.conteneur {
+    width: min(1260px, calc(100% - 40px));
+    margin: 32px auto;
+}
+
+.messages {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.message {
+    padding: 15px 18px;
+    border: 1px solid #bbf7d0;
+    border-radius: 14px;
+    background: var(--vert-clair);
+    color: var(--vert);
+    font-weight: 700;
+}
+
+.message p,
+.message ul {
+    margin-bottom: 0;
+}
+
+.message.error {
+    border-color: #fecdd3;
+    background: var(--rouge-clair);
+    color: var(--rouge);
+}
+
+.message.warning {
+    border-color: #fed7aa;
+    background: var(--orange-clair);
+    color: var(--orange);
+}
+
+/* =========================================================
+   BANNIÈRE
+========================================================= */
+
+.banniere-formulaire-demande {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    margin-bottom: 22px;
+    padding: clamp(25px, 4vw, 40px);
+    border: 1px solid #cfe0ff;
+    border-radius: 25px;
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff 0%,
+            #eff6ff 100%
+        );
+    box-shadow: var(--ombre);
+}
+
+.petit-titre {
+    display: inline-block;
+    color: var(--bleu);
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+}
+
+.banniere-formulaire-demande h2 {
+    margin: 7px 0 0;
+    font-size: clamp(28px, 4vw, 42px);
+}
+
+.banniere-formulaire-demande p {
+    max-width: 760px;
+    margin: 11px 0 0;
+    color: var(--texte-secondaire);
+    line-height: 1.65;
+}
+
+.icone-formulaire-demande {
+    display: grid;
+    flex: 0 0 auto;
+    width: 92px;
+    height: 92px;
+    place-items: center;
+    border: 1px solid rgba(37, 99, 235, 0.15);
+    border-radius: 26px;
+    background: rgba(255, 255, 255, 0.9);
+    font-size: 43px;
+    box-shadow: var(--ombre-legere);
+}
+
+/* =========================================================
+   RÉSUMÉ DE MODIFICATION
+========================================================= */
+
+.resume-demande-modification {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.resume-demande-modification > div {
+    padding: 17px;
+    border: 1px solid var(--bordure);
+    border-radius: 15px;
+    background: var(--blanc);
+    box-shadow: var(--ombre-legere);
+}
+
+.resume-demande-modification span,
+.resume-demande-modification strong {
+    display: block;
+}
+
+.resume-demande-modification span {
+    margin-bottom: 5px;
+    color: var(--texte-secondaire);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.resume-demande-modification strong {
+    font-size: 16px;
+}
+
+.alerte-demande-incomplete {
+    margin-bottom: 20px;
+    padding: 18px 20px;
+    border: 1px solid #fed7aa;
+    border-left: 5px solid var(--orange);
+    border-radius: 15px;
+    background: var(--orange-clair);
+    color: #7c2d12;
+}
+
+.alerte-demande-incomplete > strong {
+    font-size: 16px;
+}
+
+.alerte-demande-incomplete p {
+    margin: 8px 0 0;
+    line-height: 1.55;
+}
+
+.alerte-demande-incomplete > div {
+    margin-top: 13px;
+    padding-top: 13px;
+    border-top: 1px solid #fed7aa;
+}
+
+.alerte-demande-incomplete span,
+.alerte-demande-incomplete div strong {
+    display: block;
+}
+
+.alerte-demande-incomplete span {
+    margin-bottom: 5px;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+/* =========================================================
+   CARTE PRINCIPALE
+========================================================= */
+
+.carte {
+    padding: clamp(22px, 3vw, 34px);
+    border: 1px solid var(--bordure);
+    border-radius: 24px;
+    background: var(--blanc);
+    box-shadow: var(--ombre);
+}
+
+.entete-carte {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 28px;
+}
+
+.entete-carte h2 {
+    margin: 0;
+    font-size: clamp(24px, 3vw, 32px);
+}
+
+.entete-carte p {
+    margin: 8px 0 0;
+    color: var(--texte-secondaire);
+    line-height: 1.55;
+}
+
+/* =========================================================
+   BADGES
+========================================================= */
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    padding: 7px 11px;
+    border-radius: 999px;
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 12px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.badge-brouillon {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.badge-soumise,
+.badge-en_etude {
+    background: var(--bleu-clair);
+    color: var(--bleu-fonce);
+}
+
+.badge-incomplete,
+.badge-attente {
+    background: var(--orange-clair);
+    color: var(--orange);
+}
+
+.badge-acceptee {
+    background: var(--vert-clair);
+    color: var(--vert);
+}
+
+.badge-refusee,
+.badge-annulee {
+    background: var(--rouge-clair);
+    color: var(--rouge);
+}
+
+/* =========================================================
+   SECTIONS DU FORMULAIRE
+========================================================= */
+
+.section-formulaire {
+    padding: 25px 0;
+    border-top: 1px solid var(--bordure);
+}
+
+.section-formulaire:first-of-type {
+    padding-top: 0;
+    border-top: 0;
+}
+
+.entete-section-formulaire {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.numero-etape {
+    display: grid;
+    flex: 0 0 auto;
+    width: 43px;
+    height: 43px;
+    place-items: center;
+    border-radius: 13px;
+    background: linear-gradient(135deg, var(--bleu), #60a5fa);
+    color: var(--blanc);
+    font-size: 17px;
+    font-weight: 900;
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2);
+}
+
+.entete-section-formulaire h3 {
+    margin: 0;
+    font-size: 21px;
+}
+
+.description-section {
+    margin: 7px 0 0;
+    color: var(--texte-secondaire);
+    line-height: 1.55;
+}
+
+/* =========================================================
+   CHAMPS
+========================================================= */
+
+.grille-formulaire {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 17px;
+}
+
+.groupe-champ {
+    min-width: 0;
+}
+
+.groupe-champ-large {
+    grid-column: 1 / -1;
+}
+
+.groupe-champ label {
+    display: block;
+    margin-bottom: 8px;
+    color: #1e293b;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.obligatoire {
+    color: var(--rouge);
+}
+
+.groupe-champ input:not([type="checkbox"]):not([type="radio"]),
+.groupe-champ select,
+.groupe-champ textarea {
+    width: 100%;
+    min-height: 47px;
+    padding: 12px 14px;
+    border: 1px solid #cfd9e7;
+    border-radius: 12px;
+    outline: none;
+    background: var(--blanc);
+    color: var(--texte);
+    transition:
+        border-color 0.18s ease,
+        box-shadow 0.18s ease,
+        background 0.18s ease;
+}
+
+.groupe-champ textarea {
+    min-height: 125px;
+    resize: vertical;
+    line-height: 1.55;
+}
+
+.groupe-champ input:focus,
+.groupe-champ select:focus,
+.groupe-champ textarea:focus {
+    border-color: #7ca5ff;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.11);
+    background: #ffffff;
+}
+
+.groupe-champ input[type="file"] {
+    padding: 7px;
+    background: var(--gris-clair);
+}
+
+.groupe-champ input[type="file"]::file-selector-button {
+    margin-right: 12px;
+    padding: 9px 13px;
+    border: 0;
+    border-radius: 9px;
+    background: var(--bleu-clair);
+    color: var(--bleu-fonce);
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.aide {
+    display: block;
+    margin-top: 7px;
+    color: var(--texte-secondaire);
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.groupe-champ-invalide input,
+.groupe-champ-invalide select,
+.groupe-champ-invalide textarea {
+    border-color: #f87171 !important;
+    background: #fffafa;
+}
+
+.erreurs-champ,
+.errorlist {
+    display: grid;
+    gap: 4px;
+    margin: 7px 0 0;
+    padding: 0;
+    list-style: none;
+    color: var(--rouge);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+/* =========================================================
+   JUSTIFICATIFS
+========================================================= */
+
+.liste-justificatifs {
+    display: grid;
+    gap: 17px;
+}
+
+.carte-justificatif {
+    padding: 19px;
+    border: 1px solid #dce5f1;
+    border-radius: 17px;
+    background:
+        linear-gradient(
+            180deg,
+            #ffffff 0%,
+            #fbfdff 100%
+        );
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.045);
+}
+
+.entete-carte-justificatif {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 17px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e9eef5;
+}
+
+.numero-document {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 900;
+}
+
+.numero-document-valeur {
+    display: grid;
+    width: 29px;
+    height: 29px;
+    place-items: center;
+    border-radius: 9px;
+    background: var(--bleu-clair);
+    color: var(--bleu-fonce);
+}
+
+.entete-carte-justificatif small {
+    display: block;
+    margin-top: 5px;
+    color: var(--texte-secondaire);
+}
+
+.groupe-suppression {
+    grid-column: 1 / -1;
+}
+
+.case-suppression {
+    display: inline-flex !important;
+    align-items: center;
+    width: fit-content;
+    gap: 9px;
+    margin: 0 !important;
+    padding: 10px 12px;
+    border: 1px solid #fecaca;
+    border-radius: 10px;
+    background: var(--rouge-clair);
+    color: var(--rouge) !important;
+    cursor: pointer;
+}
+
+.case-suppression input {
+    width: 17px;
+    height: 17px;
+}
+
+.actions-justificatifs {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 17px;
+}
+
+.information-fichier {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.information-fichier > div {
+    padding: 14px;
+    border: 1px solid #dce5f1;
+    border-radius: 13px;
+    background: var(--gris-clair);
+}
+
+.information-fichier strong,
+.information-fichier span {
+    display: block;
+}
+
+.information-fichier strong {
+    font-size: 13px;
+}
+
+.information-fichier span {
+    margin-top: 5px;
+    color: var(--texte-secondaire);
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+/* =========================================================
+   CHOIX D'ENREGISTREMENT
+========================================================= */
+
+.choix-enregistrement {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.choix-enregistrement article {
+    padding: 18px;
+    border: 1px solid var(--bordure);
+    border-radius: 15px;
+    background: var(--gris-clair);
+}
+
+.choix-enregistrement article:first-child {
+    border-color: #cbd5e1;
+}
+
+.choix-enregistrement article:last-child {
+    border-color: #bfdbfe;
+    background: var(--bleu-clair);
+}
+
+.choix-enregistrement strong {
+    font-size: 15px;
+}
+
+.choix-enregistrement p {
+    margin: 8px 0 0;
+    color: var(--texte-secondaire);
+    line-height: 1.55;
+}
+
+/* =========================================================
+   BOUTONS
+========================================================= */
+
+.actions-formulaire {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 11px;
+    padding-top: 23px;
+    border-top: 1px solid var(--bordure);
+}
+
+.bouton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 43px;
+    padding: 10px 16px;
+    border: 1px solid transparent;
+    border-radius: 11px;
+    background: var(--bleu);
+    color: var(--blanc);
+    font-weight: 900;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+        transform 0.18s ease,
+        background 0.18s ease,
+        border-color 0.18s ease,
+        opacity 0.18s ease;
+}
+
+.bouton:hover {
+    transform: translateY(-1px);
+    background: var(--bleu-fonce);
+}
+
+.bouton-secondaire {
+    background: var(--gris-fonce);
+}
+
+.bouton-secondaire:hover {
+    background: #1e293b;
+}
+
+.bouton-danger {
+    background: var(--rouge);
+}
+
+.bouton-danger:hover {
+    background: #b91c1c;
+}
+
+.bouton-annuler {
+    border-color: var(--bordure);
+    background: var(--blanc);
+    color: var(--gris-fonce);
+}
+
+.bouton-annuler:hover {
+    border-color: #bcc9d9;
+    background: var(--gris-clair);
+}
+
+.bouton-petit {
+    min-height: 38px;
+    padding: 8px 13px;
+    font-size: 12px;
+}
+
+/* =========================================================
+   CARTE CONSEILS
+========================================================= */
+
+.carte-information {
+    margin-top: 22px;
+}
+
+.carte-information h3 {
+    margin: 0 0 19px;
+    font-size: 21px;
+}
+
+.liste-conseils {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.conseil {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+    border: 1px solid var(--bordure);
+    border-radius: 14px;
+    background: var(--gris-clair);
+}
+
+.icone-conseil {
+    display: grid;
+    flex: 0 0 auto;
+    width: 35px;
+    height: 35px;
+    place-items: center;
+    border-radius: 11px;
+    background: var(--bleu-clair);
+    color: var(--bleu-fonce);
+    font-weight: 900;
+}
+
+.conseil strong {
+    font-size: 14px;
+}
+
+.conseil p {
+    margin: 7px 0 0;
+    color: var(--texte-secondaire);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+/* =========================================================
+   ÉTAT D'ENVOI
+========================================================= */
+
+.formulaire-en-envoi {
+    opacity: 0.72;
+    pointer-events: none;
+}
+
+.formulaire-en-envoi button[type="submit"] {
+    cursor: wait;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+    .resume-demande-modification,
+    .information-fichier,
+    .liste-conseils {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 760px) {
+    .entete-principale,
+    .banniere-formulaire-demande,
+    .entete-carte {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .navigation {
+        width: 100%;
+    }
+
+    .navigation .bouton {
+        flex: 1;
+    }
+
+    .conteneur {
+        width: min(100% - 24px, 1260px);
+        margin: 20px auto;
+    }
+
+    .grille-formulaire,
+    .choix-enregistrement {
+        grid-template-columns: 1fr;
+    }
+
+    .groupe-champ-large {
+        grid-column: auto;
+    }
+
+    .entete-carte-justificatif {
+        align-items: stretch;
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 520px) {
+    .entete-principale {
+        padding: 19px 15px;
+    }
+
+    .navigation,
+    .actions-formulaire,
+    .actions-justificatifs {
+        flex-direction: column;
+    }
+
+    .navigation .bouton,
+    .actions-formulaire .bouton,
+    .actions-justificatifs .bouton {
+        width: 100%;
+    }
+
+    .carte,
+    .banniere-formulaire-demande {
+        padding: 20px;
+        border-radius: 19px;
+    }
+
+    .icone-formulaire-demande {
+        width: 72px;
+        height: 72px;
+        font-size: 34px;
+    }
+
+    .entete-section-formulaire {
+        flex-direction: column;
+    }
+}
+
+
+/* =========================================================
+   INTÉGRATION DANS LE LAYOUT ÉTUDIANT COMMUN
+========================================================= */
+
+.page-etudiant-layout .conteneur-page-etudiant {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+}
+
+.page-etudiant-layout .entete-principale {
+    display: none !important;
+}
+
+.page-etudiant-layout .banniere-demandes,
+.page-etudiant-layout .banniere-demande,
+.page-etudiant-layout .banniere-formulaire-demande {
+    margin-top: 0;
+}
+
+.page-etudiant-layout .carte,
+.page-etudiant-layout .carte-principale {
+    border-color: #d6e0ed;
+    box-shadow: 0 14px 34px rgba(15, 23, 42, .055);
+}
+
+.page-etudiant-layout .bouton-principal,
+.page-etudiant-layout .bouton:not(.bouton-secondaire) {
+    border-color: transparent;
+}
+
+@media (max-width: 700px) {
+    .page-etudiant-layout .conteneur-page-etudiant {
+        width: 100%;
+    }
+}

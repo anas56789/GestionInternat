@@ -1,0 +1,437 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Modifier les frais — {{ frais.etudiant.matricule }}
+    </title>
+
+    <link rel="stylesheet" href="{% static 'dashboard/style.css' %}?v=12">
+    <link rel="stylesheet" href="{% static 'finances/finances_responsable.css' %}?v=5">
+    <link rel="stylesheet" href="{% static 'finances/finances_responsable_layout.css' %}?v=2">
+    <link rel="stylesheet" href="{% static 'finances/finances_responsable_forms.css' %}?v=1">
+</head>
+
+<body class="finance-page">
+
+<div class="app-shell finance-shell">
+
+    {% include "dashboard/sidebar_responsable.html" %}
+
+    <div class="main-area finance-main">
+
+        <header class="finance-topbar">
+
+            <div class="finance-topbar-copy">
+                <span class="finance-eyebrow">
+                    Espace responsable
+                </span>
+
+                <h1>
+                    Modifier les frais d’hébergement
+                </h1>
+
+                <p>
+                    Mettez à jour le montant, l’échéance,
+                    le commentaire ou l’état des frais.
+                </p>
+            </div>
+
+            <div class="finance-topbar-actions">
+
+                <a
+                    href="{% url 'finances:detail_frais' frais.pk %}"
+                    class="finance-button finance-button-light"
+                >
+                    Dossier financier
+                </a>
+
+                <a
+                    href="{% url 'finances:liste_frais' %}"
+                    class="finance-button finance-button-light"
+                >
+                    Situations financières
+                </a>
+
+                <div class="finance-user-card">
+                    <div class="finance-user-avatar">
+                        {% if request.user.first_name %}
+                            {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
+                        {% else %}
+                            {{ request.user.username|first|upper }}
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <strong>
+                            {{ request.user.get_full_name|default:request.user.username }}
+                        </strong>
+
+                        <span>
+                            {% if request.user.is_superuser %}
+                                Super administrateur
+                            {% else %}
+                                {{ request.user.get_role_display }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <main class="finance-content">
+
+            {% if messages %}
+                <section class="finance-messages">
+                    {% for message in messages %}
+                        <div class="finance-message {{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </section>
+            {% endif %}
+
+
+            <section class="finance-form-hero">
+
+                <div>
+                    <span class="finance-eyebrow finance-eyebrow-light">
+                        Modification administrative
+                    </span>
+
+                    <h2>
+                        {{ frais.etudiant.utilisateur.get_full_name|default:frais.etudiant.utilisateur.username }}
+                    </h2>
+
+                    <p>
+                        Matricule {{ frais.etudiant.matricule }}
+                        ·
+                        Année {{ frais.annee_universitaire.libelle }}
+                    </p>
+                </div>
+
+                <span class="finance-status
+                    {% if frais.statut_financier == 'Payé' %}
+                        finance-status-paid
+                    {% elif 'retard' in frais.statut_financier|lower %}
+                        finance-status-late
+                    {% elif 'Partiellement' in frais.statut_financier %}
+                        finance-status-partial
+                    {% else %}
+                        finance-status-neutral
+                    {% endif %}
+                ">
+                    {{ frais.statut_financier }}
+                </span>
+
+            </section>
+
+
+            <section class="finance-edit-kpis">
+
+                <article class="finance-kpi-card">
+                    <div class="finance-kpi-icon">🧾</div>
+                    <div>
+                        <span>Montant total actuel</span>
+                        <strong>{{ frais.montant_total|floatformat:2 }} DH</strong>
+                    </div>
+                </article>
+
+                <article class="finance-kpi-card">
+                    <div class="finance-kpi-icon finance-kpi-green">✓</div>
+                    <div>
+                        <span>Montant validé</span>
+                        <strong class="finance-value-green">
+                            {{ frais.montant_paye|floatformat:2 }} DH
+                        </strong>
+                    </div>
+                </article>
+
+                <article class="finance-kpi-card">
+                    <div class="finance-kpi-icon finance-kpi-orange">⌛</div>
+                    <div>
+                        <span>Montant restant</span>
+                        <strong class="{% if frais.montant_restant > 0 %}finance-value-red{% else %}finance-value-green{% endif %}">
+                            {{ frais.montant_restant|floatformat:2 }} DH
+                        </strong>
+                    </div>
+                </article>
+
+                <article class="finance-kpi-card">
+                    <div class="finance-kpi-icon">📅</div>
+                    <div>
+                        <span>Échéance actuelle</span>
+                        <strong>{{ frais.date_echeance|date:"d/m/Y" }}</strong>
+                    </div>
+                </article>
+
+            </section>
+
+
+            <section class="finance-form-layout">
+
+                <section class="finance-panel finance-form-card">
+
+                    <div class="finance-panel-heading">
+                        <div>
+                            <span class="finance-eyebrow">
+                                Formulaire
+                            </span>
+
+                            <h2>
+                                Informations à modifier
+                            </h2>
+
+                            <p>
+                                Les champs marqués d’un astérisque
+                                sont obligatoires.
+                            </p>
+                        </div>
+                    </div>
+
+
+                    {% if formulaire.non_field_errors %}
+                        <div class="finance-form-errors">
+                            {% for erreur in formulaire.non_field_errors %}
+                                <p>{{ erreur }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+
+                    <form method="post" novalidate class="finance-form">
+                        {% csrf_token %}
+
+                        <div class="finance-form-grid">
+
+                            {% for champ in formulaire %}
+
+                                <div class="
+                                    finance-form-field
+                                    {% if champ.name == 'commentaire' or champ.name == 'est_actif' %}
+                                        finance-form-field-full
+                                    {% endif %}
+                                    {% if champ.name == 'est_actif' %}
+                                        finance-switch-zone
+                                    {% endif %}
+                                    {% if champ.errors %}
+                                        has-error
+                                    {% endif %}
+                                ">
+
+                                    {% if champ.name == "est_actif" %}
+
+                                        <label
+                                            for="{{ champ.id_for_label }}"
+                                            class="finance-checkbox-line"
+                                        >
+                                            {{ champ }}
+
+                                            <span>
+                                                <strong>
+                                                    {{ champ.label }}
+                                                </strong>
+
+                                                <small>
+                                                    Activez ou désactivez cette situation financière.
+                                                </small>
+                                            </span>
+                                        </label>
+
+                                    {% else %}
+
+                                        <label for="{{ champ.id_for_label }}">
+                                            {{ champ.label }}
+
+                                            {% if champ.field.required %}
+                                                *
+                                            {% endif %}
+                                        </label>
+
+                                        {{ champ }}
+
+                                    {% endif %}
+
+
+                                    {% if champ.help_text %}
+                                        <small class="finance-field-help">
+                                            {{ champ.help_text }}
+                                        </small>
+                                    {% endif %}
+
+
+                                    {% for erreur in champ.errors %}
+                                        <span class="finance-field-error">
+                                            {{ erreur }}
+                                        </span>
+                                    {% endfor %}
+
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+
+                        <div class="finance-warning-box">
+                            <div class="finance-warning-icon">
+                                ℹ
+                            </div>
+
+                            <div>
+                                <strong>
+                                    Attention au montant total
+                                </strong>
+
+                                <p>
+                                    Le montant total ne doit pas être inférieur
+                                    au montant déjà validé de
+                                    {{ frais.montant_paye|floatformat:2 }} DH.
+                                </p>
+                            </div>
+                        </div>
+
+
+                        <div class="finance-form-actions">
+
+                            <a
+                                href="{% url 'finances:detail_frais' frais.pk %}"
+                                class="finance-button finance-button-light"
+                            >
+                                Annuler
+                            </a>
+
+                            <button
+                                type="submit"
+                                class="finance-button finance-button-primary"
+                            >
+                                ✓ Enregistrer les modifications
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </section>
+
+
+                <aside class="finance-form-aside">
+
+                    <section class="finance-panel finance-current-card">
+
+                        <span class="finance-eyebrow">
+                            Dossier
+                        </span>
+
+                        <h3>
+                            Informations actuelles
+                        </h3>
+
+
+                        <div class="finance-current-list">
+
+                            <div>
+                                <span>Étudiant</span>
+                                <strong>
+                                    {{ frais.etudiant.utilisateur.get_full_name|default:frais.etudiant.utilisateur.username }}
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Matricule</span>
+                                <strong>
+                                    {{ frais.etudiant.matricule }}
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Année universitaire</span>
+                                <strong>
+                                    {{ frais.annee_universitaire.libelle }}
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Statut financier</span>
+                                <strong>
+                                    {{ frais.statut_financier }}
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Frais actifs</span>
+                                <strong>
+                                    {% if frais.est_actif %}
+                                        Oui
+                                    {% else %}
+                                        Non
+                                    {% endif %}
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Date de création</span>
+                                <strong>
+                                    {{ frais.date_creation|date:"d/m/Y à H:i" }}
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Dernière modification</span>
+                                <strong>
+                                    {{ frais.date_modification|date:"d/m/Y à H:i" }}
+                                </strong>
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                    <section class="finance-panel finance-help-card">
+
+                        <span class="finance-eyebrow">
+                            Rappel
+                        </span>
+
+                        <h3>
+                            Champs administratifs
+                        </h3>
+
+                        <p class="finance-help-text">
+                            Vérifiez l’étudiant, l’année universitaire,
+                            le montant total et l’échéance avant d’enregistrer.
+                        </p>
+
+                        <a
+                            href="{% url 'finances:detail_frais' frais.pk %}"
+                            class="finance-button finance-button-light finance-full-button"
+                        >
+                            Consulter les paiements
+                        </a>
+
+                    </section>
+
+                </aside>
+
+            </section>
+
+        </main>
+
+
+        <footer class="finance-footer">
+            Gestion de l’internat universitaire — {% now "Y" %}
+        </footer>
+
+    </div>
+
+</div>
+
+</body>
+</html>

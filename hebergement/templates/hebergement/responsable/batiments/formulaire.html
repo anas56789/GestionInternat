@@ -1,0 +1,396 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {{ titre_page }} — Internat universitaire
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'dashboard/style.css' %}?v=11"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'hebergement/gestion_locaux_premium.css' %}?v=3"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'hebergement/formulaires_locaux_premium.css' %}?v=1"
+    >
+</head>
+
+<body class="page-formulaire-local">
+
+<div class="app-shell">
+
+    {% include "dashboard/sidebar_responsable.html" %}
+
+    <div class="main-area">
+        <header class="topbar-locaux">
+            <div>
+                <span class="sur-titre-topbar-locaux">Espace responsable</span>
+                <h1>{{ titre_page }}</h1>
+                <p>{% if batiment %}Mettez à jour les informations administratives du bâtiment.{% else %}Enregistrez un nouveau bâtiment dans le parc d'hébergement.{% endif %}</p>
+            </div>
+            <div class="actions-topbar-locaux">
+                {% if batiment %}
+                <a href="{% url 'hebergement:detail_batiment' batiment.pk %}" class="bouton bouton-secondaire">Voir la fiche</a>
+                {% endif %}
+                <a href="{% url 'hebergement:liste_batiments' %}" class="bouton bouton-secondaire">← Bâtiments</a>
+                <div class="profil-topbar-locaux">
+                    <div class="avatar-topbar-locaux">{% if request.user.first_name %}{{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}{% else %}{{ request.user.username|first|upper }}{% endif %}</div>
+                    <div><strong>{{ request.user.get_full_name|default:request.user.username }}</strong><span>{% if request.user.is_superuser %}Super administrateur{% else %}{{ request.user.get_role_display }}{% endif %}</span></div>
+                </div>
+            </div>
+        </header>
+
+
+<main class="conteneur conteneur-formulaire-local">
+
+    {% if messages %}
+        <section class="messages">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </section>
+    {% endif %}
+
+    <!-- =====================================================
+         BANNIÈRE
+    ====================================================== -->
+
+    <section class="hero-formulaire-local">
+
+        <div>
+            <span class="petit-titre">
+                Gestion des infrastructures
+            </span>
+
+            <h2>
+                {% if batiment %}
+                    {{ batiment.code }} — {{ batiment.nom }}
+                {% else %}
+                    Nouveau bâtiment
+                {% endif %}
+            </h2>
+
+            <p>
+                Renseignez le code, le nom, le nombre d'étages
+                et le statut du bâtiment. Une description peut
+                être ajoutée pour faciliter son identification.
+            </p>
+        </div>
+
+        <div class="icone-hero-formulaire">
+            🏢
+        </div>
+
+    </section>
+
+    <section class="grille-formulaire-local">
+
+        <!-- =================================================
+             FORMULAIRE
+        ================================================== -->
+
+        <section class="carte carte-formulaire-local">
+
+            <div class="entete-section">
+                <div>
+                    <span class="mini-label-formulaire">
+                        Informations générales
+                    </span>
+
+                    <h2>
+                        Fiche du bâtiment
+                    </h2>
+
+                    <p>
+                        Les champs marqués d'un astérisque
+                        sont obligatoires.
+                    </p>
+                </div>
+
+                {% if batiment %}
+                    <span class="badge-mode-formulaire badge-mode-modification">
+                        Modification
+                    </span>
+                {% else %}
+                    <span class="badge-mode-formulaire">
+                        Création
+                    </span>
+                {% endif %}
+            </div>
+
+            {% if formulaire.non_field_errors %}
+                <div class="bloc-erreurs-formulaire">
+                    <strong>
+                        Le formulaire contient une erreur.
+                    </strong>
+
+                    <ul>
+                        {% for erreur in formulaire.non_field_errors %}
+                            <li>{{ erreur }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            <form
+                method="post"
+                novalidate
+                class="formulaire-local-premium"
+            >
+                {% csrf_token %}
+
+                <!-- CODE + NOM -->
+
+                <div class="grille-champs-formulaire">
+
+                    <div class="groupe-champ-formulaire">
+                        <label for="{{ formulaire.code.id_for_label }}">
+                            Code du bâtiment *
+                        </label>
+
+                        {{ formulaire.code }}
+
+                        <small class="aide-champ">
+                            Exemple : BAT-A. Le code sera
+                            automatiquement converti en majuscules.
+                        </small>
+
+                        {% for erreur in formulaire.code.errors %}
+                            <span class="erreur-champ">
+                                {{ erreur }}
+                            </span>
+                        {% endfor %}
+                    </div>
+
+                    <div class="groupe-champ-formulaire">
+                        <label for="{{ formulaire.nom.id_for_label }}">
+                            Nom du bâtiment *
+                        </label>
+
+                        {{ formulaire.nom }}
+
+                        <small class="aide-champ">
+                            Nom lisible par les responsables
+                            et les étudiants.
+                        </small>
+
+                        {% for erreur in formulaire.nom.errors %}
+                            <span class="erreur-champ">
+                                {{ erreur }}
+                            </span>
+                        {% endfor %}
+                    </div>
+
+                    <!-- ÉTAGES + STATUT -->
+
+                    <div class="groupe-champ-formulaire">
+                        <label for="{{ formulaire.nombre_etages.id_for_label }}">
+                            Nombre d'étages *
+                        </label>
+
+                        {{ formulaire.nombre_etages }}
+
+                        <small class="aide-champ">
+                            Utilisez 0 si le bâtiment
+                            ne possède qu'un rez-de-chaussée.
+                        </small>
+
+                        {% for erreur in formulaire.nombre_etages.errors %}
+                            <span class="erreur-champ">
+                                {{ erreur }}
+                            </span>
+                        {% endfor %}
+                    </div>
+
+                    <div class="groupe-champ-formulaire">
+                        <label for="{{ formulaire.statut.id_for_label }}">
+                            Statut du bâtiment *
+                        </label>
+
+                        {{ formulaire.statut }}
+
+                        <small class="aide-champ">
+                            Le statut contrôle la disponibilité
+                            administrative du bâtiment.
+                        </small>
+
+                        {% for erreur in formulaire.statut.errors %}
+                            <span class="erreur-champ">
+                                {{ erreur }}
+                            </span>
+                        {% endfor %}
+                    </div>
+
+                    <!-- DESCRIPTION -->
+
+                    <div class="groupe-champ-formulaire champ-formulaire-large">
+                        <label for="{{ formulaire.description.id_for_label }}">
+                            Description
+                        </label>
+
+                        {{ formulaire.description }}
+
+                        <small class="aide-champ">
+                            Informations complémentaires :
+                            localisation, usage, particularités…
+                        </small>
+
+                        {% for erreur in formulaire.description.errors %}
+                            <span class="erreur-champ">
+                                {{ erreur }}
+                            </span>
+                        {% endfor %}
+                    </div>
+
+                </div>
+
+                <div class="separateur-formulaire"></div>
+
+                <div class="actions-formulaire-local">
+
+                    <a
+                        href="{% url 'hebergement:liste_batiments' %}"
+                        class="bouton bouton-secondaire"
+                    >
+                        Annuler
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="bouton bouton-validation-formulaire"
+                    >
+                        {% if batiment %}
+                            ✓ {{ bouton_validation }}
+                        {% else %}
+                            + {{ bouton_validation }}
+                        {% endif %}
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+        <!-- =================================================
+             AIDE LATÉRALE
+        ================================================== -->
+
+        <aside class="colonne-aide-formulaire">
+
+            <section class="carte carte-aide-formulaire">
+
+                <span class="mini-label-formulaire">
+                    Règles
+                </span>
+
+                <h2>
+                    Bonnes pratiques
+                </h2>
+
+                <div class="liste-conseils-formulaire">
+
+                    <div class="conseil-formulaire">
+                        <span>1</span>
+
+                        <div>
+                            <strong>
+                                Code unique
+                            </strong>
+
+                            <p>
+                                Utilisez un code court et stable,
+                                par exemple BAT-A ou RES-B.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="conseil-formulaire">
+                        <span>2</span>
+
+                        <div>
+                            <strong>
+                                Nombre d'étages cohérent
+                            </strong>
+
+                            <p>
+                                Les chambres ne pourront pas être
+                                positionnées au-delà de cette valeur.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="conseil-formulaire">
+                        <span>3</span>
+
+                        <div>
+                            <strong>
+                                Statut
+                            </strong>
+
+                            <p>
+                                Un bâtiment inactif ne doit pas
+                                être utilisé pour de nouvelles chambres
+                                ou affectations.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
+
+            {% if batiment %}
+                <section class="carte resume-modification-local">
+
+                    <span class="mini-label-formulaire">
+                        Bâtiment actuel
+                    </span>
+
+                    <div class="ligne-resume-local">
+                        <span>Code</span>
+                        <strong>{{ batiment.code }}</strong>
+                    </div>
+
+                    <div class="ligne-resume-local">
+                        <span>Nom</span>
+                        <strong>{{ batiment.nom }}</strong>
+                    </div>
+
+                    <div class="ligne-resume-local">
+                        <span>Étages</span>
+                        <strong>{{ batiment.nombre_etages }}</strong>
+                    </div>
+
+                    <div class="ligne-resume-local">
+                        <span>Statut</span>
+                        <strong>{{ batiment.get_statut_display }}</strong>
+                    </div>
+
+                </section>
+            {% endif %}
+
+        </aside>
+
+    </section>
+
+</main>
+
+
+    </div>
+</div>
+</body>
+</html>

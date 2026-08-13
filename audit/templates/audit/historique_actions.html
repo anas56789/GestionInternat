@@ -1,0 +1,667 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Historique et audit — GestionInternat</title>
+
+    <link rel="stylesheet" href="{% static 'dashboard/style.css' %}?v=12">
+    <link rel="stylesheet" href="{% static 'audit/audit_premium.css' %}?v=1">
+    <link rel="stylesheet" href="{% static 'audit/audit_responsable_layout.css' %}?v=1">
+</head>
+
+<body class="audit-page">
+
+<div class="app-shell audit-shell">
+
+    {% include "dashboard/sidebar_responsable.html" %}
+
+    <div class="main-area audit-main">
+
+        <header class="audit-topbar">
+
+            <div class="audit-topbar-copy">
+                <span class="audit-eyebrow">
+                    Espace responsable
+                </span>
+
+                <h1>
+                    Historique et audit
+                </h1>
+
+                <p>
+                    Traçabilité des opérations sensibles
+                    de l’internat.
+                </p>
+            </div>
+
+            <div class="audit-user-card">
+
+                <div class="audit-user-avatar">
+                    {% if request.user.first_name %}
+                        {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
+                    {% else %}
+                        {{ request.user.username|first|upper }}
+                    {% endif %}
+                </div>
+
+                <div>
+                    <strong>
+                        {{ request.user.get_full_name|default:request.user.username }}
+                    </strong>
+
+                    <span>
+                        {% if request.user.is_superuser %}
+                            Super administrateur
+                        {% else %}
+                            {{ request.user.get_role_display }}
+                        {% endif %}
+                    </span>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <main class="audit-content">
+
+            {% if messages %}
+                <section class="audit-messages">
+                    {% for message in messages %}
+                        <div class="audit-message {{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </section>
+            {% endif %}
+
+
+            <section class="audit-hero">
+
+                <div>
+                    <span class="audit-eyebrow audit-eyebrow-light">
+                        Journal des opérations
+                    </span>
+
+                    <h2>
+                        Traçabilité administrative
+                    </h2>
+
+                    <p>
+                        Retrouvez les créations, modifications,
+                        validations, traitements, affectations,
+                        transferts, clôtures et annulations enregistrés
+                        dans l’application.
+                    </p>
+                </div>
+
+                <div class="audit-hero-count">
+                    <strong>
+                        {{ nombre_resultats|default:0 }}
+                    </strong>
+
+                    <span>
+                        résultat(s)
+                    </span>
+                </div>
+
+            </section>
+
+
+            <section class="audit-kpi-grid">
+
+                <article class="audit-kpi-card">
+                    <div class="audit-kpi-icon">🕒</div>
+
+                    <div>
+                        <span>Historique total</span>
+                        <strong>{{ nombre_total|default:0 }}</strong>
+                        <small>Actions enregistrées</small>
+                    </div>
+                </article>
+
+
+                <article class="audit-kpi-card">
+                    <div class="audit-kpi-icon">🔎</div>
+
+                    <div>
+                        <span>Résultats affichés</span>
+                        <strong>{{ nombre_resultats|default:0 }}</strong>
+                        <small>Après filtrage</small>
+                    </div>
+                </article>
+
+
+                <article class="audit-kpi-card">
+                    <div class="audit-kpi-icon audit-kpi-blue">👤</div>
+
+                    <div>
+                        <span>Utilisateurs tracés</span>
+                        <strong class="audit-value-blue">
+                            {{ nombre_utilisateurs|default:0 }}
+                        </strong>
+                        <small>Acteurs enregistrés</small>
+                    </div>
+                </article>
+
+
+                <article class="audit-kpi-card">
+                    <div class="audit-kpi-icon audit-kpi-purple">🗂</div>
+
+                    <div>
+                        <span>Types d’entités</span>
+                        <strong class="audit-value-purple">
+                            {{ nombre_entites|default:0 }}
+                        </strong>
+                        <small>Objets métiers</small>
+                    </div>
+                </article>
+
+
+                {% if nombre_aujourdhui != None %}
+                    <article class="audit-kpi-card">
+                        <div class="audit-kpi-icon audit-kpi-green">📅</div>
+
+                        <div>
+                            <span>Aujourd’hui</span>
+                            <strong class="audit-value-green">
+                                {{ nombre_aujourdhui }}
+                            </strong>
+                            <small>Actions du jour</small>
+                        </div>
+                    </article>
+                {% endif %}
+
+            </section>
+
+
+            <section class="audit-panel">
+
+                <div class="audit-panel-heading">
+
+                    <div>
+                        <span class="audit-eyebrow">
+                            Recherche avancée
+                        </span>
+
+                        <h2>
+                            Filtrer l’historique
+                        </h2>
+
+                        <p>
+                            Combinez plusieurs critères pour retrouver
+                            rapidement une opération.
+                        </p>
+                    </div>
+
+                    {% if recherche or type_selectionne or entite_selectionnee or utilisateur_selectionne or date_debut or date_fin %}
+                        <span class="audit-active-filter-pill">
+                            Filtres actifs
+                        </span>
+                    {% endif %}
+
+                </div>
+
+
+                <form method="get" class="audit-filters">
+
+                    <div class="audit-field audit-search-field">
+                        <label for="recherche">
+                            Recherche
+                        </label>
+
+                        <input
+                            id="recherche"
+                            name="recherche"
+                            type="search"
+                            value="{{ recherche }}"
+                            placeholder="Description, entité, utilisateur..."
+                        >
+                    </div>
+
+
+                    <div class="audit-field">
+                        <label for="type">
+                            Type d’action
+                        </label>
+
+                        <select id="type" name="type">
+                            <option value="">
+                                Tous les types
+                            </option>
+
+                            {% for valeur, libelle in choix_types %}
+                                <option
+                                    value="{{ valeur }}"
+                                    {% if type_selectionne == valeur %}selected{% endif %}
+                                >
+                                    {{ libelle }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+
+                    <div class="audit-field">
+                        <label for="entite">
+                            Entité
+                        </label>
+
+                        <select id="entite" name="entite">
+                            <option value="">
+                                Toutes les entités
+                            </option>
+
+                            {% for entite in entites %}
+                                <option
+                                    value="{{ entite }}"
+                                    {% if entite_selectionnee == entite %}selected{% endif %}
+                                >
+                                    {{ entite }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+
+                    <div class="audit-field">
+                        <label for="utilisateur">
+                            Utilisateur
+                        </label>
+
+                        <select id="utilisateur" name="utilisateur">
+                            <option value="">
+                                Tous les utilisateurs
+                            </option>
+
+                            {% for utilisateur in utilisateurs %}
+                                <option
+                                    value="{{ utilisateur.pk }}"
+                                    {% if utilisateur_selectionne == utilisateur.pk|stringformat:"s" %}selected{% endif %}
+                                >
+                                    {{ utilisateur.get_full_name|default:utilisateur.username }}
+                                    — {{ utilisateur.username }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+
+                    {% if champ_date_disponible %}
+
+                        <div class="audit-field">
+                            <label for="date_debut">
+                                Du
+                            </label>
+
+                            <input
+                                id="date_debut"
+                                name="date_debut"
+                                type="date"
+                                value="{{ date_debut }}"
+                            >
+                        </div>
+
+
+                        <div class="audit-field">
+                            <label for="date_fin">
+                                Au
+                            </label>
+
+                            <input
+                                id="date_fin"
+                                name="date_fin"
+                                type="date"
+                                value="{{ date_fin }}"
+                            >
+                        </div>
+
+                    {% endif %}
+
+
+                    <div class="audit-filter-actions">
+
+                        <a
+                            href="{% url 'audit:historique_actions' %}"
+                            class="audit-button audit-button-light"
+                        >
+                            Réinitialiser
+                        </a>
+
+                        <button
+                            type="submit"
+                            class="audit-button audit-button-primary"
+                        >
+                            Appliquer les filtres
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+
+            <section class="audit-panel">
+
+                <div class="audit-panel-heading">
+
+                    <div>
+                        <span class="audit-eyebrow">
+                            Journal
+                        </span>
+
+                        <h2>
+                            Opérations enregistrées
+                        </h2>
+
+                        <p>
+                            Les actions les plus récentes
+                            apparaissent en premier.
+                        </p>
+                    </div>
+
+                    <span class="audit-result-pill">
+                        {{ nombre_resultats|default:0 }} résultat(s)
+                    </span>
+
+                </div>
+
+
+                <div class="audit-action-list">
+
+                    {% for action in actions %}
+
+                        <article class="audit-action-card">
+
+                            <div class="
+                                audit-action-rail
+                                audit-type-{{ action.type_action|lower }}
+                            ">
+                                <span></span>
+                            </div>
+
+
+                            <div class="audit-action-content">
+
+                                <div class="audit-action-heading">
+
+                                    <div class="audit-action-badges">
+
+                                        <span class="
+                                            audit-type-badge
+                                            audit-type-badge-{{ action.type_action|lower }}
+                                        ">
+                                            {{ action.type_label }}
+                                        </span>
+
+                                        <span class="audit-entity-badge">
+                                            {{ action.entite }}
+                                            #{{ action.identifiant }}
+                                        </span>
+
+                                    </div>
+
+
+                                    {% if action.date %}
+                                        <time class="audit-action-date">
+                                            {{ action.date|date:"d/m/Y à H:i:s" }}
+                                        </time>
+                                    {% endif %}
+
+                                </div>
+
+
+                                <p class="audit-action-description">
+                                    {{ action.description }}
+                                </p>
+
+
+                                <div class="audit-action-meta">
+
+                                    <div>
+                                        <span>Utilisateur</span>
+
+                                        <strong>
+                                            {% if action.utilisateur %}
+                                                {{ action.utilisateur.get_full_name|default:action.utilisateur.username }}
+                                            {% else %}
+                                                Système
+                                            {% endif %}
+                                        </strong>
+
+                                        {% if action.utilisateur %}
+                                            <small>
+                                                {{ action.utilisateur.username }}
+                                            </small>
+                                        {% endif %}
+                                    </div>
+
+
+                                    <div>
+                                        <span>Référence</span>
+
+                                        <strong>
+                                            {{ action.entite }}
+                                            #{{ action.identifiant }}
+                                        </strong>
+                                    </div>
+
+
+                                    {% if action.adresse_ip %}
+                                        <div>
+                                            <span>Adresse IP</span>
+
+                                            <strong>
+                                                {{ action.adresse_ip }}
+                                            </strong>
+                                        </div>
+                                    {% endif %}
+
+                                </div>
+
+
+                                {% if action.anciennes_valeurs or action.nouvelles_valeurs %}
+
+                                    <details class="audit-details">
+
+                                        <summary>
+                                            Voir les changements enregistrés
+                                        </summary>
+
+
+                                        <div class="audit-compare">
+
+                                            <div class="audit-compare-column">
+
+                                                <span class="audit-compare-title">
+                                                    Avant
+                                                </span>
+
+
+                                                {% if action.anciennes_valeurs %}
+
+                                                    <div class="audit-values-list">
+
+                                                        {% for cle, valeur in action.anciennes_valeurs %}
+                                                            <div>
+                                                                <span>
+                                                                    {{ cle }}
+                                                                </span>
+
+                                                                <strong>
+                                                                    {% if valeur == None %}
+                                                                        —
+                                                                    {% elif valeur == True %}
+                                                                        Oui
+                                                                    {% elif valeur == False %}
+                                                                        Non
+                                                                    {% else %}
+                                                                        {{ valeur }}
+                                                                    {% endif %}
+                                                                </strong>
+                                                            </div>
+                                                        {% endfor %}
+
+                                                    </div>
+
+                                                {% else %}
+
+                                                    <p class="audit-no-value">
+                                                        Aucune valeur antérieure.
+                                                    </p>
+
+                                                {% endif %}
+
+                                            </div>
+
+
+                                            <div class="audit-compare-arrow">
+                                                →
+                                            </div>
+
+
+                                            <div class="audit-compare-column">
+
+                                                <span class="audit-compare-title">
+                                                    Après
+                                                </span>
+
+
+                                                {% if action.nouvelles_valeurs %}
+
+                                                    <div class="audit-values-list">
+
+                                                        {% for cle, valeur in action.nouvelles_valeurs %}
+                                                            <div>
+                                                                <span>
+                                                                    {{ cle }}
+                                                                </span>
+
+                                                                <strong>
+                                                                    {% if valeur == None %}
+                                                                        —
+                                                                    {% elif valeur == True %}
+                                                                        Oui
+                                                                    {% elif valeur == False %}
+                                                                        Non
+                                                                    {% else %}
+                                                                        {{ valeur }}
+                                                                    {% endif %}
+                                                                </strong>
+                                                            </div>
+                                                        {% endfor %}
+
+                                                    </div>
+
+                                                {% else %}
+
+                                                    <p class="audit-no-value">
+                                                        Aucune nouvelle valeur.
+                                                    </p>
+
+                                                {% endif %}
+
+                                            </div>
+
+                                        </div>
+
+                                    </details>
+
+                                {% endif %}
+
+                            </div>
+
+                        </article>
+
+                    {% empty %}
+
+                        <section class="audit-empty">
+
+                            <div class="audit-empty-icon">
+                                🕒
+                            </div>
+
+                            <h3>
+                                Aucun historique trouvé
+                            </h3>
+
+                            <p>
+                                Aucune opération ne correspond
+                                aux critères sélectionnés.
+                            </p>
+
+                            <a
+                                href="{% url 'audit:historique_actions' %}"
+                                class="audit-button audit-button-light"
+                            >
+                                Réinitialiser les filtres
+                            </a>
+
+                        </section>
+
+                    {% endfor %}
+
+                </div>
+
+
+                {% if page_obj.paginator.num_pages > 1 %}
+
+                    <nav
+                        class="audit-pagination"
+                        aria-label="Pagination de l'historique"
+                    >
+
+                        <div class="audit-pagination-info">
+                            Page
+                            <strong>{{ page_obj.number }}</strong>
+                            sur
+                            <strong>{{ page_obj.paginator.num_pages }}</strong>
+                        </div>
+
+
+                        <div class="audit-pagination-actions">
+
+                            {% if page_obj.has_previous %}
+                                <a
+                                    href="?page={{ page_obj.previous_page_number }}{% if chaine_filtres %}&{{ chaine_filtres }}{% endif %}"
+                                    class="audit-button audit-button-light"
+                                >
+                                    ← Précédente
+                                </a>
+                            {% endif %}
+
+
+                            {% if page_obj.has_next %}
+                                <a
+                                    href="?page={{ page_obj.next_page_number }}{% if chaine_filtres %}&{{ chaine_filtres }}{% endif %}"
+                                    class="audit-button audit-button-primary"
+                                >
+                                    Suivante →
+                                </a>
+                            {% endif %}
+
+                        </div>
+
+                    </nav>
+
+                {% endif %}
+
+            </section>
+
+        </main>
+
+
+        <footer class="audit-footer">
+            Gestion de l’internat universitaire — {% now "Y" %}
+        </footer>
+
+    </div>
+
+</div>
+
+</body>
+</html>

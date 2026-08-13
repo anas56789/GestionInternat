@@ -1,0 +1,363 @@
+:root {
+    --bleu: #2563eb;
+    --bleu-fonce: #1d4ed8;
+    --fond: #f4f7fb;
+    --blanc: #ffffff;
+    --texte: #1f2937;
+    --texte-secondaire: #64748b;
+    --bordure: #e2e8f0;
+    --vert: #15803d;
+    --rouge: #b91c1c;
+    --gris: #334155;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    margin: 0;
+    background: var(--fond);
+    color: var(--texte);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.entete {
+    padding: 20px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    background: var(--blanc);
+    border-bottom: 1px solid var(--bordure);
+}
+
+.entete h1 {
+    margin: 0;
+    color: var(--bleu);
+    font-size: 26px;
+}
+
+.entete p {
+    margin: 6px 0 0;
+    color: var(--texte-secondaire);
+}
+
+.lien-retour {
+    color: var(--bleu);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.conteneur {
+    width: min(1400px, calc(100% - 40px));
+    margin: auto;
+    padding: 30px 0;
+}
+
+.conteneur-formulaire {
+    width: min(900px, calc(100% - 40px));
+}
+
+.carte {
+    padding: 25px;
+    background: var(--blanc);
+    border: 1px solid var(--bordure);
+    border-radius: 14px;
+    box-shadow: 0 5px 18px rgba(15, 23, 42, 0.06);
+}
+
+.entete-section {
+    margin-bottom: 22px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.entete-section h2 {
+    margin: 0 0 6px;
+}
+
+.entete-section p {
+    margin: 0;
+    color: var(--texte-secondaire);
+}
+
+.profil-entete {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.filtres {
+    margin-bottom: 24px;
+    display: grid;
+    grid-template-columns:
+        minmax(240px, 2fr)
+        minmax(170px, 1fr)
+        minmax(170px, 1fr)
+        auto;
+    align-items: end;
+    gap: 14px;
+}
+
+.groupe-champ {
+    margin-bottom: 18px;
+}
+
+.groupe-champ label {
+    margin-bottom: 7px;
+    display: block;
+    font-weight: 700;
+}
+
+.champ {
+    width: 100%;
+    padding: 11px 13px;
+    border: 1px solid var(--bordure);
+    border-radius: 9px;
+    background: var(--blanc);
+    font: inherit;
+}
+
+.champ:focus {
+    border-color: var(--bleu);
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+.grille-formulaire,
+.grille-details {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit, minmax(230px, 1fr));
+    gap: 16px;
+}
+
+.information {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: #f8fafc;
+    border: 1px solid var(--bordure);
+    border-radius: 10px;
+}
+
+.information span {
+    color: var(--texte-secondaire);
+    font-size: 13px;
+}
+
+.tableau-responsive {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    min-width: 950px;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 14px;
+    border-bottom: 1px solid var(--bordure);
+    text-align: left;
+}
+
+th {
+    background: #f8fafc;
+    color: var(--texte-secondaire);
+    font-size: 13px;
+}
+
+.utilisateur-cellule {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+.utilisateur-cellule > div:last-child {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.utilisateur-cellule small {
+    color: var(--texte-secondaire);
+}
+
+.avatar {
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--bleu);
+    color: var(--blanc);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.avatar-grand {
+    width: 60px;
+    height: 60px;
+    font-size: 17px;
+}
+
+.badge {
+    padding: 6px 10px;
+    display: inline-block;
+    border-radius: 20px;
+    background: #eff6ff;
+    color: var(--bleu);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.badge-succes {
+    background: #f0fdf4;
+    color: var(--vert);
+}
+
+.badge-danger {
+    background: #fef2f2;
+    color: var(--rouge);
+}
+
+.actions,
+.actions-tableau,
+.actions-filtres {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+.actions {
+    margin-top: 22px;
+}
+
+.actions form {
+    margin: 0;
+}
+
+.bouton {
+    padding: 10px 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 8px;
+    background: var(--bleu);
+    color: var(--blanc);
+    font: inherit;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.bouton:hover {
+    background: var(--bleu-fonce);
+}
+
+.bouton-secondaire {
+    background: var(--gris);
+}
+
+.bouton-danger {
+    background: var(--rouge);
+}
+
+.bouton-succes {
+    background: var(--vert);
+}
+
+.bouton-petit {
+    padding: 7px 10px;
+    font-size: 12px;
+}
+
+.bloc-secondaire {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--bordure);
+}
+
+.messages {
+    margin-bottom: 20px;
+}
+
+.message {
+    padding: 13px 15px;
+    border-radius: 9px;
+    background: #eff6ff;
+    color: var(--bleu);
+}
+
+.message.success {
+    background: #f0fdf4;
+    color: var(--vert);
+}
+
+.message.error {
+    background: #fef2f2;
+    color: var(--rouge);
+}
+
+.errorlist {
+    margin: 7px 0 0;
+    padding: 0;
+    list-style: none;
+    color: var(--rouge);
+    font-size: 13px;
+}
+
+.aide {
+    margin-top: 6px;
+    display: block;
+    color: var(--texte-secondaire);
+    line-height: 1.5;
+}
+
+.aucune-donnee {
+    padding: 30px;
+    color: var(--texte-secondaire);
+    text-align: center;
+}
+
+@media (max-width: 900px) {
+    .filtres {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 650px) {
+    .entete {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .filtres {
+        grid-template-columns: 1fr;
+    }
+
+    .entete-section {
+        flex-direction: column;
+    }
+
+    .actions,
+    .actions-filtres {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .bouton {
+        width: 100%;
+    }
+}

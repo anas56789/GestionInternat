@@ -1,0 +1,509 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Gestion des réclamations — GestionInternat</title>
+
+    <link rel="stylesheet" href="{% static 'dashboard/style.css' %}?v=12">
+    <link rel="stylesheet" href="{% static 'reclamations/reclamations_responsable.css' %}?v=1">
+    <link rel="stylesheet" href="{% static 'reclamations/reclamations_responsable_layout.css' %}?v=1">
+</head>
+
+<body class="reclamation-page">
+
+<div class="app-shell reclamation-shell">
+
+    {% include "dashboard/sidebar_responsable.html" %}
+
+    <div class="main-area reclamation-main">
+
+        <header class="reclamation-topbar">
+
+            <div class="reclamation-topbar-copy">
+                <span class="reclamation-eyebrow">
+                    Espace responsable
+                </span>
+
+                <h1>
+                    Gestion des réclamations
+                </h1>
+
+                <p>
+                    Recherchez, analysez et traitez les signalements
+                    transmis par les étudiants.
+                </p>
+            </div>
+
+            <div class="reclamation-user-card">
+
+                <div class="reclamation-user-avatar">
+                    {% if request.user.first_name %}
+                        {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
+                    {% else %}
+                        {{ request.user.username|first|upper }}
+                    {% endif %}
+                </div>
+
+                <div>
+                    <strong>
+                        {{ request.user.get_full_name|default:request.user.username }}
+                    </strong>
+
+                    <span>
+                        {% if request.user.is_superuser %}
+                            Super administrateur
+                        {% else %}
+                            {{ request.user.get_role_display }}
+                        {% endif %}
+                    </span>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <main class="reclamation-content">
+
+            {% if messages %}
+                <section class="reclamation-messages">
+                    {% for message in messages %}
+                        <div class="reclamation-message {{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </section>
+            {% endif %}
+
+
+            <section class="reclamation-hero">
+
+                <div>
+                    <span class="reclamation-eyebrow reclamation-eyebrow-light">
+                        Centre de traitement
+                    </span>
+
+                    <h2>
+                        Réclamations reçues
+                    </h2>
+
+                    <p>
+                        Les indicateurs présentent l’ensemble des réclamations.
+                        Les résultats ci-dessous tiennent compte des filtres actifs.
+                    </p>
+                </div>
+
+                <div class="reclamation-hero-count">
+                    <strong>
+                        {{ nombre_reclamations|default:0 }}
+                    </strong>
+
+                    <span>
+                        résultat(s)
+                    </span>
+                </div>
+
+            </section>
+
+
+            <section class="reclamation-kpi-grid">
+
+                <article class="reclamation-kpi-card">
+                    <div class="reclamation-kpi-icon">📚</div>
+                    <div>
+                        <span>Total</span>
+                        <strong>{{ nombre_total_global|default:0 }}</strong>
+                        <small>Réclamations enregistrées</small>
+                    </div>
+                </article>
+
+                <article class="reclamation-kpi-card">
+                    <div class="reclamation-kpi-icon">🆕</div>
+                    <div>
+                        <span>Nouvelles</span>
+                        <strong>{{ nombre_nouvelles|default:0 }}</strong>
+                        <small>À prendre en charge</small>
+                    </div>
+                </article>
+
+                <article class="reclamation-kpi-card">
+                    <div class="reclamation-kpi-icon reclamation-kpi-blue">🔧</div>
+                    <div>
+                        <span>En cours</span>
+                        <strong class="reclamation-value-blue">
+                            {{ nombre_en_cours|default:0 }}
+                        </strong>
+                        <small>En traitement</small>
+                    </div>
+                </article>
+
+                <article class="reclamation-kpi-card">
+                    <div class="reclamation-kpi-icon reclamation-kpi-green">✓</div>
+                    <div>
+                        <span>Résolues</span>
+                        <strong class="reclamation-value-green">
+                            {{ nombre_resolues|default:0 }}
+                        </strong>
+                        <small>Dossiers clôturés</small>
+                    </div>
+                </article>
+
+                <article class="reclamation-kpi-card">
+                    <div class="reclamation-kpi-icon reclamation-kpi-red">×</div>
+                    <div>
+                        <span>Rejetées</span>
+                        <strong class="reclamation-value-red">
+                            {{ nombre_rejetees|default:0 }}
+                        </strong>
+                        <small>Dossiers rejetés</small>
+                    </div>
+                </article>
+
+            </section>
+
+
+            <section class="reclamation-panel">
+
+                <div class="reclamation-panel-heading">
+                    <div>
+                        <span class="reclamation-eyebrow">
+                            Recherche
+                        </span>
+
+                        <h2>
+                            Filtrer les réclamations
+                        </h2>
+
+                        <p>
+                            Recherchez par étudiant, titre ou contenu,
+                            puis affinez par statut, priorité ou catégorie.
+                        </p>
+                    </div>
+
+                    <span class="reclamation-result-pill">
+                        {{ nombre_reclamations|default:0 }} résultat(s)
+                    </span>
+                </div>
+
+
+                <form method="get" class="reclamation-filters">
+
+                    <div class="reclamation-field reclamation-search-field">
+
+                        <label for="recherche">
+                            Recherche
+                        </label>
+
+                        <input
+                            id="recherche"
+                            name="recherche"
+                            type="search"
+                            value="{{ recherche }}"
+                            placeholder="Nom, matricule, CNE, titre..."
+                        >
+
+                    </div>
+
+
+                    <div class="reclamation-field">
+
+                        <label for="statut">
+                            Statut
+                        </label>
+
+                        <select
+                            id="statut"
+                            name="statut"
+                        >
+                            <option value="">
+                                Tous
+                            </option>
+
+                            {% for valeur, libelle in choix_statuts %}
+                                <option
+                                    value="{{ valeur }}"
+                                    {% if statut_selectionne == valeur %}selected{% endif %}
+                                >
+                                    {{ libelle }}
+                                </option>
+                            {% endfor %}
+                        </select>
+
+                    </div>
+
+
+                    <div class="reclamation-field">
+
+                        <label for="priorite">
+                            Priorité
+                        </label>
+
+                        <select
+                            id="priorite"
+                            name="priorite"
+                        >
+                            <option value="">
+                                Toutes
+                            </option>
+
+                            {% for valeur, libelle in choix_priorites %}
+                                <option
+                                    value="{{ valeur }}"
+                                    {% if priorite_selectionnee == valeur %}selected{% endif %}
+                                >
+                                    {{ libelle }}
+                                </option>
+                            {% endfor %}
+                        </select>
+
+                    </div>
+
+
+                    <div class="reclamation-field">
+
+                        <label for="categorie">
+                            Catégorie
+                        </label>
+
+                        <select
+                            id="categorie"
+                            name="categorie"
+                        >
+                            <option value="">
+                                Toutes
+                            </option>
+
+                            {% for valeur, libelle in choix_categories %}
+                                <option
+                                    value="{{ valeur }}"
+                                    {% if categorie_selectionnee == valeur %}selected{% endif %}
+                                >
+                                    {{ libelle }}
+                                </option>
+                            {% endfor %}
+                        </select>
+
+                    </div>
+
+
+                    <div class="reclamation-filter-actions">
+
+                        <button
+                            type="submit"
+                            class="reclamation-button reclamation-button-primary"
+                        >
+                            Filtrer
+                        </button>
+
+                        <a
+                            href="{% url 'reclamations:liste_reclamations_responsable' %}"
+                            class="reclamation-button reclamation-button-light"
+                        >
+                            Réinitialiser
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+
+            <div class="reclamation-section-heading">
+
+                <div>
+                    <span class="reclamation-eyebrow">
+                        Signalements
+                    </span>
+
+                    <h2>
+                        Réclamations à consulter
+                    </h2>
+
+                    <p>
+                        Ouvrez un dossier pour consulter les détails
+                        et effectuer son traitement.
+                    </p>
+                </div>
+
+            </div>
+
+
+            {% if reclamations %}
+
+                <section class="reclamation-table-panel">
+
+                    <div class="reclamation-table-responsive">
+
+                        <table class="reclamation-table">
+
+                            <thead>
+                                <tr>
+                                    <th>Étudiant</th>
+                                    <th>Réclamation</th>
+                                    <th>Catégorie</th>
+                                    <th>Priorité</th>
+                                    <th>Chambre</th>
+                                    <th>Date</th>
+                                    <th>Statut</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+
+
+                            <tbody>
+
+                                {% for reclamation in reclamations %}
+
+                                    <tr>
+
+                                        <td>
+                                            <div class="reclamation-student">
+
+                                                <div class="reclamation-student-avatar">
+                                                    {{ reclamation.etudiant.utilisateur.first_name|first|default:"E" }}
+                                                </div>
+
+                                                <div>
+                                                    <strong>
+                                                        {{ reclamation.etudiant.utilisateur.get_full_name|default:reclamation.etudiant.utilisateur.username }}
+                                                    </strong>
+
+                                                    <small>
+                                                        {{ reclamation.etudiant.matricule }}
+                                                        {% if reclamation.etudiant.cne %}
+                                                            · {{ reclamation.etudiant.cne }}
+                                                        {% endif %}
+                                                    </small>
+                                                </div>
+
+                                            </div>
+                                        </td>
+
+
+                                        <td>
+                                            <div class="reclamation-cell-main">
+                                                <strong>
+                                                    {{ reclamation.titre }}
+                                                </strong>
+
+                                                <small>
+                                                    {{ reclamation.description|truncatechars:75 }}
+                                                </small>
+                                            </div>
+                                        </td>
+
+
+                                        <td>
+                                            {{ reclamation.get_categorie_display }}
+                                        </td>
+
+
+                                        <td>
+                                            <span class="
+                                                reclamation-priority
+                                                reclamation-priority-{{ reclamation.priorite|lower }}
+                                            ">
+                                                {{ reclamation.get_priorite_display }}
+                                            </span>
+                                        </td>
+
+
+                                        <td>
+                                            {% if reclamation.chambre %}
+                                                <span class="reclamation-room">
+                                                    {{ reclamation.chambre.batiment.code }}
+                                                    /
+                                                    {{ reclamation.chambre.numero }}
+                                                </span>
+                                            {% else %}
+                                                <span class="reclamation-muted">
+                                                    —
+                                                </span>
+                                            {% endif %}
+                                        </td>
+
+
+                                        <td>
+                                            <time datetime="{{ reclamation.date_creation|date:'c' }}">
+                                                {{ reclamation.date_creation|date:"d/m/Y" }}
+                                            </time>
+
+                                            <small class="reclamation-time">
+                                                {{ reclamation.date_creation|date:"H:i" }}
+                                            </small>
+                                        </td>
+
+
+                                        <td>
+                                            <span class="
+                                                reclamation-status
+                                                reclamation-status-{{ reclamation.statut|lower }}
+                                            ">
+                                                {{ reclamation.get_statut_display }}
+                                            </span>
+                                        </td>
+
+
+                                        <td>
+                                            <a
+                                                href="{% url 'reclamations:detail_reclamation_responsable' reclamation.pk %}"
+                                                class="reclamation-button reclamation-button-primary reclamation-button-small"
+                                            >
+                                                {% if reclamation.statut == "RESOLUE" or reclamation.statut == "REJETEE" %}
+                                                    Consulter
+                                                {% else %}
+                                                    Traiter
+                                                {% endif %}
+                                            </a>
+                                        </td>
+
+                                    </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </section>
+
+            {% else %}
+
+                <section class="reclamation-empty">
+
+                    <div class="reclamation-empty-icon">
+                        📣
+                    </div>
+
+                    <h3>
+                        Aucune réclamation trouvée
+                    </h3>
+
+                    <p>
+                        Modifiez les filtres ou réinitialisez la recherche
+                        pour afficher d’autres résultats.
+                    </p>
+
+                </section>
+
+            {% endif %}
+
+        </main>
+
+
+        <footer class="reclamation-footer">
+            Gestion de l’internat universitaire — {% now "Y" %}
+        </footer>
+
+    </div>
+
+</div>
+
+</body>
+</html>

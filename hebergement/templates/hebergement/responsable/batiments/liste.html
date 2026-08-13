@@ -1,0 +1,684 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Gestion des bâtiments — Internat universitaire
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'dashboard/style.css' %}?v=11"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'hebergement/gestion_locaux_premium.css' %}?v=3"
+    >
+</head>
+
+<body>
+
+
+<div class="app-shell">
+
+   {% include "dashboard/sidebar_responsable.html" %}
+
+    <div class="main-area">
+
+        <header class="topbar-locaux">
+
+            <div>
+                <span class="sur-titre-topbar-locaux">
+                    Espace responsable
+                </span>
+
+                <h1>Gestion des bâtiments</h1>
+
+                <p>
+                    Infrastructures, chambres, capacités
+                    et taux d'occupation.
+                </p>
+            </div>
+
+            <div class="actions-topbar-locaux">
+
+                <a
+                    href="{% url 'hebergement:creer_batiment' %}"
+                    class="bouton"
+                >
+                    + Ajouter un bâtiment
+                </a>
+
+                <a
+                    href="{% url 'hebergement:liste_chambres' %}"
+                    class="bouton bouton-secondaire"
+                >
+                    Chambres
+                </a>
+
+                <div class="profil-topbar-locaux">
+                    <div class="avatar-topbar-locaux">
+                        {% if request.user.first_name %}
+                            {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
+                        {% else %}
+                            {{ request.user.username|first|upper }}
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <strong>
+                            {{ request.user.get_full_name|default:request.user.username }}
+                        </strong>
+
+                        <span>
+                            {% if request.user.is_superuser %}
+                                Super administrateur
+                            {% else %}
+                                {{ request.user.get_role_display }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+        </header>
+
+
+    <main class="conteneur">
+
+        {% if messages %}
+            <section class="messages">
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </section>
+        {% endif %}
+
+        <!-- BANNIÈRE -->
+
+        <section class="banniere-batiments">
+            <div>
+                <span class="petit-titre">
+                    Gestion des infrastructures
+                </span>
+
+                <h2>
+                    Bâtiments de l’internat
+                </h2>
+
+                <p>
+                    Consultez les capacités d’accueil,
+                    l’occupation, les chambres disponibles
+                    et l’état de chaque bâtiment.
+                </p>
+            </div>
+
+            <div class="compteur-banniere">
+                <strong>
+                    {{ nombre_batiments|default:0 }}
+                </strong>
+
+                <span>
+                    résultat(s)
+                </span>
+            </div>
+        </section>
+
+        <!-- STATISTIQUES GLOBALES -->
+
+        <section class="statistiques-batiments">
+            <article class="statistique-batiment">
+                <div class="icone-statistique">🏢</div>
+
+                <div>
+                    <span>Total bâtiments</span>
+
+                    <strong>
+                        {{ nombre_total_global|default:0 }}
+                    </strong>
+                </div>
+            </article>
+
+            <article class="statistique-batiment">
+                <div class="icone-statistique">✅</div>
+
+                <div>
+                    <span>Bâtiments actifs</span>
+
+                    <strong>
+                        {{ nombre_batiments_actifs|default:0 }}
+                    </strong>
+                </div>
+            </article>
+
+            <article class="statistique-batiment">
+                <div class="icone-statistique">⛔</div>
+
+                <div>
+                    <span>Bâtiments inactifs</span>
+
+                    <strong>
+                        {{ nombre_batiments_inactifs|default:0 }}
+                    </strong>
+                </div>
+            </article>
+
+            <article class="statistique-batiment">
+                <div class="icone-statistique">🛠️</div>
+
+                <div>
+                    <span>En maintenance</span>
+
+                    <strong>
+                        {{ nombre_batiments_maintenance|default:0 }}
+                    </strong>
+                </div>
+            </article>
+
+            <article class="statistique-batiment">
+                <div class="icone-statistique">🚪</div>
+
+                <div>
+                    <span>Total chambres</span>
+
+                    <strong>
+                        {{ nombre_chambres_global|default:0 }}
+                    </strong>
+                </div>
+            </article>
+
+            <article class="statistique-batiment">
+                <div class="icone-statistique">🛏️</div>
+
+                <div>
+                    <span>Capacité totale</span>
+
+                    <strong>
+                        {{ capacite_totale_globale|default:0 }}
+                    </strong>
+                </div>
+            </article>
+
+            <article class="statistique-batiment">
+                <div class="icone-statistique">👤</div>
+
+                <div>
+                    <span>Places occupées</span>
+
+                    <strong>
+                        {{ places_occupees_globales|default:0 }}
+                    </strong>
+                </div>
+            </article>
+
+            <article class="statistique-batiment">
+                <div class="icone-statistique">➕</div>
+
+                <div>
+                    <span>Places disponibles</span>
+
+                    <strong>
+                        {{ places_disponibles_globales|default:0 }}
+                    </strong>
+                </div>
+            </article>
+
+            <article class="statistique-batiment">
+                <div class="icone-statistique">📊</div>
+
+                <div>
+                    <span>Taux global</span>
+
+                    <strong>
+                        {{ taux_occupation_global|default:0 }} %
+                    </strong>
+                </div>
+            </article>
+        </section>
+
+        <!-- FILTRES -->
+
+        <section class="carte">
+            <div class="entete-section">
+                <div>
+                    <h2>Recherche et filtrage</h2>
+
+                    <p>
+                        Filtrez les bâtiments par statut,
+                        occupation ou nombre d’étages.
+                    </p>
+                </div>
+
+                <span class="badge-resultats">
+                    {{ nombre_batiments|default:0 }}
+                    résultat(s)
+                </span>
+            </div>
+
+            <form
+                method="get"
+                class="formulaire-filtres-batiments"
+            >
+                <div class="groupe-filtre filtre-recherche-batiment">
+                    <label for="recherche">
+                        Recherche
+                    </label>
+
+                    <input
+                        type="search"
+                        id="recherche"
+                        name="recherche"
+                        value="{{ recherche }}"
+                        placeholder="Code, nom ou description..."
+                    >
+                </div>
+
+                <div class="groupe-filtre">
+                    <label for="statut">
+                        Statut
+                    </label>
+
+                    <select
+                        id="statut"
+                        name="statut"
+                    >
+                        <option value="">
+                            Tous les statuts
+                        </option>
+
+                        {% for valeur, libelle in choix_statuts %}
+                            <option
+                                value="{{ valeur }}"
+                                {% if statut_selectionne == valeur %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ libelle }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="groupe-filtre">
+                    <label for="nombre_etages">
+                        Nombre d’étages
+                    </label>
+
+                    <select
+                        id="nombre_etages"
+                        name="nombre_etages"
+                    >
+                        <option value="">
+                            Tous
+                        </option>
+
+                        {% for nombre in nombres_etages %}
+                            <option
+                                value="{{ nombre }}"
+                                {% if nombre_etages_selectionne == nombre|stringformat:"s" %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ nombre }} étage(s)
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="groupe-filtre">
+                    <label for="occupation">
+                        Niveau d’occupation
+                    </label>
+
+                    <select
+                        id="occupation"
+                        name="occupation"
+                    >
+                        <option value="">
+                            Tous
+                        </option>
+
+                        <option
+                            value="VIDE"
+                            {% if occupation_selectionnee == "VIDE" %}
+                                selected
+                            {% endif %}
+                        >
+                            Bâtiments vides
+                        </option>
+
+                        <option
+                            value="PARTIEL"
+                            {% if occupation_selectionnee == "PARTIEL" %}
+                                selected
+                            {% endif %}
+                        >
+                            Partiellement occupés
+                        </option>
+
+                        <option
+                            value="COMPLET"
+                            {% if occupation_selectionnee == "COMPLET" %}
+                                selected
+                            {% endif %}
+                        >
+                            Complets
+                        </option>
+                    </select>
+                </div>
+
+                <div class="actions-filtres-batiments">
+                    <button
+                        type="submit"
+                        class="bouton"
+                    >
+                        Appliquer les filtres
+                    </button>
+
+                    <a
+                        href="{% url 'hebergement:liste_batiments' %}"
+                        class="bouton bouton-secondaire"
+                    >
+                        Réinitialiser
+                    </a>
+                </div>
+            </form>
+        </section>
+
+        <!-- LISTE DES BÂTIMENTS -->
+
+        <section class="carte">
+            <div class="entete-section">
+                <div>
+                    <h2>Liste des bâtiments</h2>
+
+                    <p>
+                        {{ nombre_batiments|default:0 }}
+                        bâtiment(s) correspondant aux critères.
+                    </p>
+                </div>
+
+                <a
+                    href="{% url 'hebergement:creer_batiment' %}"
+                    class="bouton"
+                >
+                    Ajouter un bâtiment
+                </a>
+            </div>
+
+            <div class="grille-batiments">
+                {% for batiment in batiments %}
+                    <article class="carte-batiment-amelioree">
+
+                        <div class="entete-carte-batiment">
+                            <div>
+                                <span class="code-batiment-carte">
+                                    {{ batiment.code }}
+                                </span>
+
+                                <h3>
+                                    {{ batiment.nom }}
+                                </h3>
+                            </div>
+
+                            {% if batiment.statut == "ACTIF" %}
+                                <span class="badge-batiment badge-batiment-actif">
+                                    {{ batiment.get_statut_display }}
+                                </span>
+
+                            {% elif batiment.statut == "INACTIF" %}
+                                <span class="badge-batiment badge-batiment-inactif">
+                                    {{ batiment.get_statut_display }}
+                                </span>
+
+                            {% elif batiment.statut == "MAINTENANCE" %}
+                                <span class="badge-batiment badge-batiment-maintenance">
+                                    {{ batiment.get_statut_display }}
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        {% if batiment.description %}
+                            <p class="description-batiment">
+                                {{ batiment.description|truncatechars:150 }}
+                            </p>
+                        {% else %}
+                            <p class="description-batiment texte-secondaire">
+                                Aucune description enregistrée.
+                            </p>
+                        {% endif %}
+
+                        <div class="resume-batiment">
+                            <div>
+                                <span>Étages</span>
+
+                                <strong>
+                                    {{ batiment.nombre_etages }}
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Chambres</span>
+
+                                <strong>
+                                    {{ batiment.nombre_chambres_calcule }}
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Capacité</span>
+
+                                <strong>
+                                    {{ batiment.capacite_totale_calculee }}
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Occupées</span>
+
+                                <strong>
+                                    {{ batiment.places_occupees_calculees }}
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Disponibles</span>
+
+                                <strong>
+                                    {{ batiment.places_disponibles_calculees }}
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Chambres actives</span>
+
+                                <strong>
+                                    {{ batiment.nombre_chambres_actives_calcule }}
+                                </strong>
+                            </div>
+                        </div>
+
+                        <!-- OCCUPATION -->
+
+                        <div class="occupation-batiment">
+                            <div class="ligne-occupation">
+                                <span>
+                                    Taux d’occupation
+                                </span>
+
+                                <strong>
+                                    {{ batiment.taux_occupation_calcule }} %
+                                </strong>
+                            </div>
+
+                            <div class="barre-occupation-batiment">
+                                <div
+                                    class="progression-batiment
+                                    {% if batiment.taux_occupation_calcule >= 100 %}
+                                        progression-batiment-complete
+                                    {% elif batiment.taux_occupation_calcule >= 70 %}
+                                        progression-batiment-elevee
+                                    {% else %}
+                                        progression-batiment-normale
+                                    {% endif %}"
+                                    style="width: {{ batiment.taux_occupation_calcule }}%;"
+                                ></div>
+                            </div>
+                        </div>
+
+                        <!-- ÉTAT DES CHAMBRES -->
+
+                        <div class="etat-chambres-batiment">
+                            <span class="indicateur-chambre indicateur-disponible">
+                                {{ batiment.nombre_chambres_disponibles_calcule }}
+                                disponible(s)
+                            </span>
+
+                            <span class="indicateur-chambre indicateur-complete">
+                                {{ batiment.nombre_chambres_completes_calcule }}
+                                complète(s)
+                            </span>
+
+                            <span class="indicateur-chambre indicateur-maintenance">
+                                {{ batiment.nombre_chambres_maintenance_calcule }}
+                                indisponible(s)
+                            </span>
+                        </div>
+
+                        <!-- ACTIONS -->
+
+                        <div class="actions-carte-batiment">
+                            <a
+                                href="{% url 'hebergement:detail_batiment' batiment.pk %}"
+                                class="bouton bouton-petit"
+                            >
+                                Consulter
+                            </a>
+
+                            <a
+                                href="{% url 'hebergement:modifier_batiment' batiment.pk %}"
+                                class="bouton bouton-secondaire bouton-petit"
+                            >
+                                Modifier
+                            </a>
+
+                            <a
+                                href="{% url 'hebergement:creer_chambre' %}?batiment={{ batiment.pk }}"
+                                class="bouton bouton-succes bouton-petit"
+                            >
+                                Ajouter une chambre
+                            </a>
+                        </div>
+                    </article>
+
+                {% empty %}
+                    <div class="etat-vide etat-vide-batiments">
+                        <span class="icone-vide">
+                            🔍
+                        </span>
+
+                        <strong>
+                            Aucun bâtiment trouvé
+                        </strong>
+
+                        <p>
+                            Aucun bâtiment ne correspond
+                            aux critères sélectionnés.
+                        </p>
+
+                        <a
+                            href="{% url 'hebergement:liste_batiments' %}"
+                            class="bouton bouton-secondaire"
+                        >
+                            Réinitialiser les filtres
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- PAGINATION -->
+
+            {% if page_obj.paginator.num_pages > 1 %}
+                <nav class="pagination">
+                    <div class="informations-pagination">
+                        Page
+                        {{ page_obj.number }}
+                        sur
+                        {{ page_obj.paginator.num_pages }}
+
+                        —
+
+                        {{ page_obj.paginator.count }}
+                        résultat(s)
+                    </div>
+
+                    <div class="liens-pagination">
+                        {% if page_obj.has_previous %}
+                            <a
+                                href="?page=1{% if chaine_filtres %}&{{ chaine_filtres }}{% endif %}"
+                                class="bouton-pagination"
+                            >
+                                Première
+                            </a>
+
+                            <a
+                                href="?page={{ page_obj.previous_page_number }}{% if chaine_filtres %}&{{ chaine_filtres }}{% endif %}"
+                                class="bouton-pagination"
+                            >
+                                Précédente
+                            </a>
+                        {% endif %}
+
+                        {% for numero_page in page_obj.paginator.page_range %}
+                            {% if numero_page == page_obj.number %}
+                                <span class="page-actuelle">
+                                    {{ numero_page }}
+                                </span>
+
+                            {% elif numero_page >= page_obj.number|add:"-2" and numero_page <= page_obj.number|add:"2" %}
+                                <a
+                                    href="?page={{ numero_page }}{% if chaine_filtres %}&{{ chaine_filtres }}{% endif %}"
+                                    class="bouton-pagination pagination-numerique"
+                                >
+                                    {{ numero_page }}
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                            <a
+                                href="?page={{ page_obj.next_page_number }}{% if chaine_filtres %}&{{ chaine_filtres }}{% endif %}"
+                                class="bouton-pagination"
+                            >
+                                Suivante
+                            </a>
+
+                            <a
+                                href="?page={{ page_obj.paginator.num_pages }}{% if chaine_filtres %}&{{ chaine_filtres }}{% endif %}"
+                                class="bouton-pagination"
+                            >
+                                Dernière
+                            </a>
+                        {% endif %}
+                    </div>
+                </nav>
+            {% endif %}
+        </section>
+    </main>
+    </div>
+</div>
+
+</body>
+</html>

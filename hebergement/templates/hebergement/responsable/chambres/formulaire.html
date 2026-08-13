@@ -1,0 +1,545 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {{ titre_page }} — Internat universitaire
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'dashboard/style.css' %}?v=11"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'hebergement/gestion_locaux_premium.css' %}?v=3"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'hebergement/formulaires_locaux_premium.css' %}?v=1"
+    >
+</head>
+
+<body class="page-formulaire-local">
+
+<div class="app-shell">
+
+   {% include "dashboard/sidebar_responsable.html" %}
+
+    <div class="main-area">
+
+        <header class="topbar-formulaire-local">
+            <div>
+                <span class="sur-titre-topbar-formulaire">Espace responsable</span>
+                <h1>{{ titre_page }}</h1>
+                <p>
+                    {% if chambre %}
+                        Mettez à jour la configuration et la disponibilité de cette chambre.
+                    {% else %}
+                        Ajoutez une nouvelle chambre à l'un des bâtiments de l'internat.
+                    {% endif %}
+                </p>
+            </div>
+
+            <div class="actions-topbar-formulaire">
+                <a href="{% url 'hebergement:liste_batiments' %}" class="bouton bouton-secondaire">
+                    Bâtiments
+                </a>
+                <a href="{% url 'hebergement:liste_chambres' %}" class="bouton bouton-secondaire">
+                    ← Chambres
+                </a>
+
+                <div class="profil-topbar-formulaire">
+                    <div class="avatar-topbar-formulaire">
+                        {% if request.user.first_name %}
+                            {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
+                        {% else %}
+                            {{ request.user.username|first|upper }}
+                        {% endif %}
+                    </div>
+                    <div>
+                        <strong>{{ request.user.get_full_name|default:request.user.username }}</strong>
+                        <span>
+                            {% if request.user.is_superuser %}
+                                Super administrateur
+                            {% else %}
+                                {{ request.user.get_role_display }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+
+<main class="conteneur conteneur-formulaire-local">
+
+    {% if messages %}
+        <section class="messages">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </section>
+    {% endif %}
+
+    <!-- =====================================================
+         BANNIÈRE
+    ====================================================== -->
+
+    <section class="hero-formulaire-local hero-formulaire-chambre">
+
+        <div>
+            <span class="petit-titre">
+                Capacité d'hébergement
+            </span>
+
+            <h2>
+                {% if chambre %}
+                    {{ chambre.batiment.code }}
+                    /
+                    Chambre {{ chambre.numero }}
+                {% else %}
+                    Nouvelle chambre
+                {% endif %}
+            </h2>
+
+            <p>
+                Configurez le bâtiment, le numéro, l'étage,
+                la capacité, le type de chambre et son état.
+            </p>
+        </div>
+
+        <div class="icone-hero-formulaire">
+            🚪
+        </div>
+
+    </section>
+
+    <section class="grille-formulaire-local">
+
+        <!-- =================================================
+             FORMULAIRE
+        ================================================== -->
+
+        <section class="carte carte-formulaire-local">
+
+            <div class="entete-section">
+                <div>
+                    <span class="mini-label-formulaire">
+                        Configuration
+                    </span>
+
+                    <h2>
+                        Informations de la chambre
+                    </h2>
+
+                    <p>
+                        Vérifiez particulièrement le bâtiment,
+                        l'étage et la capacité.
+                    </p>
+                </div>
+
+                {% if chambre %}
+                    <span class="badge-mode-formulaire badge-mode-modification">
+                        Modification
+                    </span>
+                {% else %}
+                    <span class="badge-mode-formulaire">
+                        Création
+                    </span>
+                {% endif %}
+            </div>
+
+            {% if formulaire.non_field_errors %}
+                <div class="bloc-erreurs-formulaire">
+                    <strong>
+                        La chambre ne peut pas être enregistrée.
+                    </strong>
+
+                    <ul>
+                        {% for erreur in formulaire.non_field_errors %}
+                            <li>{{ erreur }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            <form
+                method="post"
+                novalidate
+                class="formulaire-local-premium"
+            >
+                {% csrf_token %}
+
+                <div class="grille-champs-formulaire">
+
+                    <!-- BÂTIMENT -->
+
+                    <div class="groupe-champ-formulaire champ-formulaire-large">
+                        <label for="{{ formulaire.batiment.id_for_label }}">
+                            Bâtiment *
+                        </label>
+
+                        {{ formulaire.batiment }}
+
+                        <small class="aide-champ">
+                            Seuls les bâtiments autorisés
+                            par le formulaire sont proposés.
+                        </small>
+
+                        {% for erreur in formulaire.batiment.errors %}
+                            <span class="erreur-champ">
+                                {{ erreur }}
+                            </span>
+                        {% endfor %}
+                    </div>
+
+                    <!-- NUMÉRO + ÉTAGE -->
+
+                    <div class="groupe-champ-formulaire">
+                        <label for="{{ formulaire.numero.id_for_label }}">
+                            Numéro de chambre *
+                        </label>
+
+                        {{ formulaire.numero }}
+
+                        <small class="aide-champ">
+                            Exemple : 001, 101, A12.
+                        </small>
+
+                        {% for erreur in formulaire.numero.errors %}
+                            <span class="erreur-champ">
+                                {{ erreur }}
+                            </span>
+                        {% endfor %}
+                    </div>
+
+                    <div class="groupe-champ-formulaire">
+                        <label for="{{ formulaire.etage.id_for_label }}">
+                            Étage *
+                        </label>
+
+                        {{ formulaire.etage }}
+
+                        <small class="aide-champ">
+                            0 correspond au rez-de-chaussée.
+                        </small>
+
+                        {% for erreur in formulaire.etage.errors %}
+                            <span class="erreur-champ">
+                                {{ erreur }}
+                            </span>
+                        {% endfor %}
+                    </div>
+
+                    <!-- CAPACITÉ + TYPE -->
+
+                    <div class="groupe-champ-formulaire">
+                        <label for="{{ formulaire.capacite.id_for_label }}">
+                            Capacité *
+                        </label>
+
+                        {{ formulaire.capacite }}
+
+                        <small class="aide-champ">
+                            Nombre maximal d'étudiants hébergés.
+                        </small>
+
+                        {% for erreur in formulaire.capacite.errors %}
+                            <span class="erreur-champ">
+                                {{ erreur }}
+                            </span>
+                        {% endfor %}
+                    </div>
+
+                    <div class="groupe-champ-formulaire">
+                        <label for="{{ formulaire.type_chambre.id_for_label }}">
+                            Type de chambre *
+                        </label>
+
+                        {{ formulaire.type_chambre }}
+
+                        {% for erreur in formulaire.type_chambre.errors %}
+                            <span class="erreur-champ">
+                                {{ erreur }}
+                            </span>
+                        {% endfor %}
+                    </div>
+
+                    <!-- ÉTAT -->
+
+                    <div class="groupe-champ-formulaire">
+                        <label for="{{ formulaire.etat.id_for_label }}">
+                            État *
+                        </label>
+
+                        {{ formulaire.etat }}
+
+                        <small class="aide-champ">
+                            L'état indique si la chambre est
+                            disponible, occupée ou indisponible.
+                        </small>
+
+                        {% for erreur in formulaire.etat.errors %}
+                            <span class="erreur-champ">
+                                {{ erreur }}
+                            </span>
+                        {% endfor %}
+                    </div>
+
+                    <!-- ACTIVATION -->
+
+                    <div class="groupe-champ-formulaire groupe-checkbox-premium">
+
+                        <span class="label-checkbox-formulaire">
+                            Activation
+                        </span>
+
+                        <label
+                            for="{{ formulaire.est_active.id_for_label }}"
+                            class="carte-checkbox-formulaire"
+                        >
+                            {{ formulaire.est_active }}
+
+                            <span class="interrupteur-visuel"></span>
+
+                            <span>
+                                <strong>
+                                    Chambre active
+                                </strong>
+
+                                <small>
+                                    Autorise son utilisation
+                                    dans la gestion de l'hébergement.
+                                </small>
+                            </span>
+                        </label>
+
+                        {% for erreur in formulaire.est_active.errors %}
+                            <span class="erreur-champ">
+                                {{ erreur }}
+                            </span>
+                        {% endfor %}
+                    </div>
+
+                    <!-- DESCRIPTION -->
+
+                    <div class="groupe-champ-formulaire champ-formulaire-large">
+                        <label for="{{ formulaire.description.id_for_label }}">
+                            Description / équipements
+                        </label>
+
+                        {{ formulaire.description }}
+
+                        <small class="aide-champ">
+                            Exemple : salle de bain, bureau,
+                            climatisation, équipements particuliers…
+                        </small>
+
+                        {% for erreur in formulaire.description.errors %}
+                            <span class="erreur-champ">
+                                {{ erreur }}
+                            </span>
+                        {% endfor %}
+                    </div>
+
+                </div>
+
+                <div class="separateur-formulaire"></div>
+
+                <div class="actions-formulaire-local">
+
+                    <a
+                        href="{% url 'hebergement:liste_chambres' %}"
+                        class="bouton bouton-secondaire"
+                    >
+                        Annuler
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="bouton bouton-validation-formulaire"
+                    >
+                        {% if chambre %}
+                            ✓ {{ bouton_validation }}
+                        {% else %}
+                            + {{ bouton_validation }}
+                        {% endif %}
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+        <!-- =================================================
+             COLONNE AIDE
+        ================================================== -->
+
+        <aside class="colonne-aide-formulaire">
+
+            {% if chambre %}
+
+                <section class="carte carte-occupation-formulaire">
+
+                    <span class="mini-label-formulaire">
+                        Occupation actuelle
+                    </span>
+
+                    <div class="occupation-chambre-formulaire">
+
+                        <div>
+                            <strong>
+                                {{ chambre.nombre_places_occupees }}
+                            </strong>
+
+                            <span>
+                                occupée(s)
+                            </span>
+                        </div>
+
+                        <span class="separateur-occupation">
+                            /
+                        </span>
+
+                        <div>
+                            <strong>
+                                {{ chambre.capacite }}
+                            </strong>
+
+                            <span>
+                                capacité
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <div class="ligne-resume-local">
+                        <span>Places disponibles</span>
+
+                        <strong>
+                            {{ chambre.nombre_places_disponibles }}
+                        </strong>
+                    </div>
+
+                    <div class="ligne-resume-local">
+                        <span>État</span>
+
+                        <strong>
+                            {{ chambre.get_etat_display }}
+                        </strong>
+                    </div>
+
+                    <div class="ligne-resume-local">
+                        <span>Activation</span>
+
+                        <strong>
+                            {% if chambre.est_active %}
+                                Active
+                            {% else %}
+                                Inactive
+                            {% endif %}
+                        </strong>
+                    </div>
+
+                    {% if chambre.nombre_places_occupees > 0 %}
+                        <div class="alerte-formulaire-local">
+                            <strong>
+                                Chambre occupée
+                            </strong>
+
+                            <p>
+                                Évitez de diminuer la capacité
+                                sous le nombre d'étudiants
+                                actuellement hébergés.
+                            </p>
+                        </div>
+                    {% endif %}
+
+                </section>
+
+            {% endif %}
+
+            <section class="carte carte-aide-formulaire">
+
+                <span class="mini-label-formulaire">
+                    Vérification
+                </span>
+
+                <h2>
+                    Avant d'enregistrer
+                </h2>
+
+                <div class="liste-conseils-formulaire">
+
+                    <div class="conseil-formulaire">
+                        <span>1</span>
+
+                        <div>
+                            <strong>
+                                Vérifiez l'étage
+                            </strong>
+
+                            <p>
+                                Il ne peut pas dépasser
+                                le nombre d'étages du bâtiment.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="conseil-formulaire">
+                        <span>2</span>
+
+                        <div>
+                            <strong>
+                                Capacité réaliste
+                            </strong>
+
+                            <p>
+                                La capacité représente
+                                le nombre de places disponibles
+                                dans cette chambre.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="conseil-formulaire">
+                        <span>3</span>
+
+                        <div>
+                            <strong>
+                                Maintenance
+                            </strong>
+
+                            <p>
+                                Le changement opérationnel vers
+                                maintenance ou hors service reste
+                                disponible depuis la liste des chambres.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
+
+        </aside>
+
+    </section>
+
+</main>
+
+    </div>
+</div>
+
+</body>
+</html>

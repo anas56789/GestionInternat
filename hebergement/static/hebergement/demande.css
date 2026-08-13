@@ -1,0 +1,458 @@
+.liste-justificatifs {
+    display: grid;
+    gap: 18px;
+}
+
+.bloc-justificatif {
+    padding: 18px;
+    border: 1px solid var(--bordure);
+    border-radius: 11px;
+    background-color: #f9fafb;
+}
+
+.suppression {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--erreur);
+    font-size: 14px;
+}
+
+.errorlist {
+    margin: 7px 0 0;
+    padding: 0;
+    list-style: none;
+    color: var(--erreur);
+    font-size: 13px;
+}
+.actions-demande {
+    margin-top: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.actions-demande .bouton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.entete-liste {
+    margin-bottom: 24px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.entete-liste h2 {
+    margin: 0 0 7px;
+}
+
+.entete-liste p {
+    margin: 0;
+    color: var(--texte-secondaire);
+}
+
+.tableau-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    min-width: 850px;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 14px;
+    border-bottom: 1px solid var(--bordure);
+    text-align: left;
+}
+
+th {
+    background-color: #f8fafc;
+    font-size: 13px;
+}
+
+.statut-demande {
+    padding: 6px 10px;
+    display: inline-block;
+    border-radius: 20px;
+    background-color: #eff6ff;
+    color: var(--bleu);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.actions-tableau {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.bouton-petit {
+    padding: 8px 11px;
+    font-size: 13px;
+    text-decoration: none;
+}
+
+.grille-details {
+    margin-bottom: 24px;
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.bloc-detail {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background-color: #f8fafc;
+    border: 1px solid var(--bordure);
+    border-radius: 10px;
+}
+
+.bloc-detail span {
+    color: var(--texte-secondaire);
+    font-size: 13px;
+}
+
+.bloc-texte {
+    margin-bottom: 18px;
+}
+
+.bloc-texte h3 {
+    margin: 0 0 8px;
+    font-size: 16px;
+}
+
+.bloc-texte p {
+    margin: 0;
+    line-height: 1.6;
+    white-space: pre-line;
+}
+
+.bloc-observation {
+    padding: 16px;
+    border-radius: 10px;
+    background-color: #fff7ed;
+    border: 1px solid #fed7aa;
+}
+
+.liste-documents {
+    margin-bottom: 25px;
+    display: grid;
+    gap: 12px;
+}
+
+.document {
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    border: 1px solid var(--bordure);
+    border-radius: 10px;
+    background-color: #f9fafb;
+}
+
+.document small {
+    margin-top: 5px;
+    display: block;
+    color: var(--texte-secondaire);
+}
+
+/* =========================================================
+   DÉTAIL ÉTUDIANT D’UNE DEMANDE
+========================================================= */
+
+.compteur-documents {
+    padding: 7px 11px;
+    border-radius: 20px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.resume-justificatifs-etudiant {
+    margin: 20px 0;
+    display: grid;
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.resume-justificatifs-etudiant > div {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    background: #f8fafc;
+}
+
+.resume-justificatifs-etudiant span {
+    color: #64748b;
+    font-size: 11px;
+}
+
+.resume-justificatifs-etudiant strong {
+    color: #1e293b;
+    font-size: 21px;
+}
+
+.valeur-attente {
+    color: #b45309 !important;
+}
+
+.valeur-succes {
+    color: #15803d !important;
+}
+
+.valeur-danger {
+    color: #b91c1c !important;
+}
+
+.alerte-document {
+    margin-bottom: 17px;
+    padding: 13px 15px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.alerte-document-succes {
+    border: 1px solid #bbf7d0;
+    background: #f0fdf4;
+    color: #15803d;
+}
+
+.alerte-document-attente {
+    border: 1px solid #fde68a;
+    background: #fffbeb;
+    color: #92400e;
+}
+
+.alerte-document-danger {
+    border: 1px solid #fecaca;
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+.document-etudiant {
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 15px;
+}
+
+.information-document {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.information-document small {
+    color: #64748b;
+}
+
+.suivi-document {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.badge-document {
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.badge-document-attente {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.badge-document-valide {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.badge-document-rejete {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.observation-document-etudiant {
+    grid-column: 1 / -1;
+    padding: 12px;
+    border-radius: 9px;
+}
+
+.observation-document-etudiant strong {
+    font-size: 12px;
+}
+
+.observation-document-etudiant p {
+    margin: 6px 0 0;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.observation-document-rejet {
+    border: 1px solid #fecaca;
+    background: #fef2f2;
+    color: #991b1b;
+}
+
+.observation-document-validation {
+    border: 1px solid #bbf7d0;
+    background: #f0fdf4;
+    color: #166534;
+}
+
+/* Affectation actuelle */
+
+.carte-affectation-etudiant {
+    display: grid;
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+    gap: 13px;
+}
+
+.carte-affectation-etudiant > div {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border: 1px solid #dbe4f0;
+    border-radius: 10px;
+    background: #f8fafc;
+}
+
+.carte-affectation-etudiant span {
+    color: #64748b;
+    font-size: 11px;
+}
+
+.carte-affectation-etudiant strong {
+    color: #1e293b;
+    font-size: 14px;
+}
+
+.chambre-principale {
+    background: #eff6ff !important;
+    border-color: #bfdbfe !important;
+}
+
+.chambre-principale strong {
+    color: #1d4ed8;
+    font-size: 16px;
+}
+
+.statut-affectation {
+    padding: 6px 10px;
+    display: inline-flex;
+    width: fit-content;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.statut-affectation-prevue {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.statut-affectation-active {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.statut-affectation-cloturee {
+    background: #e2e8f0;
+    color: #475569;
+}
+
+.statut-affectation-annulee {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.alerte-affectation-attente {
+    padding: 18px;
+    border: 1px solid #bfdbfe;
+    border-radius: 11px;
+    background: #eff6ff;
+    color: #1e40af;
+}
+
+.alerte-affectation-attente p {
+    margin: 7px 0 0;
+}
+
+/* Historique */
+
+.tableau-affectations-etudiant {
+    width: 100%;
+    min-width: 950px;
+    border-collapse: collapse;
+}
+
+.tableau-affectations-etudiant th,
+.tableau-affectations-etudiant td {
+    padding: 13px;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+}
+
+.tableau-affectations-etudiant th {
+    background: #f8fafc;
+    color: #475569;
+    font-size: 11px;
+    text-transform: uppercase;
+}
+
+@media (max-width: 900px) {
+    .resume-justificatifs-etudiant,
+    .carte-affectation-etudiant {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .resume-justificatifs-etudiant,
+    .carte-affectation-etudiant {
+        grid-template-columns: 1fr;
+    }
+
+    .document-etudiant {
+        grid-template-columns: 1fr;
+    }
+
+    .suivi-document {
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 650px) {
+    .entete-liste,
+    .document {
+        align-items: stretch;
+        flex-direction: column;
+    }
+}

@@ -1,0 +1,172 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ titre_page }} — Internat universitaire</title>
+    <link rel="stylesheet" href="{% static 'dashboard/style.css' %}?v=11">
+
+    <link rel="stylesheet" href="{% static 'hebergement/transferts_annees_premium.css' %}?v=3">
+
+    <link
+    rel="stylesheet"
+    href="{% static 'hebergement/annees_polish.css' %}?v=1"
+>
+</head>
+
+<body class="page-administration-premium page-annees-universitaires">
+
+<div class="app-shell">
+   {% include "dashboard/sidebar_responsable.html" %}
+
+    <div class="main-area">
+
+        <header class="topbar-annees">
+            <div>
+                <span class="sur-titre-topbar-annees">Espace responsable</span>
+                <h1>{{ titre_page }}</h1>
+                <p>Définissez la période et le statut de l'année universitaire.</p>
+            </div>
+
+            <div class="actions-topbar-annees">
+                <a href="{% url 'hebergement:liste_annees_universitaires' %}"
+                   class="bouton-premium bouton-premium-clair">
+                    ← Retour aux années
+                </a>
+
+                <div class="profil-topbar-annees">
+                    <div class="avatar-topbar-annees">
+                        {% if request.user.first_name %}
+                            {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
+                        {% else %}
+                            {{ request.user.username|first|upper }}
+                        {% endif %}
+                    </div>
+                    <div>
+                        <strong>{{ request.user.get_full_name|default:request.user.username }}</strong>
+                        <span>{% if request.user.is_superuser %}Super administrateur{% else %}{{ request.user.get_role_display }}{% endif %}</span>
+                    </div>
+                </div>
+
+            </div>
+        </header>
+
+        <main class="conteneur-premium conteneur-annees-layout">
+            {% if messages %}
+                <section class="messages-premium">
+                    {% for message in messages %}
+                        <div class="message-premium {{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                </section>
+            {% endif %}
+
+            <section class="hero-premium hero-annee-formulaire">
+                <div>
+                    <span class="sur-titre-hero-premium">Calendrier universitaire</span>
+                    <h2>{% if annee %}{{ annee.libelle }}{% else %}Nouvelle année universitaire{% endif %}</h2>
+                    <p>
+                        Une seule année peut être active à la fois.
+                        La date de fin doit être postérieure à la date de début.
+                    </p>
+                </div>
+                <div class="icone-hero-annee">📅</div>
+            </section>
+
+            <section class="grille-formulaire-annee">
+                <section class="carte-premium">
+                    <div class="entete-carte-premium">
+                        <div>
+                            <span class="mini-label-premium">Paramètres</span>
+                            <h2>Période universitaire</h2>
+                            <p>Renseignez le libellé, les dates et le statut initial.</p>
+                        </div>
+                        {% if annee %}
+                            <span class="badge-mode-premium badge-mode-modification">Modification</span>
+                        {% else %}
+                            <span class="badge-mode-premium">Création</span>
+                        {% endif %}
+                    </div>
+
+                    {% if formulaire.non_field_errors %}
+                        <div class="bloc-erreurs-premium">
+                            {% for erreur in formulaire.non_field_errors %}<p>{{ erreur }}</p>{% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <form method="post" class="formulaire-operation-premium" novalidate>
+                        {% csrf_token %}
+
+                        <div class="groupe-champ-premium">
+                            <label for="{{ formulaire.libelle.id_for_label }}">Libellé *</label>
+                            {{ formulaire.libelle }}
+                            <small>Exemple : 2026-2027</small>
+                            {% for erreur in formulaire.libelle.errors %}
+                                <span class="erreur-champ-premium">{{ erreur }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <div class="grille-dates-annee">
+                            <div class="groupe-champ-premium">
+                                <label for="{{ formulaire.date_debut.id_for_label }}">Date de début *</label>
+                                {{ formulaire.date_debut }}
+                                {% for erreur in formulaire.date_debut.errors %}
+                                    <span class="erreur-champ-premium">{{ erreur }}</span>
+                                {% endfor %}
+                            </div>
+
+                            <div class="groupe-champ-premium">
+                                <label for="{{ formulaire.date_fin.id_for_label }}">Date de fin *</label>
+                                {{ formulaire.date_fin }}
+                                {% for erreur in formulaire.date_fin.errors %}
+                                    <span class="erreur-champ-premium">{{ erreur }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="groupe-champ-premium">
+                            <label for="{{ formulaire.statut.id_for_label }}">Statut *</label>
+                            {{ formulaire.statut }}
+                            <small>Pour une nouvelle période, le statut « Planifiée » est recommandé.</small>
+                            {% for erreur in formulaire.statut.errors %}
+                                <span class="erreur-champ-premium">{{ erreur }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <div class="actions-formulaire-premium">
+                            <a href="{% url 'hebergement:liste_annees_universitaires' %}"
+                               class="bouton-premium bouton-premium-clair">Annuler</a>
+                            <button type="submit" class="bouton-premium bouton-premium-principal">
+                                {% if annee %}✓ {{ bouton_validation }}{% else %}+ {{ bouton_validation }}{% endif %}
+                            </button>
+                        </div>
+                    </form>
+                </section>
+
+                <aside class="colonne-aide-annee">
+                    {% if annee %}
+                    <section class="carte-premium">
+                        <span class="mini-label-premium">Situation actuelle</span>
+                        <div class="ligne-resume-premium"><span>Libellé</span><strong>{{ annee.libelle }}</strong></div>
+                        <div class="ligne-resume-premium"><span>Début</span><strong>{{ annee.date_debut|date:"d/m/Y" }}</strong></div>
+                        <div class="ligne-resume-premium"><span>Fin</span><strong>{{ annee.date_fin|date:"d/m/Y" }}</strong></div>
+                        <div class="ligne-resume-premium"><span>Statut</span><strong>{{ annee.get_statut_display }}</strong></div>
+                    </section>
+                    {% endif %}
+
+                    <section class="carte-premium alerte-operation-premium">
+                        <strong>Règle importante</strong>
+                        <p>
+                            Une année clôturée ne peut pas être réactivée.
+                            Pour clôturer une année, toutes les affectations prévues ou actives
+                            doivent d'abord être clôturées.
+                        </p>
+                    </section>
+                </aside>
+            </section>
+        </main>
+
+    </div>
+</div>
+</body>
+</html>

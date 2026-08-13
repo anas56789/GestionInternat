@@ -1,0 +1,385 @@
+{% extends "dashboard/base_etudiant.html" %}
+{% load static %}
+
+{% block title %}
+Mon profil étudiant — GestionInternat
+{% endblock %}
+
+{% block titre_page %}
+Mon profil étudiant
+{% endblock %}
+
+{% block sous_titre_page %}
+Consultez vos informations personnelles, académiques et administratives.
+{% endblock %}
+
+{% block css_page %}
+<link
+    rel="stylesheet"
+    href="{% static 'etudiants/profil_etudiant.css' %}?v=2"
+>
+{% endblock %}
+
+{% block contenu_etudiant %}
+
+<div class="profil-etudiant-page">
+
+    <!-- =====================================================
+         HERO PROFIL
+    ====================================================== -->
+
+    <section class="hero-profil-etudiant">
+
+        <div class="hero-profil-identite">
+
+            <div class="avatar-profil-etudiant">
+                {% if profil.photo %}
+                    <img
+                        src="{{ profil.photo.url }}"
+                        alt="Photo de {{ profil.utilisateur.get_full_name|default:profil.utilisateur.username }}"
+                    >
+                {% else %}
+                    <span>
+                        {% if profil.utilisateur.first_name %}
+                            {{ profil.utilisateur.first_name|first|upper }}
+                            {{ profil.utilisateur.last_name|first|upper }}
+                        {% else %}
+                            {{ profil.utilisateur.username|first|upper }}
+                        {% endif %}
+                    </span>
+                {% endif %}
+            </div>
+
+            <div class="hero-profil-texte">
+
+                <span class="mini-label-profil">
+                    Dossier étudiant
+                </span>
+
+                <h2>
+                    {{ profil.utilisateur.get_full_name|default:profil.utilisateur.username }}
+                </h2>
+
+                <p>
+                    {{ profil.matricule }}
+                    ·
+                    {{ profil.filiere|default:"Filière non renseignée" }}
+                    ·
+                    {{ profil.niveau_etude|default:"Niveau non renseigné" }}
+                </p>
+
+                <div class="hero-profil-actions">
+                    <a
+                        href="{% url 'etudiants:modifier_mon_profil' %}"
+                        class="bouton-profil bouton-profil-principal"
+                    >
+                        Modifier mes informations
+                    </a>
+
+                    <a
+                        href="{% url 'accounts:espace_etudiant' %}"
+                        class="bouton-profil bouton-profil-clair"
+                    >
+                        Tableau de bord
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="hero-profil-statut">
+            <span>Statut du dossier</span>
+
+            <strong>
+                {{ profil.get_statut_display }}
+            </strong>
+
+            <small>
+                Compte étudiant actif
+            </small>
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         STATISTIQUES / IDENTIFIANTS
+    ====================================================== -->
+
+    <section class="grille-stats-profil">
+
+        <article class="stat-profil">
+            <span class="icone-stat-profil">🎓</span>
+
+            <div>
+                <span>Matricule</span>
+                <strong>{{ profil.matricule }}</strong>
+                <small>Identifiant interne</small>
+            </div>
+        </article>
+
+        <article class="stat-profil">
+            <span class="icone-stat-profil">🪪</span>
+
+            <div>
+                <span>CNE</span>
+                <strong>{{ profil.cne|default:"—" }}</strong>
+                <small>Identifiant national</small>
+            </div>
+        </article>
+
+        <article class="stat-profil">
+            <span class="icone-stat-profil">📘</span>
+
+            <div>
+                <span>Filière</span>
+                <strong>{{ profil.filiere|default:"—" }}</strong>
+                <small>{{ profil.niveau_etude|default:"Niveau non renseigné" }}</small>
+            </div>
+        </article>
+
+        <article class="stat-profil">
+            <span class="icone-stat-profil">✅</span>
+
+            <div>
+                <span>Statut</span>
+                <strong>{{ profil.get_statut_display }}</strong>
+                <small>Dossier administratif</small>
+            </div>
+        </article>
+
+    </section>
+
+
+    <!-- =====================================================
+         CONTENU PROFIL
+    ====================================================== -->
+
+    <section class="grille-profil-etudiant">
+
+        <!-- COLONNE PRINCIPALE -->
+
+        <div class="colonne-profil-principale">
+
+            <article class="carte-profil">
+
+                <div class="entete-carte-profil">
+                    <div>
+                        <span class="mini-label-profil">
+                            Informations personnelles
+                        </span>
+
+                        <h3>Coordonnées</h3>
+
+                        <p>
+                            Vos informations de contact et d'identification personnelle.
+                        </p>
+                    </div>
+
+                    <a
+                        href="{% url 'etudiants:modifier_mon_profil' %}"
+                        class="lien-profil"
+                    >
+                        Modifier →
+                    </a>
+                </div>
+
+
+                <div class="grille-informations-profil">
+
+                    <div class="information-profil">
+                        <span>Prénom</span>
+                        <strong>
+                            {{ profil.utilisateur.first_name|default:"Non renseigné" }}
+                        </strong>
+                    </div>
+
+                    <div class="information-profil">
+                        <span>Nom</span>
+                        <strong>
+                            {{ profil.utilisateur.last_name|default:"Non renseigné" }}
+                        </strong>
+                    </div>
+
+                    <div class="information-profil information-profil-large">
+                        <span>Adresse e-mail</span>
+                        <strong>
+                            {{ profil.utilisateur.email|default:"Non renseignée" }}
+                        </strong>
+                    </div>
+
+                    <div class="information-profil">
+                        <span>Date de naissance</span>
+                        <strong>
+                            {% if profil.date_naissance %}
+                                {{ profil.date_naissance|date:"d/m/Y" }}
+                            {% else %}
+                                Non renseignée
+                            {% endif %}
+                        </strong>
+                    </div>
+
+                    <div class="information-profil">
+                        <span>Sexe</span>
+                        <strong>
+                            {{ profil.get_sexe_display|default:"Non renseigné" }}
+                        </strong>
+                    </div>
+
+                    <div class="information-profil">
+                        <span>Ville d’origine</span>
+                        <strong>
+                            {{ profil.ville_origine|default:"Non renseignée" }}
+                        </strong>
+                    </div>
+
+                    <div class="information-profil information-profil-large">
+                        <span>Adresse</span>
+                        <strong>
+                            {{ profil.adresse|default:"Non renseignée" }}
+                        </strong>
+                    </div>
+
+                </div>
+
+            </article>
+
+
+            <article class="carte-profil">
+
+                <div class="entete-carte-profil">
+                    <div>
+                        <span class="mini-label-profil">
+                            Contact d'urgence
+                        </span>
+
+                        <h3>Personne à contacter</h3>
+
+                        <p>
+                            Informations utilisées uniquement en cas de nécessité.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="grille-informations-profil">
+
+                    <div class="information-profil">
+                        <span>Nom</span>
+                        <strong>
+                            {{ profil.nom_contact_urgence|default:"Non renseigné" }}
+                        </strong>
+                    </div>
+
+                    <div class="information-profil">
+                        <span>Lien</span>
+                        <strong>
+                            {{ profil.lien_contact_urgence|default:"Non renseigné" }}
+                        </strong>
+                    </div>
+
+                    <div class="information-profil information-profil-large">
+                        <span>Téléphone</span>
+                        <strong>
+                            {{ profil.telephone_contact_urgence|default:"Non renseigné" }}
+                        </strong>
+                    </div>
+
+                </div>
+
+            </article>
+
+        </div>
+
+
+        <!-- COLONNE SECONDAIRE -->
+
+        <aside class="colonne-profil-secondaire">
+
+            <article class="carte-profil carte-scolaire">
+
+                <div class="entete-carte-profil">
+                    <div>
+                        <span class="mini-label-profil">
+                            Données administratives
+                        </span>
+
+                        <h3>Dossier scolaire</h3>
+                    </div>
+                </div>
+
+                <div class="liste-profil">
+
+                    <div>
+                        <span>Matricule</span>
+                        <strong>{{ profil.matricule }}</strong>
+                    </div>
+
+                    <div>
+                        <span>CNE</span>
+                        <strong>{{ profil.cne|default:"—" }}</strong>
+                    </div>
+
+                    <div>
+                        <span>Filière</span>
+                        <strong>{{ profil.filiere|default:"—" }}</strong>
+                    </div>
+
+                    <div>
+                        <span>Niveau</span>
+                        <strong>{{ profil.niveau_etude|default:"—" }}</strong>
+                    </div>
+
+                    <div>
+                        <span>Statut</span>
+                        <strong>{{ profil.get_statut_display }}</strong>
+                    </div>
+
+                </div>
+
+                <div class="note-profil">
+                    <strong>Données protégées</strong>
+
+                    <p>
+                        Le matricule, le CNE, la filière, le niveau
+                        et le statut sont gérés par l’administration.
+                    </p>
+                </div>
+
+            </article>
+
+
+            <article class="carte-profil carte-securite-profil">
+
+                <span class="mini-label-profil">
+                    Sécurité
+                </span>
+
+                <h3>Compte étudiant</h3>
+
+                <div class="bloc-securite-profil">
+                    <span>Nom d'utilisateur</span>
+                    <strong>{{ profil.utilisateur.username }}</strong>
+                </div>
+
+                <div class="bloc-securite-profil">
+                    <span>Adresse de connexion</span>
+                    <strong>{{ profil.utilisateur.email }}</strong>
+                </div>
+
+                <a
+                    href="{% url 'accounts:deconnexion' %}"
+                    class="bouton-profil bouton-profil-danger"
+                >
+                    Déconnexion sécurisée
+                </a>
+
+            </article>
+
+        </aside>
+
+    </section>
+
+</div>
+
+{% endblock %}

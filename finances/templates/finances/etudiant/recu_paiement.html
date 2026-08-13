@@ -1,0 +1,377 @@
+{% extends "dashboard/base_etudiant.html" %}
+{% load static %}
+
+{% block title %}
+Reçu { numero_recu } — GestionInternat
+{% endblock %}
+
+{% block titre_page %}
+Reçu de paiement
+{% endblock %}
+
+{% block sous_titre_page %}
+Consultez ou imprimez votre reçu de paiement validé.
+{% endblock %}
+
+{% block css_page %}
+<link
+    rel="stylesheet"
+    href="{% static 'finances/finances_etudiant.css' %}?v=5"
+>
+<link
+    rel="stylesheet"
+    href="{% static 'finances/recu_paiement.css' %}?v=3"
+>
+{% endblock %}
+
+{% block contenu_etudiant %}
+<div class="recu-dans-layout-etudiant">
+<header class="entete-recu-actions no-print">
+
+        <a
+            href="{% url 'finances:detail_frais' frais.pk %}"
+            class="bouton-recu bouton-recu-clair"
+        >
+            ← Retour au dossier financier
+        </a>
+
+        <button
+            type="button"
+            class="bouton-recu bouton-recu-principal"
+            onclick="window.print();"
+        >
+            Imprimer / Enregistrer en PDF
+        </button>
+
+    </header>
+
+
+    <main class="document-recu">
+
+        <section class="entete-document-recu">
+
+            <div class="identite-recu">
+
+                <img
+                    src="{% static 'accounts/images/logo-gestioninternat.png' %}"
+                    alt="GestionInternat"
+                    class="logo-recu-image"
+                >
+
+                <div>
+                    <span class="sur-titre-recu">
+                        Gestion de l’internat universitaire
+                    </span>
+
+                    <h1>
+                        Reçu de paiement
+                    </h1>
+
+                    <p>
+                        Document généré après validation administrative
+                        du règlement.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="numero-recu">
+
+                <span>
+                    Numéro du reçu
+                </span>
+
+                <strong>
+                    {{ numero_recu }}
+                </strong>
+
+                <small>
+                    Généré le {% now "d/m/Y à H:i" %}
+                </small>
+
+            </div>
+
+        </section>
+
+
+        <section class="confirmation-recu">
+
+            <div class="icone-confirmation-recu">
+                ✓
+            </div>
+
+            <div>
+                <strong>
+                    Paiement validé
+                </strong>
+
+                <p>
+                    Ce reçu confirme la validation d’un paiement
+                    de {{ paiement.montant|floatformat:2 }} DH.
+                </p>
+            </div>
+
+        </section>
+
+
+        <section class="grille-recu">
+
+            <article class="bloc-recu">
+
+                <div class="titre-bloc-recu">
+
+                    <span>
+                        01
+                    </span>
+
+                    <h2>
+                        Étudiant
+                    </h2>
+
+                </div>
+
+
+                <div class="liste-recu">
+
+                    <div>
+                        <span>Nom complet</span>
+
+                        <strong>
+                            {{ frais.etudiant.utilisateur.get_full_name|default:frais.etudiant.utilisateur.username }}
+                        </strong>
+                    </div>
+
+                    <div>
+                        <span>Matricule</span>
+
+                        <strong>
+                            {{ frais.etudiant.matricule }}
+                        </strong>
+                    </div>
+
+                    <div>
+                        <span>CNE</span>
+
+                        <strong>
+                            {{ frais.etudiant.cne|default:"Non renseigné" }}
+                        </strong>
+                    </div>
+
+                    <div>
+                        <span>Filière</span>
+
+                        <strong>
+                            {{ frais.etudiant.filiere|default:"Non renseignée" }}
+                        </strong>
+                    </div>
+
+                </div>
+
+            </article>
+
+
+            <article class="bloc-recu">
+
+                <div class="titre-bloc-recu">
+
+                    <span>
+                        02
+                    </span>
+
+                    <h2>
+                        Paiement
+                    </h2>
+
+                </div>
+
+
+                <div class="liste-recu">
+
+                    <div>
+                        <span>Montant validé</span>
+
+                        <strong class="montant-recu">
+                            {{ paiement.montant|floatformat:2 }} DH
+                        </strong>
+                    </div>
+
+                    <div>
+                        <span>Mode</span>
+
+                        <strong>
+                            {{ paiement.get_mode_paiement_display }}
+                        </strong>
+                    </div>
+
+                    <div>
+                        <span>Date du paiement</span>
+
+                        <strong>
+                            {{ paiement.date_paiement|date:"d/m/Y" }}
+                        </strong>
+                    </div>
+
+                    <div>
+                        <span>Date de validation</span>
+
+                        <strong>
+                            {{ paiement.date_validation|date:"d/m/Y à H:i" }}
+                        </strong>
+                    </div>
+
+                    <div>
+                        <span>Référence</span>
+
+                        <strong>
+                            {{ paiement.reference|default:"Non renseignée" }}
+                        </strong>
+                    </div>
+
+                    <div>
+                        <span>Origine</span>
+
+                        <strong>
+                            {{ paiement.get_origine_display }}
+                        </strong>
+                    </div>
+
+                </div>
+
+            </article>
+
+        </section>
+
+
+        <section class="bloc-recu bloc-recu-large">
+
+            <div class="titre-bloc-recu">
+
+                <span>
+                    03
+                </span>
+
+                <h2>
+                    Situation financière
+                </h2>
+
+            </div>
+
+
+            <div class="resume-financier-recu">
+
+                <div>
+                    <span>
+                        Année universitaire
+                    </span>
+
+                    <strong>
+                        {{ frais.annee_universitaire.libelle }}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>
+                        Montant total
+                    </span>
+
+                    <strong>
+                        {{ frais.montant_total|floatformat:2 }} DH
+                    </strong>
+                </div>
+
+                <div>
+                    <span>
+                        Total validé
+                    </span>
+
+                    <strong class="valeur-succes">
+                        {{ frais.montant_paye|floatformat:2 }} DH
+                    </strong>
+                </div>
+
+                <div>
+                    <span>
+                        Montant restant
+                    </span>
+
+                    <strong
+                        class="
+                            {% if frais.montant_restant > 0 %}
+                                valeur-danger
+                            {% else %}
+                                valeur-succes
+                            {% endif %}
+                        "
+                    >
+                        {{ frais.montant_restant|floatformat:2 }} DH
+                    </strong>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        {% if paiement.commentaire %}
+
+            <section class="observation-recu">
+
+                <strong>
+                    Commentaire associé
+                </strong>
+
+                <p>
+                    {{ paiement.commentaire }}
+                </p>
+
+            </section>
+
+        {% endif %}
+
+
+        <section class="signature-recu">
+
+            <div>
+                <span>
+                    Document électronique
+                </span>
+
+                <p>
+                    Ce reçu est associé au paiement numéro
+                    {{ paiement.pk }} enregistré dans l’application
+                    de gestion de l’internat.
+                </p>
+            </div>
+
+
+            <div class="cachet-recu">
+
+                <span>
+                    VALIDÉ
+                </span>
+
+                <small>
+                    {{ paiement.date_validation|date:"d/m/Y" }}
+                </small>
+
+            </div>
+
+        </section>
+
+
+        <footer class="pied-recu">
+
+            <span>
+                {{ numero_recu }}
+            </span>
+
+            <span>
+                Gestion de l’internat universitaire — {% now "Y" %}
+            </span>
+
+        </footer>
+
+    </main>
+</div>
+{% endblock %}

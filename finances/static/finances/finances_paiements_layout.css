@@ -1,0 +1,294 @@
+/* =========================================================
+   FINANCES — PAIEMENTS RESPONSABLE
+========================================================= */
+
+.finance-payment-kpis {
+    margin-bottom: 18px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.finance-payment-filters {
+    display: grid;
+    grid-template-columns: minmax(280px, 1.5fr) minmax(210px, .7fr) auto;
+    align-items: end;
+    gap: 13px;
+}
+
+.finance-payment-list {
+    display: grid;
+    gap: 16px;
+}
+
+.finance-payment-card {
+    min-width: 0;
+    padding: 19px;
+    border: 1px solid #dbe4f0;
+    border-radius: 19px;
+    background: linear-gradient(145deg, #fff, #fbfdff);
+    box-shadow: 0 10px 24px rgba(15,23,42,.055);
+}
+
+.finance-payment-meta {
+    margin-top: 13px;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 9px;
+}
+
+.finance-payment-meta > div {
+    min-width: 0;
+    padding: 10px;
+    border: 1px solid #e7edf6;
+    border-radius: 10px;
+    background: #f8fafc;
+}
+
+.finance-payment-meta span,
+.finance-payment-meta strong {
+    display: block;
+}
+
+.finance-payment-meta span {
+    color: #64748b;
+    font-size: 8px;
+}
+
+.finance-payment-meta strong {
+    margin-top: 4px;
+    color: #0f172a;
+    font-size: 9px;
+    overflow-wrap: anywhere;
+}
+
+.finance-payment-comment {
+    margin-top: 13px;
+    padding: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    background: #f8fafc;
+}
+
+.finance-payment-comment strong {
+    color: #0f172a;
+    font-size: 9px;
+}
+
+.finance-payment-comment p {
+    margin: 5px 0 0;
+    color: #64748b;
+    font-size: 9px;
+    line-height: 1.5;
+}
+
+.finance-payment-actions {
+    margin-top: 16px;
+    padding-top: 15px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    border-top: 1px solid #edf1f6;
+}
+
+.finance-payment-actions-left,
+.finance-payment-actions-right {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.finance-button-success {
+    border-color: #15803d;
+    background: linear-gradient(135deg, #15803d, #22c55e);
+    color: #fff;
+    box-shadow: 0 8px 18px rgba(21,128,61,.15);
+}
+
+.finance-button-danger {
+    border-color: #ef4444;
+    background: #fff;
+    color: #b91c1c;
+}
+
+.finance-button-danger:hover {
+    background: #fef2f2;
+}
+
+.finance-cancel-details {
+    position: relative;
+}
+
+.finance-cancel-details summary {
+    list-style: none;
+}
+
+.finance-cancel-details summary::-webkit-details-marker {
+    display: none;
+}
+
+.finance-cancel-form {
+    min-width: 270px;
+    margin-top: 9px;
+    padding: 12px;
+    border: 1px solid #fecaca;
+    border-radius: 11px;
+    background: #fffafa;
+}
+
+.finance-cancel-form label {
+    display: block;
+    margin-bottom: 6px;
+    color: #7f1d1d;
+    font-size: 9px;
+    font-weight: 800;
+}
+
+.finance-cancel-form textarea {
+    width: 100%;
+    min-height: 84px;
+    padding: 10px 11px;
+    border: 1px solid #fca5a5;
+    border-radius: 9px;
+    outline: none;
+    background: #fff;
+    font: inherit;
+    font-size: 10px;
+    resize: vertical;
+}
+
+.finance-cancel-form textarea:focus {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 4px rgba(239,68,68,.09);
+}
+
+/* =========================================================
+   PAGE ANNULATION
+========================================================= */
+
+.finance-cancel-page {
+    min-height: calc(100vh - 180px);
+    display: grid;
+    place-items: center;
+}
+
+.finance-cancel-card {
+    width: min(720px, 100%);
+    margin: 0;
+    padding: 30px;
+    text-align: center;
+}
+
+.finance-danger-icon {
+    width: 62px;
+    height: 62px;
+    margin: 0 auto 13px;
+    display: grid;
+    place-items: center;
+    border-radius: 18px;
+    background: #fef2f2;
+    color: #b91c1c;
+    font-size: 27px;
+    font-weight: 900;
+}
+
+.finance-cancel-card h1 {
+    margin: 6px 0 0;
+    color: #0f172a;
+    font-size: 30px;
+}
+
+.finance-cancel-intro {
+    max-width: 560px;
+    margin: 10px auto 20px;
+    color: #64748b;
+    font-size: 11px;
+    line-height: 1.55;
+}
+
+.finance-cancel-summary {
+    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.finance-cancel-summary > div {
+    padding: 12px;
+    border: 1px solid #e7edf6;
+    border-radius: 11px;
+    background: #f8fafc;
+    text-align: left;
+}
+
+.finance-cancel-summary span,
+.finance-cancel-summary strong {
+    display: block;
+}
+
+.finance-cancel-summary span {
+    color: #64748b;
+    font-size: 8px;
+}
+
+.finance-cancel-summary strong {
+    margin-top: 4px;
+    color: #0f172a;
+    font-size: 10px;
+    overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1050px) {
+    .finance-payment-meta {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 800px) {
+    .finance-payment-filters {
+        grid-template-columns: 1fr;
+    }
+
+    .finance-payment-actions {
+        flex-direction: column;
+    }
+
+    .finance-payment-actions-left,
+    .finance-payment-actions-right {
+        width: 100%;
+    }
+
+    .finance-cancel-summary {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 620px) {
+    .finance-payment-kpis,
+    .finance-payment-meta {
+        grid-template-columns: 1fr;
+    }
+
+    .finance-payment-actions-left,
+    .finance-payment-actions-right {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .finance-payment-actions .finance-button,
+    .finance-payment-actions form,
+    .finance-cancel-details {
+        width: 100%;
+    }
+
+    .finance-cancel-form {
+        min-width: 0;
+        width: 100%;
+    }
+}

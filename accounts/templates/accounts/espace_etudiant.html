@@ -1,0 +1,1196 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Espace étudiant — Gestion de l'internat</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'accounts/espace_etudiant.css' %}?v=13"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'dashboard/style.css' %}?v=12"
+    >
+</head>
+
+<body class="page-espace-etudiant">
+
+<div class="app-shell student-app-shell">
+
+    {% include "dashboard/sidebar_etudiant.html" %}
+
+    <div class="main-area student-main-area">
+
+    <header class="entete-principale">
+        <div class="identite-page">
+            <a
+                href="{% url 'accounts:espace_etudiant' %}"
+                class="logo-page"
+                aria-label="Accueil étudiant"
+            >
+                <span class="logo-page-3d">
+                    <img
+                        src="{% static 'accounts/images/logo-gestioninternat.png' %}"
+                        alt="GestionInternat"
+                    >
+                </span>
+            </a>
+
+            <div>
+                <span class="sur-titre">
+                    Portail étudiant
+                </span>
+
+                <h1>Gestion de l’internat</h1>
+
+                <p>
+                    Suivez votre demande, votre affectation
+                    et vos opérations récentes.
+                </p>
+            </div>
+        </div>
+
+        <div class="zone-utilisateur">
+            <div class="avatar-utilisateur" aria-hidden="true">
+                {% if request.user.first_name %}
+                    {{ request.user.first_name|first|upper }}
+                    {{ request.user.last_name|first|upper }}
+                {% else %}
+                    {{ request.user.username|first|upper }}
+                {% endif %}
+            </div>
+
+            <div>
+                <strong>
+                    {{ request.user.get_full_name|default:request.user.username }}
+                </strong>
+
+                <span>Étudiant</span>
+            </div>
+
+            <a
+                href="{% url 'accounts:deconnexion' %}"
+                class="bouton-deconnexion"
+                title="Se déconnecter"
+            >
+                <span aria-hidden="true">↪</span>
+                Déconnexion
+            </a>
+        </div>
+    </header>
+
+    <main class="conteneur">
+        {% if messages %}
+            <section class="messages" aria-label="Messages système">
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </section>
+        {% endif %}
+
+        <section class="banniere-bienvenue">
+            <div>
+                <span class="sur-titre">
+                    Tableau de bord personnel
+                </span>
+
+                <h2>
+                    Bonjour
+                    {{ request.user.first_name|default:request.user.username }}
+                </h2>
+
+                <p>
+                    Retrouvez en un seul endroit l’état de votre dossier,
+                    votre chambre, vos notifications et vos démarches.
+                </p>
+            </div>
+
+            <div class="date-banniere">
+                <span>Aujourd’hui</span>
+                <strong>{% now "d/m/Y" %}</strong>
+            </div>
+        </section>
+
+        {% if profil %}
+            <section class="grille-indicateurs">
+                <article class="indicateur">
+                    <div class="icone-indicateur" aria-hidden="true">
+                        👤
+                    </div>
+
+                    <div>
+                        <span>Profil</span>
+                        <strong>{{ profil.matricule }}</strong>
+                        <small>{{ profil.filiere }}</small>
+                    </div>
+                </article>
+
+                <article class="indicateur">
+                    <div class="icone-indicateur" aria-hidden="true">
+                        📄
+                    </div>
+
+                    <div>
+                        <span>Dernière demande</span>
+
+                        {% if derniere_demande %}
+                            <strong>
+                                {{ derniere_demande.get_statut_display }}
+                            </strong>
+
+                            <small>
+                                {{ derniere_demande.annee_universitaire.libelle }}
+                            </small>
+                        {% else %}
+                            <strong>Aucune</strong>
+                            <small>Aucune demande enregistrée</small>
+                        {% endif %}
+                    </div>
+                </article>
+
+                <article class="indicateur">
+                    <div class="icone-indicateur" aria-hidden="true">
+                        🛏️
+                    </div>
+
+                    <div>
+                        <span>Affectation</span>
+
+                        {% if affectation_active %}
+                            <strong>
+                                {{ affectation_active.chambre.batiment.code }}
+                                /
+                                {{ affectation_active.chambre.numero }}
+                            </strong>
+
+                            <small>
+                                {{ affectation_active.get_statut_display }}
+                            </small>
+                        {% else %}
+                            <strong>Aucune</strong>
+                            <small>Pas d’affectation ouverte</small>
+                        {% endif %}
+                    </div>
+                </article>
+
+                <article class="indicateur">
+                    <div class="icone-indicateur" aria-hidden="true">
+                        🔔
+                    </div>
+
+                    <div>
+                        <span>Notifications</span>
+                        <strong>
+                            {{ nombre_notifications_non_lues|default:0 }}
+                        </strong>
+                        <small>Non lue(s)</small>
+                    </div>
+                </article>
+            </section>
+
+            <!-- =================================================
+                 ANALYTIQUE ÉTUDIANT
+            ================================================== -->
+
+            <section class="section-analytique-etudiant">
+
+                <div class="entete-analytique-etudiant">
+                    <div>
+                        <span class="petit-titre">
+                            Analyse personnelle
+                        </span>
+
+                        <h3>
+                            Mes statistiques
+                        </h3>
+
+                        <p>
+                            Une lecture rapide de l'avancement de votre dossier,
+                            de vos paiements et de vos démarches.
+                        </p>
+                    </div>
+
+                    <span class="badge-temps-reel-etudiant">
+                        Temps réel
+                    </span>
+                </div>
+
+                <div class="grille-analytique-etudiant">
+
+                    <!-- DOSSIER -->
+
+                    <article class="stat-moderne-etudiant stat-dossier-etudiant">
+
+                        <div
+                            class="anneau-stat-etudiant"
+                            style="--progress: {{ pourcentage_justificatifs_valides|default:0 }};"
+                        >
+                            <div>
+                                <strong>
+                                    {{ pourcentage_justificatifs_valides|default:0 }}%
+                                </strong>
+                                <span>validé</span>
+                            </div>
+                        </div>
+
+                        <div class="contenu-stat-moderne">
+                            <span class="label-stat-moderne">
+                                Dossier
+                            </span>
+
+                            <h4>
+                                Pièces justificatives
+                            </h4>
+
+                            <p>
+                                {{ nombre_justificatifs_valides|default:0 }}
+                                validée(s) sur
+                                {{ nombre_justificatifs|default:0 }}
+                            </p>
+
+                            <div class="mini-barre-stat">
+                                <span
+                                    style="width: {{ pourcentage_justificatifs_valides|default:0 }}%;"
+                                ></span>
+                            </div>
+                        </div>
+
+                    </article>
+
+
+                    <!-- FINANCES -->
+
+                    <article class="stat-moderne-etudiant stat-finance-etudiant">
+
+                        <div
+                            class="anneau-stat-etudiant"
+                            style="--progress: {{ pourcentage_paiement|default:0 }};"
+                        >
+                            <div>
+                                <strong>
+                                    {{ pourcentage_paiement|default:0 }}%
+                                </strong>
+                                <span>réglé</span>
+                            </div>
+                        </div>
+
+                        <div class="contenu-stat-moderne">
+                            <span class="label-stat-moderne">
+                                Finances
+                            </span>
+
+                            <h4>
+                                Situation financière
+                            </h4>
+
+                            {% if frais_hebergement %}
+                                <p>
+                                    {{ frais_hebergement.montant_paye|floatformat:2 }} DH
+                                    payés sur
+                                    {{ frais_hebergement.montant_total|floatformat:2 }} DH
+                                </p>
+                            {% else %}
+                                <p>
+                                    Aucun frais actif.
+                                </p>
+                            {% endif %}
+
+                            <div class="mini-barre-stat">
+                                <span
+                                    style="width: {{ pourcentage_paiement|default:0 }}%;"
+                                ></span>
+                            </div>
+                        </div>
+
+                    </article>
+
+
+                    <!-- RÉCLAMATIONS -->
+
+                    <article class="stat-moderne-etudiant stat-reclamation-etudiant">
+
+                        <div
+                            class="anneau-stat-etudiant"
+                            style="--progress: {{ pourcentage_reclamations_resolues|default:0 }};"
+                        >
+                            <div>
+                                <strong>
+                                    {{ pourcentage_reclamations_resolues|default:0 }}%
+                                </strong>
+                                <span>résolu</span>
+                            </div>
+                        </div>
+
+                        <div class="contenu-stat-moderne">
+                            <span class="label-stat-moderne">
+                                Assistance
+                            </span>
+
+                            <h4>
+                                Réclamations
+                            </h4>
+
+                            <p>
+                                {{ nombre_reclamations_resolues|default:0 }}
+                                résolue(s) ·
+                                {{ nombre_reclamations_ouvertes|default:0 }}
+                                ouverte(s)
+                            </p>
+
+                            <div class="mini-stat-details">
+                                <span>
+                                    Total
+                                    <strong>{{ nombre_reclamations_total|default:0 }}</strong>
+                                </span>
+
+                                <span>
+                                    Ouvertes
+                                    <strong>{{ nombre_reclamations_ouvertes|default:0 }}</strong>
+                                </span>
+                            </div>
+                        </div>
+
+                    </article>
+
+
+                    <!-- NOTIFICATIONS -->
+
+                    <article class="stat-moderne-etudiant stat-notification-etudiant">
+
+                        <div
+                            class="anneau-stat-etudiant"
+                            style="--progress: {{ pourcentage_notifications_lues|default:0 }};"
+                        >
+                            <div>
+                                <strong>
+                                    {{ pourcentage_notifications_lues|default:0 }}%
+                                </strong>
+                                <span>lu</span>
+                            </div>
+                        </div>
+
+                        <div class="contenu-stat-moderne">
+                            <span class="label-stat-moderne">
+                                Notifications
+                            </span>
+
+                            <h4>
+                                Centre d'information
+                            </h4>
+
+                            <p>
+                                {{ nombre_notifications_non_lues|default:0 }}
+                                non lue(s) sur
+                                {{ nombre_notifications_total|default:0 }}
+                            </p>
+
+                            <div class="mini-stat-details">
+                                <span>
+                                    Lues
+                                    <strong>{{ nombre_notifications_lues|default:0 }}</strong>
+                                </span>
+
+                                <span>
+                                    Non lues
+                                    <strong>{{ nombre_notifications_non_lues|default:0 }}</strong>
+                                </span>
+                            </div>
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+            <section class="grille-principale">
+                <div class="colonne-principale">
+                    <article class="carte carte-demande">
+                        <div class="entete-carte">
+                            <div>
+                                <span class="petit-titre">
+                                    Hébergement
+                                </span>
+
+                                <h3>Ma demande d’hébergement</h3>
+                            </div>
+
+                            {% if derniere_demande %}
+                                <span
+                                    class="
+                                        badge-statut
+                                        statut-{{ derniere_demande.statut|lower }}
+                                    "
+                                >
+                                    {{ derniere_demande.get_statut_display }}
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        {% if derniere_demande %}
+                            <div class="grille-informations">
+                                <div class="information">
+                                    <span>Année universitaire</span>
+                                    <strong>
+                                        {{ derniere_demande.annee_universitaire.libelle }}
+                                    </strong>
+                                </div>
+
+                                <div class="information">
+                                    <span>Date de création</span>
+                                    <strong>
+                                        {{ derniere_demande.date_creation|date:"d/m/Y à H:i" }}
+                                    </strong>
+                                </div>
+
+                                <div class="information">
+                                    <span>Date de soumission</span>
+                                    <strong>
+                                        {% if derniere_demande.date_soumission %}
+                                            {{ derniere_demande.date_soumission|date:"d/m/Y à H:i" }}
+                                        {% else %}
+                                            Non soumise
+                                        {% endif %}
+                                    </strong>
+                                </div>
+
+                                <div class="information">
+                                    <span>Distance du domicile</span>
+                                    <strong>
+                                        {{ derniere_demande.distance_domicile }} km
+                                    </strong>
+                                </div>
+                            </div>
+
+                            <div class="progression-documents">
+                                <div class="entete-progression">
+                                    <div>
+                                        <strong>Pièces justificatives</strong>
+
+                                        <span>
+                                            {{ nombre_justificatifs_valides|default:0 }}
+                                            validée(s) sur
+                                            {{ nombre_justificatifs|default:0 }}
+                                        </span>
+                                    </div>
+
+                                    <span>
+                                        {{ pourcentage_justificatifs_valides|default:0 }} %
+                                    </span>
+                                </div>
+
+                                <div class="barre-progression">
+                                    <span
+                                        style="width: {{ pourcentage_justificatifs_valides|default:0 }}%;"
+                                    ></span>
+                                </div>
+
+                                <div class="resume-documents">
+                                    <span class="document-attente">
+                                        {{ nombre_justificatifs_en_attente|default:0 }}
+                                        en attente
+                                    </span>
+
+                                    <span class="document-valide">
+                                        {{ nombre_justificatifs_valides|default:0 }}
+                                        validé(s)
+                                    </span>
+
+                                    <span class="document-rejete">
+                                        {{ nombre_justificatifs_rejetes|default:0 }}
+                                        rejeté(s)
+                                    </span>
+                                </div>
+                            </div>
+
+                            {% if derniere_demande.motif_decision %}
+                                <div
+                                    class="
+                                        observation-demande
+                                        {% if derniere_demande.statut == 'INCOMPLETE' or derniere_demande.statut == 'REFUSEE' %}
+                                            observation-alerte
+                                        {% endif %}
+                                    "
+                                >
+                                    <strong>Observation administrative</strong>
+
+                                    <p>
+                                        {{ derniere_demande.motif_decision }}
+                                    </p>
+                                </div>
+                            {% endif %}
+
+                            <div class="actions-carte">
+                                <a
+                                    href="{% url 'hebergement:mes_demandes' %}"
+                                    class="bouton bouton-principal"
+                                >
+                                    Consulter mes demandes
+                                </a>
+
+                                {% if derniere_demande.est_modifiable_par_etudiant %}
+                                    <a
+                                        href="{% url 'hebergement:modifier_demande' derniere_demande.pk %}"
+                                        class="bouton bouton-clair"
+                                    >
+                                        Compléter ou modifier
+                                    </a>
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            <div class="etat-vide">
+                                <div class="icone-vide" aria-hidden="true">
+                                    📄
+                                </div>
+
+                                <h4>Aucune demande déposée</h4>
+
+                                <p>
+                                    Déposez une demande pour commencer
+                                    votre procédure d’hébergement.
+                                </p>
+
+                                <a
+                                    href="{% url 'hebergement:deposer_demande' %}"
+                                    class="bouton bouton-principal"
+                                >
+                                    Déposer une demande
+                                </a>
+                            </div>
+                        {% endif %}
+                    </article>
+
+                    <article class="carte carte-notifications-dashboard">
+                        <div class="entete-carte">
+                            <div>
+                                <span class="petit-titre">
+                                    Suivi récent
+                                </span>
+
+                                <h3>Mes notifications</h3>
+                            </div>
+
+                            <a
+                                href="{% url 'notifications:mes_notifications' %}"
+                                class="lien-carte"
+                            >
+                                Tout afficher
+                            </a>
+                        </div>
+
+                        <div class="liste-activites">
+                            {% for notification in notifications_recentes %}
+                                <a
+                                    href="{% url 'notifications:detail_notification' notification.pk %}"
+                                    class="
+                                        activite
+                                        {% if not notification.est_lue %}
+                                            activite-non-lue
+                                        {% endif %}
+                                    "
+                                >
+                                    <div class="icone-activite" aria-hidden="true">
+                                        {% if notification.type_notification == "DEMANDE" %}
+                                            🏠
+                                        {% elif notification.type_notification == "AFFECTATION" %}
+                                            🛏️
+                                        {% elif notification.type_notification == "PAIEMENT" %}
+                                            💳
+                                        {% elif notification.type_notification == "RECLAMATION" %}
+                                            🛠️
+                                        {% else %}
+                                            🔔
+                                        {% endif %}
+                                    </div>
+
+                                    <div>
+                                        <strong>
+                                            {{ notification.titre }}
+                                        </strong>
+
+                                        <p>
+                                            {{ notification.message|truncatechars:120 }}
+                                        </p>
+
+                                        <small>
+                                            {{ notification.date_creation|date:"d/m/Y à H:i" }}
+                                        </small>
+                                    </div>
+
+                                    {% if not notification.est_lue %}
+                                        <span class="pastille-non-lue"></span>
+                                    {% endif %}
+                                </a>
+                            {% empty %}
+                                <div class="etat-vide etat-vide-compact">
+                                    <div class="icone-vide" aria-hidden="true">
+                                        🔕
+                                    </div>
+
+                                    <h4>Aucune notification</h4>
+
+                                    <p>
+                                        Vos nouvelles informations
+                                        apparaîtront ici.
+                                    </p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </article>
+                </div>
+
+                <aside class="colonne-secondaire">
+                    <article class="carte carte-profil">
+                        <div class="entete-carte">
+                            <div>
+                                <span class="petit-titre">
+                                    Dossier étudiant
+                                </span>
+
+                                <h3>Mon profil</h3>
+                            </div>
+                        </div>
+
+                        <div class="profil-identite">
+                            <div class="grand-avatar" aria-hidden="true">
+                                {% if request.user.first_name %}
+                                    {{ request.user.first_name|first|upper }}
+                                    {{ request.user.last_name|first|upper }}
+                                {% else %}
+                                    {{ request.user.username|first|upper }}
+                                {% endif %}
+                            </div>
+
+                            <div>
+                                <strong>
+                                    {{ request.user.get_full_name|default:request.user.username }}
+                                </strong>
+
+                                <span>{{ profil.matricule }}</span>
+                            </div>
+                        </div>
+
+                        <div class="liste-informations">
+                            <div class="information-ligne">
+                                <span>CNE</span>
+                                <strong>{{ profil.cne|default:"Non renseigné" }}</strong>
+                            </div>
+
+                            <div class="information-ligne">
+                                <span>Filière</span>
+                                <strong>{{ profil.filiere|default:"Non renseignée" }}</strong>
+                            </div>
+
+                            <div class="information-ligne">
+                                <span>Niveau</span>
+                                <strong>{{ profil.niveau_etude|default:"Non renseigné" }}</strong>
+                            </div>
+
+                            <div class="information-ligne">
+                                <span>Adresse e-mail</span>
+                                <strong>
+                                    {{ request.user.email|default:"Non renseignée" }}
+                                </strong>
+                            </div>
+                        </div>
+
+                        <div class="actions-carte actions-carte-secondaire">
+                            <a
+                                href="{% url 'etudiants:mon_profil' %}"
+                                class="bouton bouton-principal"
+                            >
+                                Consulter mon profil
+                            </a>
+
+                            <a
+                                href="{% url 'etudiants:modifier_mon_profil' %}"
+                                class="bouton bouton-clair"
+                            >
+                                Modifier mes informations
+                            </a>
+                        </div>
+                    </article>
+
+                    <article class="carte carte-affectation">
+                        <div class="entete-carte">
+                            <div>
+                                <span class="petit-titre">
+                                    Chambre
+                                </span>
+
+                                <h3>Mon affectation</h3>
+                            </div>
+
+                            {% if affectation_active %}
+                                <span
+                                    class="
+                                        badge-statut
+                                        statut-{{ affectation_active.statut|lower }}
+                                    "
+                                >
+                                    {{ affectation_active.get_statut_display }}
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        {% if affectation_active %}
+                            <div class="chambre-visuelle">
+                                <span>Bâtiment</span>
+
+                                <strong>
+                                    {{ affectation_active.chambre.batiment.code }}
+                                </strong>
+
+                                <small>
+                                    Chambre
+                                    {{ affectation_active.chambre.numero }}
+                                </small>
+                            </div>
+
+                            <div class="liste-informations">
+                                <div class="information-ligne">
+                                    <span>Étage</span>
+                                    <strong>
+                                        {{ affectation_active.chambre.etage }}
+                                    </strong>
+                                </div>
+
+                                <div class="information-ligne">
+                                    <span>Entrée prévue</span>
+                                    <strong>
+                                        {{ affectation_active.date_entree_prevue|date:"d/m/Y" }}
+                                    </strong>
+                                </div>
+
+                                <div class="information-ligne">
+                                    <span>Entrée réelle</span>
+                                    <strong>
+                                        {% if affectation_active.date_entree_reelle %}
+                                            {{ affectation_active.date_entree_reelle|date:"d/m/Y" }}
+                                        {% else %}
+                                            Non enregistrée
+                                        {% endif %}
+                                    </strong>
+                                </div>
+
+                                <div class="information-ligne">
+                                    <span>Sortie prévue</span>
+                                    <strong>
+                                        {{ affectation_active.date_sortie_prevue|date:"d/m/Y" }}
+                                    </strong>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="etat-vide etat-vide-compact">
+                                <div class="icone-vide" aria-hidden="true">
+                                    🛏️
+                                </div>
+
+                                <h4>Aucune affectation</h4>
+
+                                <p>
+                                    Votre chambre apparaîtra ici
+                                    après l’acceptation du dossier.
+                                </p>
+                            </div>
+                        {% endif %}
+
+                        <div class="actions-carte actions-carte-secondaire">
+                            {% if affectation_active and affectation_active.demande_hebergement %}
+                                <a
+                                    href="{% url 'hebergement:detail_demande' affectation_active.demande_hebergement.pk %}"
+                                    class="bouton bouton-principal"
+                                >
+                                    Voir l’affectation et la chambre
+                                </a>
+                            {% else %}
+                                <a
+                                    href="{% url 'hebergement:mes_demandes' %}"
+                                    class="bouton bouton-clair"
+                                >
+                                    Consulter mes demandes
+                                </a>
+                            {% endif %}
+                        </div>
+                    </article>
+
+                    <article class="carte carte-finances">
+                        <div class="entete-carte">
+                            <div>
+                                <span class="petit-titre">
+                                    Situation financière
+                                </span>
+
+                                <h3>Frais d’hébergement</h3>
+                            </div>
+                        </div>
+
+                        {% if frais_hebergement %}
+                            <div class="montant-principal">
+                                <span>Montant restant</span>
+
+                                <strong>
+                                    {{ frais_hebergement.montant_restant|floatformat:2 }}
+                                    <small>DH</small>
+                                </strong>
+                            </div>
+
+                            <div class="graphique-financier">
+                                <div
+                                    class="graphique-circulaire"
+                                    style="--progression: {{ pourcentage_paiement|default:0 }};"
+                                    role="img"
+                                    aria-label="{{ pourcentage_paiement|default:0 }} pour cent du montant réglé"
+                                >
+                                    <div class="contenu-graphique">
+                                        <strong>
+                                            {{ pourcentage_paiement|default:0 }} %
+                                        </strong>
+
+                                        <span>réglé</span>
+                                    </div>
+                                </div>
+
+                                <div class="legende-financiere">
+                                    <div>
+                                        <span class="pastille-legende pastille-payee"></span>
+
+                                        <div>
+                                            <small>Montant payé</small>
+
+                                            <strong>
+                                                {{ frais_hebergement.montant_paye|floatformat:2 }} DH
+                                            </strong>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <span class="pastille-legende pastille-restante"></span>
+
+                                        <div>
+                                            <small>Montant restant</small>
+
+                                            <strong>
+                                                {{ frais_hebergement.montant_restant|floatformat:2 }} DH
+                                            </strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="liste-informations">
+                                <div class="information-ligne">
+                                    <span>Total</span>
+
+                                    <strong>
+                                        {{ frais_hebergement.montant_total|floatformat:2 }} DH
+                                    </strong>
+                                </div>
+
+                                <div class="information-ligne">
+                                    <span>Année</span>
+
+                                    <strong>
+                                        {{ frais_hebergement.annee_universitaire.libelle }}
+                                    </strong>
+                                </div>
+
+                                <div class="information-ligne">
+                                    <span>Échéance</span>
+
+                                    <strong>
+                                        {{ frais_hebergement.date_echeance|date:"d/m/Y" }}
+                                    </strong>
+                                </div>
+
+                                <div class="information-ligne">
+                                    <span>Statut</span>
+
+                                    <strong>
+                                        {{ frais_hebergement.statut_financier }}
+                                    </strong>
+                                </div>
+                            </div>
+
+                            <div class="actions-carte actions-carte-secondaire">
+                                {% if not frais_hebergement.est_solde and frais_hebergement.est_actif %}
+                                    <a
+                                        href="{% url 'finances:declarer_paiement_etudiant' frais_hebergement.pk %}"
+                                        class="bouton bouton-principal"
+                                    >
+                                        Continuer le paiement
+                                    </a>
+                                {% endif %}
+
+                                <a
+                                    href="{% url 'finances:ma_situation_financiere' %}"
+                                    class="bouton bouton-clair"
+                                >
+                                    Voir ma situation financière
+                                </a>
+
+                                <a
+                                    href="{% url 'finances:detail_frais_etudiant' frais_hebergement.pk %}"
+                                    class="bouton bouton-clair"
+                                >
+                                    Voir mes paiements
+                                </a>
+                            </div>
+                        {% else %}
+                            <div class="etat-vide etat-vide-compact">
+                                <div class="icone-vide" aria-hidden="true">
+                                    💳
+                                </div>
+
+                                <h4>Aucun frais enregistré</h4>
+
+                                <p>
+                                    Les frais associés à votre hébergement
+                                    apparaîtront ici.
+                                </p>
+                            </div>
+
+                            <div class="actions-carte actions-carte-secondaire">
+                                <a
+                                    href="{% url 'finances:ma_situation_financiere' %}"
+                                    class="bouton bouton-clair"
+                                >
+                                    Consulter le module financier
+                                </a>
+                            </div>
+                        {% endif %}
+                    </article>
+                </aside>
+            </section>
+
+            <section class="section-actions">
+                <div class="entete-section">
+                    <div>
+                        <span class="petit-titre">
+                            Raccourcis
+                        </span>
+
+                        <h3>Actions rapides</h3>
+
+                        <p>
+                            Accédez directement aux principales
+                            fonctionnalités de votre espace.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="grille-actions">
+
+                    <a
+                        href="{% url 'hebergement:deposer_demande' %}"
+                        class="action-rapide action-demande"
+                    >
+                        <span class="icone-action" aria-hidden="true">＋</span>
+                        <div>
+                            <strong>Déposer une demande</strong>
+                            <small>Créer un nouveau dossier</small>
+                        </div>
+                        <span class="fleche-action" aria-hidden="true">→</span>
+                    </a>
+
+                    <a
+                        href="{% url 'hebergement:mes_demandes' %}"
+                        class="action-rapide action-dossiers"
+                    >
+                        <span class="icone-action" aria-hidden="true">▤</span>
+                        <div>
+                            <strong>Mes demandes</strong>
+                            <small>Consulter mon historique</small>
+                        </div>
+                        <span class="fleche-action" aria-hidden="true">→</span>
+                    </a>
+
+                    <a
+                        href="{% url 'finances:ma_situation_financiere' %}"
+                        class="action-rapide action-finances"
+                    >
+                        <span class="icone-action" aria-hidden="true">DH</span>
+                        <div>
+                            <strong>Mes finances</strong>
+                            <small>Frais, paiements et reçus</small>
+                        </div>
+                        <span class="fleche-action" aria-hidden="true">→</span>
+                    </a>
+
+                    <a
+                        href="{% url 'notifications:mes_notifications' %}"
+                        class="action-rapide action-notifications"
+                    >
+                        <span class="icone-action" aria-hidden="true">♢</span>
+                        <div>
+                            <strong>Mes notifications</strong>
+                            <small>
+                                {{ nombre_notifications_non_lues|default:0 }}
+                                non lue(s)
+                            </small>
+                        </div>
+                        <span class="fleche-action" aria-hidden="true">→</span>
+                    </a>
+
+                    <a
+                        href="{% url 'reclamations:creer_reclamation' %}"
+                        class="action-rapide action-reclamation"
+                    >
+                        <span class="icone-action" aria-hidden="true">＋</span>
+                        <div>
+                            <strong>Nouvelle réclamation</strong>
+                            <small>Signaler un problème</small>
+                        </div>
+                        <span class="fleche-action" aria-hidden="true">→</span>
+                    </a>
+
+                    <a
+                        href="{% url 'reclamations:mes_reclamations' %}"
+                        class="action-rapide action-suivi"
+                    >
+                        <span class="icone-action" aria-hidden="true">✓</span>
+                        <div>
+                            <strong>Mes réclamations</strong>
+                            <small>Suivre mes signalements</small>
+                        </div>
+                        <span class="fleche-action" aria-hidden="true">→</span>
+                    </a>
+
+                    <a
+                        href="{% url 'etudiants:mon_profil' %}"
+                        class="action-rapide action-profil"
+                    >
+                        <span class="icone-action" aria-hidden="true">◎</span>
+                        <div>
+                            <strong>Mon profil</strong>
+                            <small>Consulter mes informations</small>
+                        </div>
+                        <span class="fleche-action" aria-hidden="true">→</span>
+                    </a>
+
+                </div>
+            </section>
+
+            <section class="carte carte-reclamations">
+                <div class="entete-carte">
+                    <div>
+                        <span class="petit-titre">
+                            Assistance
+                        </span>
+
+                        <h3>Mes réclamations récentes</h3>
+                    </div>
+
+                    <a
+                        href="{% url 'reclamations:mes_reclamations' %}"
+                        class="lien-carte"
+                    >
+                        Tout afficher
+                    </a>
+                </div>
+
+                <div class="tableau-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Réclamation</th>
+                                <th>Catégorie</th>
+                                <th>Priorité</th>
+                                <th>Statut</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for reclamation in reclamations_recentes %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ reclamation.titre }}</strong>
+                                    </td>
+
+                                    <td>
+                                        {{ reclamation.get_categorie_display }}
+                                    </td>
+
+                                    <td>
+                                        {{ reclamation.get_priorite_display }}
+                                    </td>
+
+                                    <td>
+                                        <span
+                                            class="
+                                                badge-statut
+                                                statut-{{ reclamation.statut|lower }}
+                                            "
+                                        >
+                                            {{ reclamation.get_statut_display }}
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        {{ reclamation.date_creation|date:"d/m/Y" }}
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="5">
+                                        <div class="etat-vide etat-vide-compact">
+                                            <div class="icone-vide" aria-hidden="true">
+                                                🛠️
+                                            </div>
+
+                                            <h4>Aucune réclamation</h4>
+
+                                            <p>
+                                                Vous n’avez encore déposé
+                                                aucune réclamation.
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        {% else %}
+            <section class="carte profil-absent">
+                <div class="icone-vide" aria-hidden="true">
+                    ⚠️
+                </div>
+
+                <h2>Profil étudiant absent</h2>
+
+                <p>
+                    Aucun dossier étudiant n’est associé à ce compte.
+                    Contactez l’administration pour régulariser
+                    votre situation.
+                </p>
+            </section>
+        {% endif %}
+    </main>
+
+    <footer class="pied-page">
+        <p>
+            Gestion de l’internat universitaire —
+            {% now "Y" %}
+        </p>
+    </footer>
+
+    </div>
+</div>
+
+</body>
+</html>

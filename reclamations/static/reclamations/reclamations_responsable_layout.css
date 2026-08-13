@@ -1,0 +1,716 @@
+/* =========================================================
+   RÉCLAMATIONS RESPONSABLE — LAYOUT COMMUN
+========================================================= */
+
+:root {
+    --rec-blue: #2563eb;
+    --rec-blue-dark: #1d4ed8;
+    --rec-blue-soft: #eff6ff;
+    --rec-green: #15803d;
+    --rec-green-soft: #ecfdf3;
+    --rec-orange: #b45309;
+    --rec-orange-soft: #fff7ed;
+    --rec-red: #b91c1c;
+    --rec-red-soft: #fef2f2;
+    --rec-purple: #7c3aed;
+    --rec-purple-soft: #f5f3ff;
+    --rec-text: #0f172a;
+    --rec-muted: #64748b;
+    --rec-border: #dbe4f0;
+    --rec-shadow: 0 14px 34px rgba(15,23,42,.07);
+}
+
+.reclamation-page {
+    min-width: 100%;
+    min-height: 100vh;
+    margin: 0;
+    overflow-x: hidden;
+    background: #f4f7fb;
+}
+
+.reclamation-main {
+    min-width: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background:
+        radial-gradient(circle at 100% 0, rgba(59,130,246,.07), transparent 23%),
+        linear-gradient(180deg, #fff 0%, #f8fbff 35%, #f3f6fb 100%);
+}
+
+/* TOPBAR */
+
+.reclamation-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 25;
+    min-height: 105px;
+    padding: 17px clamp(24px, 3vw, 44px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    border-bottom: 1px solid #e2e8f0;
+    background: rgba(255,255,255,.96);
+    box-shadow: 0 8px 24px rgba(15,23,42,.045);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.reclamation-topbar-copy {
+    position: relative;
+    padding-left: 17px;
+}
+
+.reclamation-topbar-copy::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 5px;
+    bottom: 5px;
+    width: 4px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #60a5fa, #2563eb);
+}
+
+.reclamation-topbar-copy h1 {
+    margin: 4px 0 0;
+    color: var(--rec-text);
+    font-size: clamp(26px, 2.5vw, 36px);
+    font-weight: 900;
+    letter-spacing: -.03em;
+}
+
+.reclamation-topbar-copy p {
+    margin: 5px 0 0;
+    color: var(--rec-muted);
+    font-size: 12px;
+}
+
+.reclamation-eyebrow {
+    display: inline-block;
+    color: var(--rec-blue);
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .11em;
+    text-transform: uppercase;
+}
+
+.reclamation-eyebrow-light {
+    color: #dbeafe;
+}
+
+.reclamation-user-card {
+    min-width: 205px;
+    padding: 7px 12px 7px 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid var(--rec-border);
+    border-radius: 14px;
+    background: linear-gradient(145deg, #fff, #f8fbff);
+    box-shadow: 0 7px 17px rgba(15,23,42,.045);
+}
+
+.reclamation-user-avatar {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 13px;
+    background: linear-gradient(135deg, #1d4ed8, #60a5fa);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.reclamation-user-card strong,
+.reclamation-user-card span {
+    display: block;
+}
+
+.reclamation-user-card strong {
+    font-size: 11px;
+}
+
+.reclamation-user-card span {
+    margin-top: 2px;
+    color: var(--rec-muted);
+    font-size: 9px;
+}
+
+/* CONTENT */
+
+.reclamation-content {
+    width: 100%;
+    max-width: none;
+    flex: 1;
+    margin: 0;
+    padding: 26px clamp(24px, 3vw, 44px) 42px;
+}
+
+.reclamation-messages {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.reclamation-message {
+    padding: 13px 15px;
+    border: 1px solid #bbf7d0;
+    border-radius: 12px;
+    background: #f0fdf4;
+    color: #166534;
+    font-size: 12px;
+    font-weight: 750;
+}
+
+.reclamation-message.error {
+    border-color: #fecaca;
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+/* HERO */
+
+.reclamation-hero {
+    position: relative;
+    isolation: isolate;
+    min-height: 190px;
+    margin-bottom: 18px;
+    padding: 30px clamp(30px, 3vw, 44px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    overflow: hidden;
+    border: 1px solid rgba(147,197,253,.38);
+    border-radius: 24px;
+    background:
+        radial-gradient(circle at 86% 10%, rgba(255,255,255,.22), transparent 22%),
+        linear-gradient(135deg, #172554 0%, #1d4ed8 45%, #3b82f6 100%);
+    box-shadow: 0 22px 44px rgba(30,64,175,.17);
+}
+
+.reclamation-hero h2 {
+    margin: 8px 0 0;
+    color: #fff;
+    font-size: clamp(31px, 3.2vw, 44px);
+    line-height: 1.08;
+    letter-spacing: -.04em;
+}
+
+.reclamation-hero p {
+    max-width: 720px;
+    margin: 12px 0 0;
+    color: #dbeafe;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.reclamation-hero-count {
+    min-width: 150px;
+    padding: 20px 24px;
+    border: 1px solid rgba(255,255,255,.25);
+    border-radius: 19px;
+    background: rgba(255,255,255,.13);
+    text-align: center;
+}
+
+.reclamation-hero-count strong,
+.reclamation-hero-count span {
+    display: block;
+    color: #fff;
+}
+
+.reclamation-hero-count strong {
+    font-size: 36px;
+}
+
+.reclamation-hero-count span {
+    margin-top: 2px;
+    font-size: 9px;
+    font-weight: 800;
+}
+
+/* KPI */
+
+.reclamation-kpi-grid {
+    margin-bottom: 18px;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.reclamation-kpi-card {
+    position: relative;
+    min-width: 0;
+    min-height: 110px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    overflow: hidden;
+    border: 1px solid var(--rec-border);
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 8px 20px rgba(15,23,42,.05);
+}
+
+.reclamation-kpi-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 14px;
+    bottom: 14px;
+    width: 4px;
+    border-radius: 0 999px 999px 0;
+    background: linear-gradient(180deg, #2563eb, #60a5fa);
+}
+
+.reclamation-kpi-icon {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: #eff6ff;
+    font-size: 18px;
+}
+
+.reclamation-kpi-blue {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.reclamation-kpi-green {
+    background: var(--rec-green-soft);
+    color: var(--rec-green);
+}
+
+.reclamation-kpi-red {
+    background: var(--rec-red-soft);
+    color: var(--rec-red);
+}
+
+.reclamation-kpi-card span,
+.reclamation-kpi-card strong,
+.reclamation-kpi-card small {
+    display: block;
+}
+
+.reclamation-kpi-card span {
+    color: #52637d;
+    font-size: 9px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.reclamation-kpi-card strong {
+    margin-top: 4px;
+    color: var(--rec-text);
+    font-size: 20px;
+}
+
+.reclamation-kpi-card small {
+    margin-top: 4px;
+    color: #94a3b8;
+    font-size: 8px;
+}
+
+.reclamation-value-blue { color: var(--rec-blue) !important; }
+.reclamation-value-green { color: var(--rec-green) !important; }
+.reclamation-value-red { color: var(--rec-red) !important; }
+
+/* FILTER PANEL */
+
+.reclamation-panel,
+.reclamation-table-panel {
+    margin-bottom: 20px;
+    padding: 22px;
+    border: 1px solid var(--rec-border);
+    border-radius: 20px;
+    background: rgba(255,255,255,.97);
+    box-shadow: var(--rec-shadow);
+}
+
+.reclamation-panel-heading {
+    margin-bottom: 19px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.reclamation-panel-heading h2,
+.reclamation-section-heading h2 {
+    margin: 5px 0 0;
+    color: var(--rec-text);
+    font-size: clamp(22px, 2.2vw, 29px);
+    letter-spacing: -.025em;
+}
+
+.reclamation-panel-heading p,
+.reclamation-section-heading p {
+    max-width: 720px;
+    margin: 7px 0 0;
+    color: var(--rec-muted);
+    font-size: 11px;
+    line-height: 1.55;
+}
+
+.reclamation-result-pill {
+    padding: 7px 10px;
+    border-radius: 999px;
+    background: var(--rec-blue-soft);
+    color: var(--rec-blue);
+    font-size: 9px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.reclamation-filters {
+    display: grid;
+    grid-template-columns:
+        minmax(260px, 1.45fr)
+        minmax(160px, .65fr)
+        minmax(160px, .65fr)
+        minmax(170px, .7fr)
+        auto;
+    align-items: end;
+    gap: 12px;
+}
+
+.reclamation-field label {
+    display: block;
+    margin-bottom: 7px;
+    color: #1e293b;
+    font-size: 10px;
+    font-weight: 850;
+}
+
+.reclamation-field input,
+.reclamation-field select {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid #cfd9e7;
+    border-radius: 11px;
+    outline: none;
+    background: #fff;
+    color: var(--rec-text);
+    font: inherit;
+    font-size: 11px;
+}
+
+.reclamation-field input:focus,
+.reclamation-field select:focus {
+    border-color: #7ca5ff;
+    box-shadow: 0 0 0 4px rgba(37,99,235,.10);
+}
+
+.reclamation-filter-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* BUTTONS */
+
+.reclamation-button {
+    min-height: 42px;
+    padding: 9px 13px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 900;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.reclamation-button-primary {
+    border-color: #2563eb;
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    color: #fff;
+    box-shadow: 0 7px 15px rgba(37,99,235,.14);
+}
+
+.reclamation-button-light {
+    border-color: #d8e3f1;
+    background: #fff;
+    color: #1e293b;
+}
+
+.reclamation-button-small {
+    min-height: 34px;
+    padding: 7px 10px;
+    font-size: 9px;
+}
+
+/* TABLE */
+
+.reclamation-section-heading {
+    margin: 4px 0 16px;
+}
+
+.reclamation-table-responsive {
+    overflow-x: auto;
+}
+
+.reclamation-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.reclamation-table th {
+    padding: 11px 10px;
+    border-bottom: 1px solid #dbe4f0;
+    color: #64748b;
+    font-size: 8px;
+    font-weight: 900;
+    text-align: left;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.reclamation-table td {
+    padding: 13px 10px;
+    border-bottom: 1px solid #edf1f6;
+    color: #334155;
+    font-size: 9px;
+    vertical-align: middle;
+}
+
+.reclamation-table tbody tr:hover {
+    background: #f8fbff;
+}
+
+.reclamation-student {
+    min-width: 190px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.reclamation-student-avatar {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    background: linear-gradient(135deg, #2563eb, #60a5fa);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.reclamation-student strong,
+.reclamation-student small,
+.reclamation-cell-main strong,
+.reclamation-cell-main small {
+    display: block;
+}
+
+.reclamation-student strong,
+.reclamation-cell-main strong {
+    color: #0f172a;
+    font-size: 9px;
+}
+
+.reclamation-student small,
+.reclamation-cell-main small {
+    margin-top: 3px;
+    color: #64748b;
+    font-size: 8px;
+}
+
+.reclamation-cell-main {
+    min-width: 210px;
+}
+
+.reclamation-priority,
+.reclamation-status,
+.reclamation-room {
+    display: inline-flex;
+    align-items: center;
+    min-height: 25px;
+    padding: 4px 7px;
+    border-radius: 999px;
+    font-size: 8px;
+    font-weight: 850;
+    white-space: nowrap;
+}
+
+.reclamation-priority-faible {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.reclamation-priority-moyenne {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.reclamation-priority-haute {
+    background: #fff7ed;
+    color: #b45309;
+}
+
+.reclamation-priority-urgente {
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+.reclamation-status-nouvelle {
+    background: #eff6ff;
+    color: #1d4ed8;
+}
+
+.reclamation-status-en_cours,
+.reclamation-status-en-cours {
+    background: #fff7ed;
+    color: #b45309;
+}
+
+.reclamation-status-resolue {
+    background: #ecfdf3;
+    color: #15803d;
+}
+
+.reclamation-status-rejetee {
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+.reclamation-room {
+    border-radius: 8px;
+    background: #f1f5f9;
+    color: #334155;
+}
+
+.reclamation-muted,
+.reclamation-time {
+    display: block;
+    margin-top: 3px;
+    color: #94a3b8;
+    font-size: 8px;
+}
+
+/* EMPTY */
+
+.reclamation-empty {
+    padding: 55px 18px;
+    display: grid;
+    justify-items: center;
+    border: 1px dashed #cbd5e1;
+    border-radius: 19px;
+    background: #fff;
+    text-align: center;
+}
+
+.reclamation-empty-icon {
+    width: 62px;
+    height: 62px;
+    margin-bottom: 13px;
+    display: grid;
+    place-items: center;
+    border-radius: 18px;
+    background: var(--rec-blue-soft);
+    font-size: 27px;
+}
+
+.reclamation-empty h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.reclamation-empty p {
+    max-width: 520px;
+    margin: 7px 0 0;
+    color: var(--rec-muted);
+    font-size: 11px;
+    line-height: 1.55;
+}
+
+/* FOOTER */
+
+.reclamation-footer {
+    width: 100%;
+    margin-top: auto;
+    padding: 15px 24px;
+    border-top: 1px solid #e2e8f0;
+    background: rgba(255,255,255,.94);
+    color: var(--rec-muted);
+    text-align: center;
+    font-size: 10px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1320px) {
+    .reclamation-kpi-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .reclamation-filters {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .reclamation-search-field {
+        grid-column: 1 / -1;
+    }
+
+    .reclamation-filter-actions {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 800px) {
+    .reclamation-topbar,
+    .reclamation-hero,
+    .reclamation-panel-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .reclamation-user-card {
+        width: 100%;
+    }
+
+    .reclamation-content {
+        padding: 16px 11px 28px;
+    }
+
+    .reclamation-kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .reclamation-filters {
+        grid-template-columns: 1fr;
+    }
+
+    .reclamation-search-field,
+    .reclamation-filter-actions {
+        grid-column: auto;
+    }
+
+    .reclamation-filter-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .reclamation-filter-actions .reclamation-button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 520px) {
+    .reclamation-kpi-grid {
+        grid-template-columns: 1fr;
+    }
+}

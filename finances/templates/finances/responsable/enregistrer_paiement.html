@@ -1,0 +1,336 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Enregistrer un paiement — GestionInternat</title>
+
+    <link rel="stylesheet" href="{% static 'dashboard/style.css' %}?v=12">
+    <link rel="stylesheet" href="{% static 'finances/finances_responsable_layout.css' %}?v=2">
+    <link rel="stylesheet" href="{% static 'finances/finances_responsable_forms.css' %}?v=1">
+    <link rel="stylesheet" href="{% static 'finances/finances_paiements_layout.css' %}?v=1">
+</head>
+
+<body class="finance-page">
+
+<div class="app-shell finance-shell">
+
+    {% include "dashboard/sidebar_responsable.html" %}
+
+    <div class="main-area finance-main">
+
+        <header class="finance-topbar">
+
+            <div class="finance-topbar-copy">
+                <span class="finance-eyebrow">Espace responsable</span>
+                <h1>Enregistrer un paiement</h1>
+                <p>Ajoutez un règlement administratif au dossier financier.</p>
+            </div>
+
+            <div class="finance-topbar-actions">
+
+                <a
+                    href="{% url 'finances:detail_situation_financiere' frais.pk %}"
+                    class="finance-button finance-button-light"
+                >
+                    ← Retour au dossier
+                </a>
+
+                <div class="finance-user-card">
+                    <div class="finance-user-avatar">
+                        {% if request.user.first_name %}
+                            {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
+                        {% else %}
+                            {{ request.user.username|first|upper }}
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <strong>
+                            {{ request.user.get_full_name|default:request.user.username }}
+                        </strong>
+                        <span>
+                            {% if request.user.is_superuser %}
+                                Super administrateur
+                            {% else %}
+                                {{ request.user.get_role_display }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <main class="finance-content">
+
+            {% if messages %}
+                <section class="finance-messages">
+                    {% for message in messages %}
+                        <div class="finance-message {{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </section>
+            {% endif %}
+
+
+            <section class="finance-form-hero">
+
+                <div>
+                    <span class="finance-eyebrow finance-eyebrow-light">
+                        Nouveau règlement
+                    </span>
+
+                    <h2>
+                        {{ frais.etudiant.utilisateur.get_full_name|default:frais.etudiant.utilisateur.username }}
+                    </h2>
+
+                    <p>
+                        Matricule {{ frais.etudiant.matricule }}
+                        ·
+                        {{ frais.annee_universitaire }}
+                    </p>
+                </div>
+
+                <div class="finance-form-hero-icon">
+                    💳
+                </div>
+
+            </section>
+
+
+            <section class="finance-edit-kpis">
+
+                <article class="finance-kpi-card">
+                    <div class="finance-kpi-icon">🧾</div>
+                    <div>
+                        <span>Montant total</span>
+                        <strong>{{ frais.montant_total }} DH</strong>
+                    </div>
+                </article>
+
+                <article class="finance-kpi-card">
+                    <div class="finance-kpi-icon finance-kpi-green">✓</div>
+                    <div>
+                        <span>Déjà payé</span>
+                        <strong class="finance-value-green">
+                            {{ frais.montant_paye }} DH
+                        </strong>
+                    </div>
+                </article>
+
+                <article class="finance-kpi-card">
+                    <div class="finance-kpi-icon finance-kpi-orange">⌛</div>
+                    <div>
+                        <span>Restant</span>
+                        <strong class="finance-value-orange">
+                            {{ frais.montant_restant }} DH
+                        </strong>
+                    </div>
+                </article>
+
+                <article class="finance-kpi-card">
+                    <div class="finance-kpi-icon">📅</div>
+                    <div>
+                        <span>Année</span>
+                        <strong>{{ frais.annee_universitaire }}</strong>
+                    </div>
+                </article>
+
+            </section>
+
+
+            <section class="finance-form-layout">
+
+                <section class="finance-panel finance-form-card">
+
+                    <div class="finance-panel-heading">
+                        <div>
+                            <span class="finance-eyebrow">Formulaire</span>
+                            <h2>Nouveau paiement</h2>
+                            <p>
+                                Renseignez le montant, la date,
+                                le mode et la référence du règlement.
+                            </p>
+                        </div>
+                    </div>
+
+
+                    {% if formulaire.non_field_errors %}
+                        <div class="finance-form-errors">
+                            {% for erreur in formulaire.non_field_errors %}
+                                <p>{{ erreur }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+
+                    <form method="post" novalidate class="finance-form">
+                        {% csrf_token %}
+
+                        <div class="finance-form-grid">
+
+                            <div class="finance-form-field {% if formulaire.montant.errors %}has-error{% endif %}">
+                                <label for="{{ formulaire.montant.id_for_label }}">
+                                    Montant *
+                                </label>
+
+                                {{ formulaire.montant }}
+
+                                {% if formulaire.montant.help_text %}
+                                    <small class="finance-field-help">
+                                        {{ formulaire.montant.help_text }}
+                                    </small>
+                                {% endif %}
+
+                                {% for erreur in formulaire.montant.errors %}
+                                    <span class="finance-field-error">
+                                        {{ erreur }}
+                                    </span>
+                                {% endfor %}
+                            </div>
+
+
+                            <div class="finance-form-field {% if formulaire.date_paiement.errors %}has-error{% endif %}">
+                                <label for="{{ formulaire.date_paiement.id_for_label }}">
+                                    Date du paiement *
+                                </label>
+
+                                {{ formulaire.date_paiement }}
+
+                                {% for erreur in formulaire.date_paiement.errors %}
+                                    <span class="finance-field-error">
+                                        {{ erreur }}
+                                    </span>
+                                {% endfor %}
+                            </div>
+
+
+                            <div class="finance-form-field {% if formulaire.mode_paiement.errors %}has-error{% endif %}">
+                                <label for="{{ formulaire.mode_paiement.id_for_label }}">
+                                    Mode de paiement *
+                                </label>
+
+                                {{ formulaire.mode_paiement }}
+
+                                {% for erreur in formulaire.mode_paiement.errors %}
+                                    <span class="finance-field-error">
+                                        {{ erreur }}
+                                    </span>
+                                {% endfor %}
+                            </div>
+
+
+                            <div class="finance-form-field {% if formulaire.reference.errors %}has-error{% endif %}">
+                                <label for="{{ formulaire.reference.id_for_label }}">
+                                    Référence
+                                </label>
+
+                                {{ formulaire.reference }}
+
+                                {% for erreur in formulaire.reference.errors %}
+                                    <span class="finance-field-error">
+                                        {{ erreur }}
+                                    </span>
+                                {% endfor %}
+                            </div>
+
+
+                            <div class="finance-form-field finance-form-field-full {% if formulaire.commentaire.errors %}has-error{% endif %}">
+                                <label for="{{ formulaire.commentaire.id_for_label }}">
+                                    Commentaire
+                                </label>
+
+                                {{ formulaire.commentaire }}
+
+                                {% for erreur in formulaire.commentaire.errors %}
+                                    <span class="finance-field-error">
+                                        {{ erreur }}
+                                    </span>
+                                {% endfor %}
+                            </div>
+
+                        </div>
+
+
+                        <div class="finance-form-actions">
+
+                            <a
+                                href="{% url 'finances:detail_situation_financiere' frais.pk %}"
+                                class="finance-button finance-button-light"
+                            >
+                                Annuler
+                            </a>
+
+                            <button
+                                type="submit"
+                                class="finance-button finance-button-success"
+                            >
+                                ✓ Enregistrer le paiement
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </section>
+
+
+                <aside class="finance-form-aside">
+
+                    <section class="finance-panel finance-current-card">
+                        <span class="finance-eyebrow">Dossier</span>
+                        <h3>Résumé financier</h3>
+
+                        <div class="finance-current-list">
+
+                            <div>
+                                <span>Matricule</span>
+                                <strong>{{ frais.etudiant.matricule }}</strong>
+                            </div>
+
+                            <div>
+                                <span>Année universitaire</span>
+                                <strong>{{ frais.annee_universitaire }}</strong>
+                            </div>
+
+                            <div>
+                                <span>Montant total</span>
+                                <strong>{{ frais.montant_total }} DH</strong>
+                            </div>
+
+                            <div>
+                                <span>Déjà payé</span>
+                                <strong>{{ frais.montant_paye }} DH</strong>
+                            </div>
+
+                            <div>
+                                <span>Restant</span>
+                                <strong>{{ frais.montant_restant }} DH</strong>
+                            </div>
+
+                        </div>
+                    </section>
+
+                </aside>
+
+            </section>
+
+        </main>
+
+
+        <footer class="finance-footer">
+            Gestion de l’internat universitaire — {% now "Y" %}
+        </footer>
+
+    </div>
+
+</div>
+
+</body>
+</html>

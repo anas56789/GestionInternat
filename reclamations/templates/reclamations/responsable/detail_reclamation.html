@@ -1,0 +1,711 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Traitement de la réclamation — GestionInternat</title>
+
+    <link rel="stylesheet" href="{% static 'dashboard/style.css' %}?v=12">
+    <link rel="stylesheet" href="{% static 'reclamations/reclamations_responsable_layout.css' %}?v=1">
+    <link rel="stylesheet" href="{% static 'reclamations/reclamations_detail_layout.css' %}?v=1">
+</head>
+
+<body class="reclamation-page">
+
+<div class="app-shell reclamation-shell">
+
+    {% include "dashboard/sidebar_responsable.html" %}
+
+    <div class="main-area reclamation-main">
+
+        <header class="reclamation-topbar">
+
+            <div class="reclamation-topbar-copy">
+                <span class="reclamation-eyebrow">
+                    Espace responsable
+                </span>
+
+                <h1>
+                    Traitement de la réclamation
+                </h1>
+
+                <p>
+                    Consultez le signalement et enregistrez
+                    la décision administrative.
+                </p>
+            </div>
+
+            <div class="reclamation-topbar-actions">
+
+                <a
+                    href="{% url 'reclamations:liste_reclamations_responsable' %}"
+                    class="reclamation-button reclamation-button-light"
+                >
+                    ← Retour aux réclamations
+                </a>
+
+                <div class="reclamation-user-card">
+                    <div class="reclamation-user-avatar">
+                        {% if request.user.first_name %}
+                            {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
+                        {% else %}
+                            {{ request.user.username|first|upper }}
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <strong>
+                            {{ request.user.get_full_name|default:request.user.username }}
+                        </strong>
+
+                        <span>
+                            {% if request.user.is_superuser %}
+                                Super administrateur
+                            {% else %}
+                                {{ request.user.get_role_display }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <main class="reclamation-content">
+
+            {% if messages %}
+                <section class="reclamation-messages">
+                    {% for message in messages %}
+                        <div class="reclamation-message {{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </section>
+            {% endif %}
+
+
+            <section class="reclamation-detail-hero">
+
+                <div>
+                    <span class="reclamation-eyebrow reclamation-eyebrow-light">
+                        {{ reclamation.get_categorie_display }}
+                    </span>
+
+                    <h2>
+                        {{ reclamation.titre }}
+                    </h2>
+
+                    <p>
+                        Signalée par
+                        <strong>
+                            {{ reclamation.etudiant.utilisateur.get_full_name|default:reclamation.etudiant.utilisateur.username }}
+                        </strong>
+                        le
+                        {{ reclamation.date_creation|date:"d/m/Y à H:i" }}.
+                    </p>
+                </div>
+
+
+                <div class="reclamation-detail-badges">
+
+                    <span class="
+                        reclamation-priority
+                        reclamation-priority-{{ reclamation.priorite|lower }}
+                    ">
+                        Priorité :
+                        {{ reclamation.get_priorite_display }}
+                    </span>
+
+                    <span class="
+                        reclamation-status
+                        reclamation-status-{{ reclamation.statut|lower }}
+                    ">
+                        {{ reclamation.get_statut_display }}
+                    </span>
+
+                </div>
+
+            </section>
+
+
+            {% if reclamation.statut == "NOUVELLE" %}
+
+                <section class="reclamation-alert reclamation-alert-info">
+
+                    <div class="reclamation-alert-icon">
+                        !
+                    </div>
+
+                    <div>
+                        <strong>
+                            Nouvelle réclamation
+                        </strong>
+
+                        <p>
+                            Ce dossier n'a pas encore été pris en charge.
+                        </p>
+                    </div>
+
+                </section>
+
+            {% elif reclamation.statut == "EN_COURS" %}
+
+                <section class="reclamation-alert reclamation-alert-progress">
+
+                    <div class="reclamation-alert-icon">
+                        ↻
+                    </div>
+
+                    <div>
+                        <strong>
+                            Traitement en cours
+                        </strong>
+
+                        <p>
+                            La réclamation est actuellement prise en charge.
+                        </p>
+                    </div>
+
+                </section>
+
+            {% elif reclamation.statut == "RESOLUE" %}
+
+                <section class="reclamation-alert reclamation-alert-success">
+
+                    <div class="reclamation-alert-icon">
+                        ✓
+                    </div>
+
+                    <div>
+                        <strong>
+                            Réclamation résolue
+                        </strong>
+
+                        <p>
+                            Le dossier est clôturé avec une réponse administrative.
+                        </p>
+                    </div>
+
+                </section>
+
+            {% elif reclamation.statut == "REJETEE" %}
+
+                <section class="reclamation-alert reclamation-alert-danger">
+
+                    <div class="reclamation-alert-icon">
+                        ×
+                    </div>
+
+                    <div>
+                        <strong>
+                            Réclamation rejetée
+                        </strong>
+
+                        <p>
+                            Le dossier est clôturé avec un motif de rejet.
+                        </p>
+                    </div>
+
+                </section>
+
+            {% endif %}
+
+
+            <section class="reclamation-detail-grid">
+
+                <div class="reclamation-detail-main">
+
+
+                    <article class="reclamation-panel">
+
+                        <div class="reclamation-panel-heading">
+
+                            <div>
+                                <span class="reclamation-eyebrow">
+                                    Signalement
+                                </span>
+
+                                <h2>
+                                    Détail de la réclamation
+                                </h2>
+
+                                <p>
+                                    Informations transmises par l'étudiant.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="reclamation-info-grid">
+
+                            <div>
+                                <span>Étudiant</span>
+
+                                <strong>
+                                    {{ reclamation.etudiant.utilisateur.get_full_name|default:reclamation.etudiant.utilisateur.username }}
+                                </strong>
+
+                                <small>
+                                    {{ reclamation.etudiant.matricule }}
+                                </small>
+                            </div>
+
+
+                            <div>
+                                <span>CNE</span>
+
+                                <strong>
+                                    {{ reclamation.etudiant.cne|default:"—" }}
+                                </strong>
+                            </div>
+
+
+                            <div>
+                                <span>Catégorie</span>
+
+                                <strong>
+                                    {{ reclamation.get_categorie_display }}
+                                </strong>
+                            </div>
+
+
+                            <div>
+                                <span>Priorité</span>
+
+                                <strong>
+                                    {{ reclamation.get_priorite_display }}
+                                </strong>
+                            </div>
+
+
+                            <div>
+                                <span>Chambre</span>
+
+                                <strong>
+                                    {% if reclamation.chambre %}
+                                        {{ reclamation.chambre.batiment.code }}
+                                        /
+                                        {{ reclamation.chambre.numero }}
+                                    {% else %}
+                                        Non associée
+                                    {% endif %}
+                                </strong>
+                            </div>
+
+
+                            <div>
+                                <span>Créée le</span>
+
+                                <strong>
+                                    {{ reclamation.date_creation|date:"d/m/Y" }}
+                                </strong>
+
+                                <small>
+                                    à {{ reclamation.date_creation|date:"H:i" }}
+                                </small>
+                            </div>
+
+
+                            <div>
+                                <span>Traitée par</span>
+
+                                <strong>
+                                    {% if reclamation.traitee_par %}
+                                        {{ reclamation.traitee_par.get_full_name|default:reclamation.traitee_par.username }}
+                                    {% else %}
+                                        Non attribuée
+                                    {% endif %}
+                                </strong>
+                            </div>
+
+
+                            <div>
+                                <span>Statut</span>
+
+                                <strong>
+                                    {{ reclamation.get_statut_display }}
+                                </strong>
+                            </div>
+
+                        </div>
+
+
+                        <div class="reclamation-description">
+
+                            <span>
+                                Description du problème
+                            </span>
+
+                            <p>
+                                {{ reclamation.description }}
+                            </p>
+
+                        </div>
+
+
+                        {% if reclamation.piece_jointe %}
+
+                            <div class="reclamation-attachment">
+
+                                <div class="reclamation-attachment-icon">
+                                    📎
+                                </div>
+
+                                <div>
+                                    <strong>
+                                        Pièce jointe disponible
+                                    </strong>
+
+                                    <span>
+                                        Consultez le fichier transmis par l'étudiant.
+                                    </span>
+                                </div>
+
+                                <a
+                                    href="{{ reclamation.piece_jointe.url }}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="reclamation-button reclamation-button-light"
+                                >
+                                    Ouvrir le fichier
+                                </a>
+
+                            </div>
+
+                        {% endif %}
+
+                    </article>
+
+
+                    {% if reclamation.reponse %}
+
+                        <article class="reclamation-panel reclamation-decision-success">
+
+                            <span class="reclamation-eyebrow">
+                                Administration
+                            </span>
+
+                            <h2>
+                                Réponse enregistrée
+                            </h2>
+
+                            <p>
+                                {{ reclamation.reponse }}
+                            </p>
+
+                        </article>
+
+                    {% endif %}
+
+
+                    {% if reclamation.motif_rejet %}
+
+                        <article class="reclamation-panel reclamation-decision-danger">
+
+                            <span class="reclamation-eyebrow">
+                                Décision
+                            </span>
+
+                            <h2>
+                                Motif du rejet
+                            </h2>
+
+                            <p>
+                                {{ reclamation.motif_rejet }}
+                            </p>
+
+                        </article>
+
+                    {% endif %}
+
+                </div>
+
+
+                <aside class="reclamation-detail-aside">
+
+
+                    <article class="reclamation-panel">
+
+                        <span class="reclamation-eyebrow">
+                            Suivi
+                        </span>
+
+                        <h3 class="reclamation-aside-title">
+                            Chronologie
+                        </h3>
+
+
+                        <div class="reclamation-timeline">
+
+                            <div class="reclamation-timeline-step active">
+
+                                <b></b>
+
+                                <div>
+                                    <strong>
+                                        Réclamation créée
+                                    </strong>
+
+                                    <small>
+                                        {{ reclamation.date_creation|date:"d/m/Y à H:i" }}
+                                    </small>
+                                </div>
+
+                            </div>
+
+
+                            <div class="
+                                reclamation-timeline-step
+                                {% if reclamation.date_traitement %}
+                                    active
+                                {% endif %}
+                            ">
+
+                                <b></b>
+
+                                <div>
+                                    <strong>
+                                        Prise en charge
+                                    </strong>
+
+                                    <small>
+                                        {% if reclamation.date_traitement %}
+                                            {{ reclamation.date_traitement|date:"d/m/Y à H:i" }}
+                                        {% else %}
+                                            En attente
+                                        {% endif %}
+                                    </small>
+                                </div>
+
+                            </div>
+
+
+                            <div class="
+                                reclamation-timeline-step
+                                {% if reclamation.date_resolution %}
+                                    active
+                                {% endif %}
+                            ">
+
+                                <b></b>
+
+                                <div>
+                                    <strong>
+                                        Clôture
+                                    </strong>
+
+                                    <small>
+                                        {% if reclamation.date_resolution %}
+                                            {{ reclamation.date_resolution|date:"d/m/Y à H:i" }}
+                                        {% else %}
+                                            Non clôturée
+                                        {% endif %}
+                                    </small>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="reclamation-panel">
+
+                        <span class="reclamation-eyebrow">
+                            Actions
+                        </span>
+
+                        <h3 class="reclamation-aside-title">
+                            Traitement
+                        </h3>
+
+                        <p class="reclamation-aside-text">
+                            Prise en charge, résolution ou rejet du dossier.
+                        </p>
+
+
+                        {% if reclamation.statut == "NOUVELLE" %}
+
+                            <form
+                                method="post"
+                                action="{% url 'reclamations:traiter_reclamation' reclamation.pk %}"
+                                class="reclamation-action-form"
+                            >
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    name="action"
+                                    value="mettre_en_cours"
+                                    class="reclamation-button reclamation-button-primary reclamation-button-full"
+                                    onclick="return confirm('Prendre en charge cette réclamation ?');"
+                                >
+                                    ↻ Prendre en charge
+                                </button>
+
+                            </form>
+
+                        {% endif %}
+
+
+                        {% if reclamation.statut != "RESOLUE" and reclamation.statut != "REJETEE" %}
+
+                            <form
+                                method="post"
+                                action="{% url 'reclamations:traiter_reclamation' reclamation.pk %}"
+                                class="reclamation-treatment-form"
+                            >
+                                {% csrf_token %}
+
+                                <input
+                                    type="hidden"
+                                    name="action"
+                                    value="resoudre"
+                                >
+
+
+                                <div class="reclamation-form-field">
+
+                                    <label for="reponse">
+                                        Réponse de résolution *
+                                    </label>
+
+                                    <textarea
+                                        id="reponse"
+                                        name="reponse"
+                                        rows="5"
+                                        placeholder="Décrivez la solution apportée ou la réponse adressée à l'étudiant."
+                                        required
+                                    ></textarea>
+
+                                </div>
+
+
+                                <button
+                                    type="submit"
+                                    class="reclamation-button reclamation-button-success reclamation-button-full"
+                                    onclick="return confirm('Clôturer cette réclamation comme résolue ?');"
+                                >
+                                    ✓ Résoudre la réclamation
+                                </button>
+
+                            </form>
+
+
+                            <details class="reclamation-reject-details">
+
+                                <summary>
+                                    Rejeter la réclamation
+                                </summary>
+
+
+                                <form
+                                    method="post"
+                                    action="{% url 'reclamations:traiter_reclamation' reclamation.pk %}"
+                                    class="reclamation-treatment-form"
+                                >
+                                    {% csrf_token %}
+
+                                    <input
+                                        type="hidden"
+                                        name="action"
+                                        value="rejeter"
+                                    >
+
+
+                                    <div class="reclamation-form-field">
+
+                                        <label for="motif_rejet">
+                                            Motif du rejet *
+                                        </label>
+
+                                        <textarea
+                                            id="motif_rejet"
+                                            name="motif_rejet"
+                                            rows="4"
+                                            placeholder="Expliquez précisément pourquoi la réclamation est rejetée."
+                                            required
+                                        ></textarea>
+
+                                    </div>
+
+
+                                    <div class="reclamation-form-field">
+
+                                        <label for="reponse_rejet">
+                                            Réponse complémentaire
+                                        </label>
+
+                                        <textarea
+                                            id="reponse_rejet"
+                                            name="reponse"
+                                            rows="3"
+                                            placeholder="Information facultative."
+                                        ></textarea>
+
+                                    </div>
+
+
+                                    <button
+                                        type="submit"
+                                        class="reclamation-button reclamation-button-danger reclamation-button-full"
+                                        onclick="return confirm('Rejeter définitivement cette réclamation ?');"
+                                    >
+                                        × Confirmer le rejet
+                                    </button>
+
+                                </form>
+
+                            </details>
+
+                        {% else %}
+
+                            <div class="reclamation-final-state">
+
+                                <span>
+                                    {% if reclamation.statut == "RESOLUE" %}
+                                        ✓
+                                    {% else %}
+                                        ×
+                                    {% endif %}
+                                </span>
+
+                                <div>
+                                    <strong>
+                                        Dossier clôturé
+                                    </strong>
+
+                                    <p>
+                                        Aucune nouvelle action n'est nécessaire.
+                                    </p>
+                                </div>
+
+                            </div>
+
+                        {% endif %}
+
+                    </article>
+
+                </aside>
+
+            </section>
+
+        </main>
+
+
+        <footer class="reclamation-footer">
+            Gestion de l’internat universitaire — {% now "Y" %}
+        </footer>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,251 @@
+{% extends "dashboard/base_etudiant.html" %}
+{% load static %}
+
+{% block title %}
+Mes notifications — GestionInternat
+{% endblock %}
+
+{% block titre_page %}
+Mes notifications
+{% endblock %}
+
+{% block sous_titre_page %}
+Retrouvez les informations liées à votre demande,
+votre hébergement, vos paiements et vos réclamations.
+{% endblock %}
+
+{% block css_page %}
+<link
+    rel="stylesheet"
+    href="{% static 'notifications/notifications.css' %}?v=2"
+>
+{% endblock %}
+
+{% block contenu_etudiant %}
+
+<div class="conteneur-notifications-layout">
+
+    <section class="banniere-notifications">
+
+        <div>
+            <span class="sur-titre">
+                Centre de notifications
+            </span>
+
+            <h2>Restez informé</h2>
+
+            <p>
+                Consultez les mises à jour envoyées
+                par l’administration de l’internat.
+            </p>
+        </div>
+
+        <div class="resume-notifications">
+
+            <article class="statistique-notification">
+                <span class="icone-statistique">🔔</span>
+
+                <div>
+                    <span>Total</span>
+                    <strong>{{ notifications|length }}</strong>
+                </div>
+            </article>
+
+            <article class="statistique-notification">
+                <span class="icone-statistique">✨</span>
+
+                <div>
+                    <span>Non lues</span>
+                    <strong>{{ nombre_non_lues|default:0 }}</strong>
+                </div>
+            </article>
+
+        </div>
+
+    </section>
+
+
+    <section class="carte">
+
+        <div class="entete-section">
+
+            <div>
+                <span class="sur-titre">
+                    Historique
+                </span>
+
+                <h2>Historique des notifications</h2>
+
+                <p>
+                    Les notifications les plus récentes
+                    sont affichées en premier.
+                </p>
+            </div>
+
+            {% if nombre_non_lues > 0 %}
+                <form
+                    method="post"
+                    action="{% url 'notifications:marquer_toutes_lues' %}"
+                >
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        class="bouton bouton-secondaire"
+                        onclick="return confirm('Marquer toutes les notifications comme lues ?');"
+                    >
+                        ✓ Tout marquer comme lu
+                    </button>
+                </form>
+            {% endif %}
+
+        </div>
+
+
+        <div class="liste-notifications">
+
+            {% for notification in notifications %}
+
+                <article class="
+                    notification
+                    type-{{ notification.type_notification|lower }}
+                    {% if not notification.est_lue %}
+                        notification-non-lue
+                    {% endif %}
+                ">
+
+                    <div class="zone-icone">
+
+                        <div class="icone-notification">
+                            {% if notification.type_notification == "DEMANDE" %}
+                                🏠
+                            {% elif notification.type_notification == "AFFECTATION" %}
+                                🛏️
+                            {% elif notification.type_notification == "PAIEMENT" %}
+                                💳
+                            {% elif notification.type_notification == "RECLAMATION" %}
+                                🛠️
+                            {% else %}
+                                🔔
+                            {% endif %}
+                        </div>
+
+                        {% if not notification.est_lue %}
+                            <span
+                                class="indicateur-non-lu"
+                                title="Notification non lue"
+                            ></span>
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="contenu-notification">
+
+                        <div class="entete-notification">
+
+                            <div>
+                                <span class="badge-type">
+                                    {{ notification.get_type_notification_display }}
+                                </span>
+
+                                <h3>
+                                    {{ notification.titre }}
+                                </h3>
+                            </div>
+
+                            {% if not notification.est_lue %}
+                                <span class="badge-nouveau">
+                                    Nouvelle
+                                </span>
+                            {% else %}
+                                <span class="badge-lue">
+                                    Lue
+                                </span>
+                            {% endif %}
+
+                        </div>
+
+
+                        <p class="texte-notification">
+                            {{ notification.message|truncatechars:220 }}
+                        </p>
+
+
+                        <div class="meta-notification">
+
+                            <span>
+                                Créée le
+                                {{ notification.date_creation|date:"d/m/Y à H:i" }}
+                            </span>
+
+                            {% if notification.est_lue and notification.date_lecture %}
+                                <span>
+                                    Lue le
+                                    {{ notification.date_lecture|date:"d/m/Y à H:i" }}
+                                </span>
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="actions-notification">
+
+                        <a
+                            href="{% url 'notifications:detail_notification' notification.pk %}"
+                            class="bouton bouton-principal bouton-petit"
+                        >
+                            Consulter
+                        </a>
+
+                        {% if not notification.est_lue %}
+                            <form
+                                method="post"
+                                action="{% url 'notifications:marquer_notification_lue' notification.pk %}"
+                            >
+                                {% csrf_token %}
+
+                                <input
+                                    type="hidden"
+                                    name="next"
+                                    value="{{ request.get_full_path }}"
+                                >
+
+                                <button
+                                    type="submit"
+                                    class="bouton bouton-clair bouton-petit"
+                                >
+                                    Marquer comme lue
+                                </button>
+
+                            </form>
+                        {% endif %}
+
+                    </div>
+
+                </article>
+
+            {% empty %}
+
+                <div class="etat-vide">
+                    <div class="icone-vide">🔕</div>
+
+                    <h3>Aucune notification</h3>
+
+                    <p>
+                        Les nouvelles informations concernant
+                        votre hébergement apparaîtront ici.
+                    </p>
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

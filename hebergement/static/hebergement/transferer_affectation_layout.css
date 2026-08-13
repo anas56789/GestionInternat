@@ -1,0 +1,219 @@
+/* =========================================================
+   OPÉRATIONS D'AFFECTATION — LAYOUT COMMUN
+========================================================= */
+
+body.page-cloture-premium,
+body.page-transfert-affectation {
+    margin: 0;
+    overflow-x: hidden;
+    background: #f3f6fb;
+    color: #0f172a;
+    font-family: "Inter", "Segoe UI", Arial, sans-serif;
+}
+
+.topbar-operation-affectation {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+
+    min-height: 92px;
+    padding: 16px clamp(20px, 3vw, 40px);
+
+    border-bottom: 1px solid #e2e8f0;
+    background: rgba(255, 255, 255, .96);
+
+    box-shadow:
+        0 6px 22px
+        rgba(15, 23, 42, .045);
+
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.sur-titre-operation-affectation {
+    display: block;
+    margin-bottom: 3px;
+
+    color: #2563eb;
+
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+}
+
+.topbar-operation-affectation h1 {
+    margin: 0;
+
+    color: #0f172a;
+
+    font-size: clamp(23px, 2.3vw, 31px);
+    font-weight: 850;
+    letter-spacing: -.025em;
+}
+
+.topbar-operation-affectation p {
+    margin: 5px 0 0;
+
+    color: #64748b;
+
+    font-size: 12px;
+}
+
+.actions-topbar-operation-affectation {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.bouton-operation-topbar {
+    min-height: 42px;
+    padding: 0 14px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #dbe4f0;
+    border-radius: 10px;
+
+    background: #fff;
+    color: #334155;
+
+    font-size: 11px;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.bouton-operation-topbar:hover {
+    border-color: #bfdbfe;
+    background: #eff6ff;
+    color: #1d4ed8;
+}
+
+.profil-operation-topbar {
+    min-width: 180px;
+    padding: 6px 10px 6px 7px;
+
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+
+    background: #fff;
+}
+
+.avatar-operation-topbar {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 50%;
+
+    background: linear-gradient(135deg, #2563eb, #60a5fa);
+    color: #fff;
+
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.profil-operation-topbar strong,
+.profil-operation-topbar span {
+    display: block;
+}
+
+.profil-operation-topbar strong {
+    max-width: 155px;
+    overflow: hidden;
+
+    color: #0f172a;
+
+    font-size: 11px;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.profil-operation-topbar span {
+    margin-top: 2px;
+    color: #64748b;
+    font-size: 9px;
+}
+
+@media (max-width: 1100px) {
+    .topbar-operation-affectation {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .actions-topbar-operation-affectation {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 760px) {
+    .topbar-operation-affectation {
+        position: static;
+        padding: 15px 14px;
+    }
+
+    .actions-topbar-operation-affectation {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .bouton-operation-topbar,
+    .profil-operation-topbar {
+        width: 100%;
+    }
+}
+
+
+.page-transfert-affectation .conteneur-transfert-layout {
+    width: min(1180px, calc(100% - 36px));
+    margin: 0 auto;
+    padding: 24px 0 44px;
+}
+
+.page-transfert-affectation .hero-formulaire-transfert {
+    margin-bottom: 18px;
+}
+
+.page-transfert-affectation .carte-premium {
+    box-shadow: 0 8px 24px rgba(15,23,42,.045);
+}
+
+.page-transfert-affectation .grille-formulaire-transfert {
+    align-items: start;
+}
+
+.page-transfert-affectation .colonne-resume-transfert {
+    position: sticky;
+    top: 110px;
+}
+
+@media (max-width: 900px) {
+    .page-transfert-affectation .colonne-resume-transfert {
+        position: static;
+    }
+}
+
+@media (max-width: 760px) {
+    .page-transfert-affectation .conteneur-transfert-layout {
+        width: calc(100% - 22px);
+        padding-top: 16px;
+    }
+}

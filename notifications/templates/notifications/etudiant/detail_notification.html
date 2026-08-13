@@ -1,0 +1,125 @@
+{% extends "dashboard/base_etudiant.html" %}
+{% load static %}
+
+{% block title %}
+{{ notification.titre }} — GestionInternat
+{% endblock %}
+
+{% block titre_page %}
+Détail de la notification
+{% endblock %}
+
+{% block sous_titre_page %}
+Consultez toutes les informations associées
+à cette notification.
+{% endblock %}
+
+{% block css_page %}
+<link
+    rel="stylesheet"
+    href="{% static 'notifications/notifications.css' %}?v=2"
+>
+{% endblock %}
+
+{% block contenu_etudiant %}
+
+<div class="conteneur-detail-notification">
+
+    <section class="
+        carte
+        carte-detail-notification
+        type-{{ notification.type_notification|lower }}
+    ">
+
+        <div class="entete-detail-notification">
+
+            <div class="icone-notification grande-icone">
+                {% if notification.type_notification == "DEMANDE" %}
+                    🏠
+                {% elif notification.type_notification == "AFFECTATION" %}
+                    🛏️
+                {% elif notification.type_notification == "PAIEMENT" %}
+                    💳
+                {% elif notification.type_notification == "RECLAMATION" %}
+                    🛠️
+                {% else %}
+                    🔔
+                {% endif %}
+            </div>
+
+
+            <div class="titre-detail-notification">
+
+                <span class="badge-type">
+                    {{ notification.get_type_notification_display }}
+                </span>
+
+                <h2>
+                    {{ notification.titre }}
+                </h2>
+
+                <div class="meta-notification">
+
+                    <span>
+                        Reçue le
+                        {{ notification.date_creation|date:"d/m/Y à H:i" }}
+                    </span>
+
+                    {% if notification.date_lecture %}
+                        <span>
+                            Lue le
+                            {{ notification.date_lecture|date:"d/m/Y à H:i" }}
+                        </span>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            {% if notification.est_lue %}
+                <span class="badge-lue">
+                    ✓ Lue
+                </span>
+            {% else %}
+                <span class="badge-nouveau">
+                    Nouvelle
+                </span>
+            {% endif %}
+
+        </div>
+
+
+        <div class="separateur"></div>
+
+
+        <div class="message-notification">
+            {{ notification.message|linebreaks }}
+        </div>
+
+
+        <div class="actions-detail">
+
+            {% if notification.lien %}
+                <a
+                    href="{{ notification.lien }}"
+                    class="bouton bouton-principal"
+                >
+                    Accéder à l’élément concerné
+                </a>
+            {% endif %}
+
+            <a
+                href="{% url 'notifications:mes_notifications' %}"
+                class="bouton bouton-secondaire"
+            >
+                ← Retour aux notifications
+            </a>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

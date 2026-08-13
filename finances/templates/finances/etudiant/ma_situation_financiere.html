@@ -1,0 +1,300 @@
+{% extends "dashboard/base_etudiant.html" %}
+{% load static %}
+
+{% block title %}
+Ma situation financière — GestionInternat
+{% endblock %}
+
+{% block titre_page %}
+Ma situation financière
+{% endblock %}
+
+{% block sous_titre_page %}
+Consultez vos frais d’hébergement, vos paiements et les montants restant à régler.
+{% endblock %}
+
+{% block css_page %}
+<link
+    rel="stylesheet"
+    href="{% static 'finances/finances_etudiant.css' %}?v=5"
+>
+
+{% endblock %}
+
+{% block contenu_etudiant %}
+<div class="actions-page-etudiant">
+    <a
+        href="{% url 'accounts:espace_etudiant' %}"
+        class="bouton bouton-secondaire"
+    >
+        ← Retour à mon espace
+    </a>
+</div>
+
+<div class="conteneur conteneur-finances-layout">
+<section class="banniere-financiere">
+            <div>
+                <span class="sur-titre">
+                    Frais d’hébergement
+                </span>
+
+                <h2>Vue d’ensemble de mes règlements</h2>
+
+                <p>
+                    Les montants payés correspondent uniquement
+                    aux paiements validés par l’administration.
+                </p>
+            </div>
+
+            <div class="icone-banniere" aria-hidden="true">
+                💳
+            </div>
+        </section>
+
+        <section class="grille-statistiques">
+            <article class="statistique">
+                <div class="icone-statistique" aria-hidden="true">
+                    🧾
+                </div>
+
+                <div>
+                    <span>Montant total</span>
+
+                    <strong>
+                        {{ montant_total|floatformat:2 }} DH
+                    </strong>
+                </div>
+            </article>
+
+            <article class="statistique">
+                <div class="icone-statistique" aria-hidden="true">
+                    ✅
+                </div>
+
+                <div>
+                    <span>Montant payé</span>
+
+                    <strong class="valeur-succes">
+                        {{ montant_paye|floatformat:2 }} DH
+                    </strong>
+                </div>
+            </article>
+
+            <article class="statistique">
+                <div class="icone-statistique" aria-hidden="true">
+                    ⏳
+                </div>
+
+                <div>
+                    <span>Reste à payer</span>
+
+                    <strong
+                        class="
+                            {% if montant_restant > 0 %}
+                                valeur-danger
+                            {% else %}
+                                valeur-succes
+                            {% endif %}
+                        "
+                    >
+                        {{ montant_restant|floatformat:2 }} DH
+                    </strong>
+                </div>
+            </article>
+
+            <article class="statistique">
+                <div class="icone-statistique" aria-hidden="true">
+                    📚
+                </div>
+
+                <div>
+                    <span>Années concernées</span>
+
+                    <strong>
+                        {{ frais|length }}
+                    </strong>
+                </div>
+            </article>
+        </section>
+
+        <section class="carte-principale">
+            <div class="entete-section">
+                <div>
+                    <span class="petit-titre">
+                        Historique financier
+                    </span>
+
+                    <h2>Mes frais d’hébergement</h2>
+
+                    <p>
+                        Ouvrez une ligne pour consulter les paiements
+                        associés et leurs statuts.
+                    </p>
+                </div>
+            </div>
+
+            {% if frais %}
+                <div class="grille-frais">
+                    {% for objet in frais %}
+                        <article class="carte-frais">
+                            <div
+                                class="
+                                    barre-statut
+                                    statut-{{ objet.statut_financier|slugify }}
+                                "
+                            ></div>
+
+                            <div class="entete-frais">
+                                <div>
+                                    <span class="annee-frais">
+                                        {{ objet.annee_universitaire.libelle }}
+                                    </span>
+
+                                    <small>
+                                        Échéance :
+                                        {{ objet.date_echeance|date:"d/m/Y" }}
+                                    </small>
+                                </div>
+
+                                <span
+                                    class="
+                                        badge-statut
+                                        statut-{{ objet.statut_financier|slugify }}
+                                    "
+                                >
+                                    {{ objet.statut_financier }}
+                                </span>
+                            </div>
+
+                            <div class="resume-montants">
+                                <div>
+                                    <span>Total dû</span>
+
+                                    <strong>
+                                        {{ objet.montant_total|floatformat:2 }} DH
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Payé</span>
+
+                                    <strong class="valeur-succes">
+                                        {{ objet.montant_paye|floatformat:2 }} DH
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Restant</span>
+
+                                    <strong
+                                        class="
+                                            {% if objet.montant_restant > 0 %}
+                                                valeur-danger
+                                            {% else %}
+                                                valeur-succes
+                                            {% endif %}
+                                        "
+                                    >
+                                        {{ objet.montant_restant|floatformat:2 }} DH
+                                    </strong>
+                                </div>
+                            </div>
+
+                            {% widthratio objet.montant_paye objet.montant_total 100 as pourcentage_paye %}
+
+                            <div class="bloc-progression">
+                                <div class="entete-progression">
+                                    <span>Progression du règlement</span>
+
+                                    <strong>
+                                        {% if objet.est_solde %}
+                                            100 %
+                                        {% else %}
+                                            {{ pourcentage_paye|default:0 }} %
+                                        {% endif %}
+                                    </strong>
+                                </div>
+
+                                <div
+                                    class="barre-progression"
+                                    role="progressbar"
+                                    aria-label="Progression du règlement"
+                                    aria-valuemin="0"
+                                    aria-valuemax="100"
+                                    aria-valuenow="{{ pourcentage_paye|default:0 }}"
+                                >
+                                    <span
+                                        style="
+                                            width:
+                                            {% if objet.est_solde %}
+                                                100%
+                                            {% else %}
+                                                {{ pourcentage_paye|default:0 }}%
+                                            {% endif %};
+                                        "
+                                    ></span>
+                                </div>
+                            </div>
+
+                            <div class="informations-frais">
+                                <div class="information-ligne">
+                                    <span>Frais actifs</span>
+
+                                    <strong>
+                                        {% if objet.est_actif %}
+                                            Oui
+                                        {% else %}
+                                            Non
+                                        {% endif %}
+                                    </strong>
+                                </div>
+
+                                <div class="information-ligne">
+                                    <span>Paiements enregistrés</span>
+
+                                    <strong>
+                                        {{ objet.paiements.all|length }}
+                                    </strong>
+                                </div>
+                            </div>
+
+                            {% if objet.commentaire %}
+                                <div class="commentaire-frais">
+                                    <strong>
+                                        Commentaire de l’administration
+                                    </strong>
+
+                                    <p>
+                                        {{ objet.commentaire|truncatechars:180 }}
+                                    </p>
+                                </div>
+                            {% endif %}
+
+                            <div class="actions-frais">
+                                <a
+                                    href="{% url 'finances:detail_frais_etudiant' objet.pk %}"
+                                    class="bouton bouton-principal"
+                                >
+                                    Consulter le détail
+                                </a>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="etat-vide">
+                    <div class="icone-vide" aria-hidden="true">
+                        💳
+                    </div>
+
+                    <h3>Aucun frais enregistré</h3>
+
+                    <p>
+                        Aucun frais d’hébergement n’est actuellement
+                        associé à votre profil étudiant.
+                    </p>
+                </div>
+            {% endif %}
+        </section>
+</div>
+{% endblock %}

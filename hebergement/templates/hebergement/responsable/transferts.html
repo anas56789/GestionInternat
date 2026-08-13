@@ -1,0 +1,643 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Historique des transferts — Internat universitaire
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'dashboard/style.css' %}?v=11"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'hebergement/transferts_annees_premium.css' %}?v=2"
+    >
+</head>
+
+<body class="page-administration-premium">
+
+
+<div class="app-shell">
+
+   {% include "dashboard/sidebar_responsable.html" %}
+
+    <div class="main-area">
+
+        <header class="topbar-transferts">
+
+            <div>
+                <span class="sur-titre-topbar-transferts">
+                    Espace responsable
+                </span>
+
+                <h1>Historique des transferts</h1>
+
+                <p>
+                    Suivi des changements de chambre
+                    et de bâtiment des étudiants hébergés.
+                </p>
+            </div>
+
+            <div class="actions-topbar-transferts">
+
+                <a
+                    href="{% url 'hebergement:liste_affectations_responsable' %}"
+                    class="bouton-premium bouton-premium-clair"
+                >
+                    Affectations
+                </a>
+
+                <div class="profil-topbar-transferts">
+                    <div class="avatar-topbar-transferts">
+                        {% if request.user.first_name %}
+                            {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
+                        {% else %}
+                            {{ request.user.username|first|upper }}
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <strong>
+                            {{ request.user.get_full_name|default:request.user.username }}
+                        </strong>
+
+                        <span>
+                            {% if request.user.is_superuser %}
+                                Super administrateur
+                            {% else %}
+                                {{ request.user.get_role_display }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+        </header>
+
+<main class="conteneur-premium">
+
+    {% if messages %}
+        <section class="messages-premium">
+            {% for message in messages %}
+                <div class="message-premium {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </section>
+    {% endif %}
+
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
+
+    <section class="hero-premium hero-transferts-premium">
+
+        <div>
+            <span class="sur-titre-hero-premium">
+                Traçabilité
+            </span>
+
+            <h2>
+                Transferts entre les chambres
+            </h2>
+
+            <p>
+                Retrouvez l'étudiant, l'ancienne chambre,
+                la nouvelle chambre, la date, le motif
+                et le responsable de l'opération.
+            </p>
+        </div>
+
+        <div class="compteur-hero-premium">
+            <strong>
+                {{ nombre_transferts|default:0 }}
+            </strong>
+
+            <span>
+                résultat(s)
+            </span>
+        </div>
+
+    </section>
+
+    <!-- =====================================================
+         STATISTIQUES
+    ====================================================== -->
+
+    <section class="grille-stats-premium grille-stats-transferts">
+
+        <article class="stat-premium">
+            <span class="icone-stat-premium">↔</span>
+
+            <div>
+                <span>Total</span>
+                <strong>
+                    {{ nombre_total_global|default:0 }}
+                </strong>
+            </div>
+        </article>
+
+        <article class="stat-premium">
+            <span class="icone-stat-premium">◷</span>
+
+            <div>
+                <span>Année active</span>
+
+                <strong>
+                    {{ nombre_transferts_annee_active|default:0 }}
+                </strong>
+
+                {% if annee_active %}
+                    <small>
+                        {{ annee_active.libelle }}
+                    </small>
+                {% endif %}
+            </div>
+        </article>
+
+        <article class="stat-premium">
+            <span class="icone-stat-premium">▦</span>
+
+            <div>
+                <span>Même bâtiment</span>
+                <strong>
+                    {{ nombre_transferts_meme_batiment|default:0 }}
+                </strong>
+            </div>
+        </article>
+
+        <article class="stat-premium">
+            <span class="icone-stat-premium">→</span>
+
+            <div>
+                <span>Autre bâtiment</span>
+                <strong>
+                    {{ nombre_transferts_autre_batiment|default:0 }}
+                </strong>
+            </div>
+        </article>
+
+    </section>
+
+    <!-- =====================================================
+         FILTRES
+    ====================================================== -->
+
+    <section class="carte-premium">
+
+        <div class="entete-carte-premium">
+
+            <div>
+                <span class="mini-label-premium">
+                    Recherche
+                </span>
+
+                <h2>
+                    Filtrer l'historique
+                </h2>
+
+                <p>
+                    Recherchez un étudiant ou filtrez les transferts
+                    par année, bâtiment et période.
+                </p>
+            </div>
+
+            <span class="badge-resultats-premium">
+                {{ nombre_transferts|default:0 }}
+                résultat(s)
+            </span>
+
+        </div>
+
+        <form
+            method="get"
+            class="formulaire-filtres-premium formulaire-filtres-transferts-premium"
+        >
+
+            <div class="groupe-filtre-premium filtre-recherche-large">
+                <label for="recherche">
+                    Recherche
+                </label>
+
+                <input
+                    type="search"
+                    id="recherche"
+                    name="recherche"
+                    value="{{ recherche }}"
+                    placeholder="Nom, matricule, CNE, chambre, motif..."
+                >
+            </div>
+
+            <div class="groupe-filtre-premium">
+                <label for="annee">
+                    Année universitaire
+                </label>
+
+                <select
+                    id="annee"
+                    name="annee"
+                >
+                    <option value="">
+                        Toutes les années
+                    </option>
+
+                    {% for annee in annees_universitaires %}
+                        <option
+                            value="{{ annee.pk }}"
+                            {% if annee_selectionnee == annee.pk|stringformat:"s" %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ annee.libelle }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="groupe-filtre-premium">
+                <label for="ancien_batiment">
+                    Bâtiment d'origine
+                </label>
+
+                <select
+                    id="ancien_batiment"
+                    name="ancien_batiment"
+                >
+                    <option value="">
+                        Tous les bâtiments
+                    </option>
+
+                    {% for batiment in batiments %}
+                        <option
+                            value="{{ batiment.pk }}"
+                            {% if ancien_batiment_selectionne == batiment.pk|stringformat:"s" %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ batiment.code }} — {{ batiment.nom }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="groupe-filtre-premium">
+                <label for="nouveau_batiment">
+                    Destination
+                </label>
+
+                <select
+                    id="nouveau_batiment"
+                    name="nouveau_batiment"
+                >
+                    <option value="">
+                        Tous les bâtiments
+                    </option>
+
+                    {% for batiment in batiments %}
+                        <option
+                            value="{{ batiment.pk }}"
+                            {% if nouveau_batiment_selectionne == batiment.pk|stringformat:"s" %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ batiment.code }} — {{ batiment.nom }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="groupe-filtre-premium">
+                <label for="date_debut">
+                    Transfert du
+                </label>
+
+                <input
+                    type="date"
+                    id="date_debut"
+                    name="date_debut"
+                    value="{{ date_debut }}"
+                >
+            </div>
+
+            <div class="groupe-filtre-premium">
+                <label for="date_fin">
+                    Transfert au
+                </label>
+
+                <input
+                    type="date"
+                    id="date_fin"
+                    name="date_fin"
+                    value="{{ date_fin }}"
+                >
+            </div>
+
+            <div class="actions-filtres-premium">
+
+                <a
+                    href="{% url 'hebergement:liste_transferts_responsable' %}"
+                    class="bouton-premium bouton-premium-clair"
+                >
+                    Réinitialiser
+                </a>
+
+                <button
+                    type="submit"
+                    class="bouton-premium bouton-premium-principal"
+                >
+                    Appliquer les filtres
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+    <!-- =====================================================
+         HISTORIQUE
+    ====================================================== -->
+
+    <section class="carte-premium">
+
+        <div class="entete-carte-premium">
+
+            <div>
+                <span class="mini-label-premium">
+                    Historique
+                </span>
+
+                <h2>
+                    Transferts enregistrés
+                </h2>
+
+                <p>
+                    {{ nombre_transferts|default:0 }}
+                    opération(s) correspondent aux critères.
+                </p>
+            </div>
+
+            <a
+                href="{% url 'hebergement:liste_affectations_responsable' %}"
+                class="bouton-premium bouton-premium-principal"
+            >
+                Voir les affectations
+            </a>
+
+        </div>
+
+        <div class="liste-transferts-premium">
+
+            {% for transfert in transferts %}
+
+                <article class="carte-transfert-premium">
+
+                    <div class="entete-transfert-premium">
+
+                        <div class="etudiant-transfert-premium">
+
+                            <div class="avatar-premium">
+                                {% if transfert.ancienne_affectation.etudiant.utilisateur.first_name %}
+                                    {{ transfert.ancienne_affectation.etudiant.utilisateur.first_name|first|upper }}
+                                    {{ transfert.ancienne_affectation.etudiant.utilisateur.last_name|first|upper }}
+                                {% else %}
+                                    {{ transfert.ancienne_affectation.etudiant.utilisateur.username|first|upper }}
+                                {% endif %}
+                            </div>
+
+                            <div>
+                                <span class="mini-label-premium">
+                                    Étudiant
+                                </span>
+
+                                <h3>
+                                    {{ transfert.ancienne_affectation.etudiant.utilisateur.get_full_name|default:transfert.ancienne_affectation.etudiant.utilisateur.username }}
+                                </h3>
+
+                                <p>
+                                    {{ transfert.ancienne_affectation.etudiant.matricule }}
+                                    · CNE
+                                    {{ transfert.ancienne_affectation.etudiant.cne }}
+                                </p>
+                            </div>
+
+                        </div>
+
+                        {% if transfert.ancienne_affectation.chambre.batiment_id == transfert.nouvelle_affectation.chambre.batiment_id %}
+                            <span class="badge-transfert-premium badge-transfert-interne">
+                                Même bâtiment
+                            </span>
+                        {% else %}
+                            <span class="badge-transfert-premium badge-transfert-externe">
+                                Changement de bâtiment
+                            </span>
+                        {% endif %}
+
+                    </div>
+
+                    <div class="trajet-transfert-premium">
+
+                        <div class="chambre-trajet chambre-trajet-origine">
+                            <span>
+                                Origine
+                            </span>
+
+                            <strong>
+                                {{ transfert.ancienne_affectation.chambre.batiment.code }}
+                                /
+                                {{ transfert.ancienne_affectation.chambre.numero }}
+                            </strong>
+
+                            <small>
+                                {{ transfert.ancienne_affectation.chambre.batiment.nom }}
+                            </small>
+                        </div>
+
+                        <div class="fleche-transfert-premium">
+                            →
+                        </div>
+
+                        <div class="chambre-trajet chambre-trajet-destination">
+                            <span>
+                                Destination
+                            </span>
+
+                            <strong>
+                                {{ transfert.nouvelle_affectation.chambre.batiment.code }}
+                                /
+                                {{ transfert.nouvelle_affectation.chambre.numero }}
+                            </strong>
+
+                            <small>
+                                {{ transfert.nouvelle_affectation.chambre.batiment.nom }}
+                            </small>
+                        </div>
+
+                    </div>
+
+                    <div class="grille-meta-transfert-premium">
+
+                        <div>
+                            <span>Année</span>
+                            <strong>
+                                {{ transfert.nouvelle_affectation.annee_universitaire.libelle }}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Date du transfert</span>
+                            <strong>
+                                {{ transfert.date_transfert|date:"d/m/Y" }}
+                            </strong>
+                            
+                        </div>
+
+                        <div>
+                            <span>Effectué par</span>
+
+                            <strong>
+                                {% if transfert.effectue_par %}
+                                    {{ transfert.effectue_par.get_full_name|default:transfert.effectue_par.username }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </strong>
+
+                            {% if transfert.effectue_par %}
+                                <small>
+                                    {{ transfert.effectue_par.get_role_display }}
+                                </small>
+                            {% endif %}
+                        </div>
+
+                    </div>
+
+                    <div class="motif-transfert-premium">
+                        <span>
+                            Motif
+                        </span>
+
+                        <p>
+                            {{ transfert.motif }}
+                        </p>
+                    </div>
+
+                </article>
+
+            {% empty %}
+
+                <div class="etat-vide-premium">
+                    <span>↔</span>
+
+                    <h3>
+                        Aucun transfert trouvé
+                    </h3>
+
+                    <p>
+                        Aucun transfert ne correspond
+                        aux critères sélectionnés.
+                    </p>
+
+                    <a
+                        href="{% url 'hebergement:liste_transferts_responsable' %}"
+                        class="bouton-premium bouton-premium-clair"
+                    >
+                        Réinitialiser les filtres
+                    </a>
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% if page_obj.paginator.num_pages > 1 %}
+
+            <nav class="pagination-premium">
+
+                <div class="informations-pagination-premium">
+                    Page {{ page_obj.number }}
+                    sur {{ page_obj.paginator.num_pages }}
+                    —
+                    {{ page_obj.paginator.count }}
+                    résultat(s)
+                </div>
+
+                <div class="liens-pagination-premium">
+
+                    {% if page_obj.has_previous %}
+                        <a
+                            href="?page=1{% if chaine_filtres %}&{{ chaine_filtres }}{% endif %}"
+                            class="bouton-page-premium"
+                        >
+                            Première
+                        </a>
+
+                        <a
+                            href="?page={{ page_obj.previous_page_number }}{% if chaine_filtres %}&{{ chaine_filtres }}{% endif %}"
+                            class="bouton-page-premium"
+                        >
+                            Précédente
+                        </a>
+                    {% endif %}
+
+                    {% for numero_page in page_obj.paginator.page_range %}
+                        {% if numero_page == page_obj.number %}
+
+                            <span class="page-active-premium">
+                                {{ numero_page }}
+                            </span>
+
+                        {% elif numero_page >= page_obj.number|add:"-2" and numero_page <= page_obj.number|add:"2" %}
+
+                            <a
+                                href="?page={{ numero_page }}{% if chaine_filtres %}&{{ chaine_filtres }}{% endif %}"
+                                class="bouton-page-premium"
+                            >
+                                {{ numero_page }}
+                            </a>
+
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                        <a
+                            href="?page={{ page_obj.next_page_number }}{% if chaine_filtres %}&{{ chaine_filtres }}{% endif %}"
+                            class="bouton-page-premium"
+                        >
+                            Suivante
+                        </a>
+
+                        <a
+                            href="?page={{ page_obj.paginator.num_pages }}{% if chaine_filtres %}&{{ chaine_filtres }}{% endif %}"
+                            class="bouton-page-premium"
+                        >
+                            Dernière
+                        </a>
+                    {% endif %}
+
+                </div>
+
+            </nav>
+
+        {% endif %}
+
+    </section>
+
+</main>
+
+    </div>
+</div>
+
+</body>
+</html>

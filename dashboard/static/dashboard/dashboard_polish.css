@@ -1,0 +1,68 @@
+/* =========================================================
+   1. CONTENU PRINCIPAL — PLEINE LARGEUR
+========================================================= */
+
+.app-shell {
+    width: 100%;
+    min-height: 100vh;
+
+    display: grid;
+
+    grid-template-columns:
+        285px
+        minmax(0, 1fr);
+
+    background: #f3f6fb;
+}
+
+.sidebar-admin {
+    width: 285px;
+    min-width: 285px;
+    max-width: 285px;
+
+    height: 100vh;
+
+    position: sticky;
+    top: 0;
+}
+
+.main-area {
+    min-width: 0;
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    min-height: 100vh;
+
+    background: #f7faff;
+}
+
+
+/* enlève totalement la limitation 1480px */
+.main-area > main.conteneur,
+.main-area > .conteneur {
+    width: 100% !important;
+    max-width: none !important;
+
+    margin: 0 !important;
+
+    padding:
+        26px
+        32px
+        40px !important;
+
+    flex: 1;
+}
+
+
+/* toutes les grandes sections prennent la largeur */
+.banniere-bienvenue,
+.grille-indicateurs,
+.grille-principale-admin,
+.section-actions,
+.section-analytique,
+.section-occupation {
+    width: 100% !important;
+    max-width: none !important;
+}
